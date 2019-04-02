@@ -1,0 +1,23 @@
+Package: metaclipcc
+Type: Package
+Depends:
+    R(>= 3.1.0),
+    metaclipR(>= 1.2.0)
+Imports:
+    igraph,
+    magrittr,
+    utils
+Title: METACLIP for the IPCC-AR6
+Version: 0.0.1
+Date: 2019-04-02
+Authors@R: as.person(c(
+    "Santander Meteorology Group <http://www.meteo.unican.es/en> [cph]",
+    "Joaquín Bedia <bediaj@unican.es> [aut, cre]",
+    "Daniel San Martín <daniel@predictia.es> [aut]"))
+BugReports: https://github.com/predictia/metaclipR.qa4seas/issues
+Maintainer: The package maintainer <bediaj@unican.es>
+Description: Extend the METACLIP Provenance Framework for the IPCC-AR6 Atlas Outcomes.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
