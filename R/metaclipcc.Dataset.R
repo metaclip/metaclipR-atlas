@@ -24,7 +24,9 @@
 #'  If the argument corresponds to any of these named instances, the associated provenance information will be automatically recorded,
 #'  and all other arguments can be omitted.
 #' @export
-#' @importFrom igraph make_empty_graph add_vertices add_edges 
+#' @importFrom igraph make_empty_graph add_edges 
+#' @importFrom magrittr %>% 
+#' @importFrom metaclipR my_add_vertices getNodeIndexbyName
 #' @author J. Bedia
 
 
@@ -35,134 +37,100 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     ref <- showIPCCdatasets(names.only = FALSE)
     if (!Dataset.name %in% ref$names) stop("Invalid Dataset.name value. Use \'showIPCCdatasets()\' to check dataset availability and spelling")
     
-    Dataset.name = "CMIP5_IPSL-CM5A-MR_historical"
+    ##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+    # Dataset.name = "CMIP5_CNRM-CERFACS-CNRM-CM5_historical"
+    # ### ARREGLAR
+    # knownClassIndividuals("Project", vocabulary = "ipcc_terms")
+    ##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
     
     
-    ind <- grep(Dataset.name, ref$name)
+    # Identify the dataset and initialize a new empty graph 
+    ref <- ref[grep(Dataset.name, ref$name),]
+    graph <- make_empty_graph(directed = TRUE)
+    # Dataset node
+    graph <- my_add_vertices(graph,
+                             nv = 1,
+                             name = Dataset.name,
+                             label = Dataset.name,
+                             className = "ds:MultiDecadalSimulation")
+    # DataProvider
+    graph <- my_add_vertices(graph,
+                             name = "ESGF",
+                             label = "ESGF",
+                             className = "ipcc:ESGF")
+    graph <- add_edges(graph, 
+                       c(getNodeIndexbyName(graph, Dataset.name),
+                         getNodeIndexbyName(graph, "ESGF")),
+                       label = "ds:hadDataProvider")
+    # ModellingCenter 
+    ModellingCenter <- ref$ModellingCenter %>% strsplit(split = "-/-", fixed = TRUE) %>% unlist()
+    for (i in 1:length(ModellingCenter)) {
+        graph <- my_add_vertices(graph,
+                                 nv = 1,
+                                 name = ModellingCenter[i],
+                                 label = ModellingCenter[i],
+                                 className = "ds:ModellingCenter")
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, Dataset.name),
+                             getNodeIndexbyName(graph, ModellingCenter[i])),
+                           label = "ds:hadModellingCenter")
+    }
+    # Project
+    Project <- ref$Project
+    graph <- my_add_vertices(graph,
+                             nv = 1,
+                             name = Project,
+                             label = Project,
+                             className = "ds:Project")
+    graph <- add_edges(graph, 
+                       c(getNodeIndexbyName(graph, Dataset.name),
+                         getNodeIndexbyName(graph, Project)),
+                       label = "ds:hadProject")
+    # Experiment
+    Experiment <- ref$Experiment
+    graph <- my_add_vertices(graph,
+                             nv = 1,
+                             name = Experiment,
+                             label = Experiment,
+                             className = "ds:Experiment")
+    graph <- add_edges(graph, 
+                       c(getNodeIndexbyName(graph, Dataset.name),
+                         getNodeIndexbyName(graph, Experiment)),
+                       label = "ds:hadExperiment")
+    ## GCM simulations
+    GCM <- ref$GCM
+    RCM <- ref$RCM
+    graph <- my_add_vertices(graph,
+                             nv = 1,
+                             name = GCM,
+                             label = GCM,
+                             className = "ds:GCM",
+                             attr = list("ds:hasRun" = ref$Run))
+    if (is.na(RCM)) {
+        graph <- add_edges(graph, 
+                           c(getNodeIndexbyName(graph, Dataset.name),
+                             getNodeIndexbyName(graph, GCM)),
+                           label = "ds:hadSimulationModel")
+    } else {## RCM simulations
+        #############
+        ## TODO: complete data properties of RCMs
+        #############
+        graph <- my_add_vertices(graph,
+                                 nv = 1,
+                                 name = RCM,
+                                 label = RCM,
+                                 className = "ds:RCM")
+        graph <- add_edges(graph, 
+                           c(getNodeIndexbyName(graph, Dataset.name),
+                             getNodeIndexbyName(graph, RCM)),
+                           label = "ds:hadSimulationModel")
+        # Driving GCM
+        graph <- add_edges(graph, 
+                           c(getNodeIndexbyName(graph, RCM),
+                             getNodeIndexbyName(graph, GCM)),
+                           label = "ds:hadDrivingGCM")
+    }
     
-    
-    # ?isKnow
-    # 
-    # know
-    # 
-    # if (isKnownDatasource) {
-    #     message("The Dataset is in the internal reference table: all datasource metadata will be automatically appended")
-    #     metadata <- ref[grep(Dataset.name, ref$name), ]
-    #     Dataset.subclass <- metadata$DatasetSubclass
-    #     ModellingCenter <- metadata$ModellingCenter %>% strsplit(split = ";") %>% unlist()
-    #     Project <- metadata$Project
-    #     if (DataProvider == "UDG") DataProvider.URL <- metadata$url
-    #     RCM <- metadata$RCM
-    #     GCM <- metadata$GCM
-    #     Run <- metadata$Run
-    # }
-    # ref <- NULL
-    # # Dataset Subclass definition
-    # isKnownDataset <- ifelse(Dataset.name %in% suppressMessages(knownClassIndividuals("Dataset")), TRUE, FALSE)
-    # if (isKnownDataset) Dataset.subclass <- getIndividualClass(Dataset.name)
-    # Dataset.nodename <- ifelse(isKnownDataset, paste0("ds:", Dataset.name), paste0("Dataset.", randomName()))
-    # if (!is.character(Dataset.subclass)) stop("A valid 'Dataset.subclass' value is required", call. = FALSE)
-    # Dataset.subclass <- match.arg(Dataset.subclass, choices = c("MultiDecadalSimulation",
-    #                                                             "ObservationalDataset",
-    #                                                             "Reanalysis",
-    #                                                             "SeasonalHindcast",
-    #                                                             "SeasonalOperationalForecast",
-    #                                                             "ShortRangeForecast"))
-    # graph <- make_empty_graph(directed = TRUE)
-    # # Dataset node ------------------
-    # graph <- my_add_vertices(graph,
-    #                          nv = 1,
-    #                          name = Dataset.nodename,
-    #                          label = Dataset.name,
-    #                          className = paste0("ds:", Dataset.subclass))
-    # # DataProvider node (OPTIONAL) -------------
-    # # List of instantiable knownDataProviders
-    # if (is.character(DataProvider)) {
-    #     if (length(DataProvider) > 1) stop("Only one DataProvider per Dataset is allowed", call. = FALSE)
-    #     isKnownDataProvider <- ifelse(DataProvider %in% suppressMessages((knownClassIndividuals("DataProvider"))) | 
-    #                                       DataProvider %in% suppressMessages((knownClassIndividuals("ModellingCenter"))), TRUE, FALSE)
-    #     DataProvider.nodename <- ifelse(isKnownDataProvider, paste0("ds:", DataProvider), paste0("DataProvider.", randomName())) 
-    #     graph <- my_add_vertices(graph,
-    #                              name = DataProvider.nodename,
-    #                              label = DataProvider,
-    #                              className = "ds:DataProvider",
-    #                              attr = list("ds:hasMainURL" = DataProvider.URL))
-    #     graph <- add_edges(graph, 
-    #                        c(getNodeIndexbyName(graph, Dataset.nodename),
-    #                          getNodeIndexbyName(graph, DataProvider.nodename)),
-    #                        label = "ds:hadDataProvider")
-    # }
-    # # ModellingCenter OPTIONAL --------------------------------
-    # if (is.character(ModellingCenter)) {
-    #     for (i in 1:length(ModellingCenter)) {
-    #         isKnownModellingCenter <- ifelse(ModellingCenter[i] %in% suppressMessages(knownClassIndividuals("ModellingCenter")), TRUE, FALSE)
-    #         ModellingCenter.nodename <- ifelse(isKnownModellingCenter, paste0("ds:", ModellingCenter[i]), paste0("ModellingCenter.", randomName())) 
-    #         graph <- my_add_vertices(graph,
-    #                                  nv = 1,
-    #                                  name = ModellingCenter.nodename,
-    #                                  label = ModellingCenter[i],
-    #                                  className = "ds:ModellingCenter")
-    #         graph <- add_edges(graph, 
-    #                            c(getNodeIndexbyName(graph, Dataset.nodename),
-    #                              getNodeIndexbyName(graph, ModellingCenter.nodename)),
-    #                            label = "ds:hadModellingCenter")
-    #     }
-    # }
-    # # Project OPTIONAL ------------------------------------
-    # if (!is.null(Project)) {
-    #     isKnownProject <- ifelse(Project %in% suppressMessages(knownClassIndividuals("Project")), TRUE, FALSE)
-    #     Project.nodename <- ifelse(isKnownProject, paste0("ds:", Project), paste0("Project.", randomName())) 
-    #     graph <- my_add_vertices(graph,
-    #                              nv = 1,
-    #                              name = Project.nodename,
-    #                              label = Project,
-    #                              className = "ds:Project")
-    #     graph <- add_edges(graph, 
-    #                        c(getNodeIndexbyName(graph, Dataset.nodename),
-    #                          getNodeIndexbyName(graph, Project.nodename)),
-    #                        label = "ds:hadProject")
-    # }
-    # # Simulation model --------------------------------------
-    # rcmdata <- FALSE
-    # if (isTRUE(suppressWarnings(is.na(RCM)))) RCM <- NULL
-    # if (!is.null(RCM)) {
-    #     rcmdata <- TRUE
-    #     isKnownRCM <- ifelse(RCM %in% knownClassIndividuals("RCM"), TRUE, FALSE)
-    #     RCM.nodename <- ifelse(isKnownRCM, paste0("ds:", RCM), paste0("RCM.", randomName()))
-    #     graph <- my_add_vertices(graph,
-    #                              nv = 1,
-    #                              name = RCM.nodename,
-    #                              label = RCM,
-    #                              className = "ds:RCM",
-    #                              attr = list("ds:hasRun" = Run))
-    #     graph <- add_edges(graph, 
-    #                        c(getNodeIndexbyName(graph, Dataset.nodename),
-    #                          getNodeIndexbyName(graph, RCM.nodename)),
-    #                        label = "ds:hadSimulationModel")
-    # }
-    # if (isTRUE(suppressWarnings(is.na(GCM)))) GCM <- NULL
-    # if (!is.null(GCM)) {
-    #     isKnownGCM <- ifelse(GCM %in% knownClassIndividuals("GCM"), TRUE, FALSE)
-    #     GCM.nodename <- ifelse(isKnownGCM, paste0("ds:", GCM), paste0("GCM.", randomName()))
-    #     if (rcmdata) Run <- NA
-    #     graph <- my_add_vertices(graph,
-    #                              nv = 1,
-    #                              name = GCM.nodename,
-    #                              label = GCM,
-    #                              className = "ds:GCM",
-    #                              attr = list("ds:hasRun" = Run))
-    #     graph <- if (rcmdata) {
-    #         add_edges(graph, 
-    #                   c(getNodeIndexbyName(graph, RCM.nodename),
-    #                     getNodeIndexbyName(graph, GCM.nodename)),
-    #                   label = "ds:hadDrivingGCM")
-    #     } else {
-    #         op <- ifelse(grepl("^Seasonal", Dataset.subclass), "ds:hadSeasonalForecastingSystem", "ds:hadSimulationModel")
-    #         add_edges(graph, 
-    #                   c(getNodeIndexbyName(graph, Dataset.nodename),
-    #                     getNodeIndexbyName(graph, GCM.nodename)),
-    #                   label = op)
-    #     }
-    # }
-    # return(list("graph" = graph, "parentnodename" = Dataset.nodename))
+    # plot(graph)
+    return(list("graph" = graph, "parentnodename" = Dataset.name))
 }
