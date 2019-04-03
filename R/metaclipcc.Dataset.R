@@ -29,27 +29,19 @@
 #' @importFrom metaclipR my_add_vertices getNodeIndexbyName
 #' @author J. Bedia
 
-
-
-# datasets <- read.csv("inst/gcm_table.csv", stringsAsFactors = FALSE)
-
 metaclipcc.Dataset <- function(Dataset.name = NULL) {
     ref <- showIPCCdatasets(names.only = FALSE)
     if (!Dataset.name %in% ref$names) stop("Invalid Dataset.name value. Use \'showIPCCdatasets()\' to check dataset availability and spelling")
-    
     ##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
     # Dataset.name = "CMIP5_CNRM-CERFACS-CNRM-CM5_historical"
     # ### ARREGLAR
     # knownClassIndividuals("Project", vocabulary = "ipcc_terms")
     ##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-    
-    
     # Identify the dataset and initialize a new empty graph 
     ref <- ref[grep(Dataset.name, ref$name),]
     graph <- make_empty_graph(directed = TRUE)
     # Dataset node
     graph <- my_add_vertices(graph,
-                             nv = 1,
                              name = Dataset.name,
                              label = Dataset.name,
                              className = "ds:MultiDecadalSimulation")
@@ -66,7 +58,6 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     ModellingCenter <- ref$ModellingCenter %>% strsplit(split = "-/-", fixed = TRUE) %>% unlist()
     for (i in 1:length(ModellingCenter)) {
         graph <- my_add_vertices(graph,
-                                 nv = 1,
                                  name = ModellingCenter[i],
                                  label = ModellingCenter[i],
                                  className = "ds:ModellingCenter")
@@ -78,7 +69,6 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     # Project
     Project <- ref$Project
     graph <- my_add_vertices(graph,
-                             nv = 1,
                              name = Project,
                              label = Project,
                              className = "ds:Project")
@@ -89,7 +79,6 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     # Experiment
     Experiment <- ref$Experiment
     graph <- my_add_vertices(graph,
-                             nv = 1,
                              name = Experiment,
                              label = Experiment,
                              className = "ds:Experiment")
@@ -101,7 +90,6 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     GCM <- ref$GCM
     RCM <- ref$RCM
     graph <- my_add_vertices(graph,
-                             nv = 1,
                              name = GCM,
                              label = GCM,
                              className = "ds:GCM",
@@ -112,14 +100,12 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
                              getNodeIndexbyName(graph, GCM)),
                            label = "ds:hadSimulationModel")
     } else {## RCM simulations
-        #############
-        ## TODO: complete data properties of RCMs
-        #############
         graph <- my_add_vertices(graph,
-                                 nv = 1,
                                  name = RCM,
                                  label = RCM,
-                                 className = "ds:RCM")
+                                 className = "ds:RCM",
+                                 attr = list("ds:withSimulationDomain" = ref$SimulationDomain,
+                                             "ds:withVersionTag" = ref$SoftwareVersion))
         graph <- add_edges(graph, 
                            c(getNodeIndexbyName(graph, Dataset.name),
                              getNodeIndexbyName(graph, RCM)),
@@ -130,7 +116,5 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
                              getNodeIndexbyName(graph, GCM)),
                            label = "ds:hadDrivingGCM")
     }
-    
-    # plot(graph)
     return(list("graph" = graph, "parentnodename" = Dataset.name))
 }
