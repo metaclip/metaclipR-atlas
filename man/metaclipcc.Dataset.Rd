@@ -7,13 +7,11 @@
 metaclipcc.Dataset(Dataset.name = NULL)
 }
 \arguments{
-\item{Dataset.name}{Name (label) of the Dataset. There is a number of already known Datasets, pertaining to the User Data Gateway 
-Public datasets of the climate4R Framework (see References). Type \code{showUDGDatasources()} for details.
- If the argument corresponds to any of these named instances, the associated provenance information will be automatically recorded,
- and all other arguments can be omitted.}
+\item{Dataset.name}{Name (label) of the Dataset. This dataset must be included in the internal
+lookup table, that can be accessed via \code{\link{showIPCCdatasets}}.}
 }
 \description{
-Build a directed metadata graph describing a data source. This is usually the initial 
+Build a directed metadata graph describing a data source. This is usually the initial
 step to build METACLIP graphs
 }
 \author{

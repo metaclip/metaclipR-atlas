@@ -2,7 +2,7 @@ Package: metaclipcc
 Type: Package
 Depends:
     R(>= 3.1.0),
-    metaclipR(>= 1.2.0)
+    metaclipR(>= 1.2.1)
 Imports:
     igraph,
     magrittr,
