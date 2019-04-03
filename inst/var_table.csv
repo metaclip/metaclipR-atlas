@@ -1,8 +1,8 @@
-variable,units,shortname,vertical
-ta,degC,tas,near-surface
-tasmax,degC,tasmin,near-surface
-tasmin,degC,tasmin,near-surface
-tos,Pascals,ssl,surface
-tp,mm,tp,surface
-O2,,,near-surface
-pH,,,near-surface
+variable,units,shortname,vertical,time_step,cellfun,aggr.m,aggr.y
+ta,degC,tas,near-surface,P1D,mean,mean,mean
+tasmax,degC,tasmin,near-surface,P1D,max,mean,mean
+tasmin,degC,tasmin,near-surface,P1D,min,mean,mean
+tos,Pascals,ssl,surface,P1D,mean,mean,mean
+tp,mm,tp,surface,P1D,sum,sum,sum
+O2,,,near-surface,P1D,mean,mean,mean
+pH,,,near-surface,P1D,mean,mean,mean
