@@ -1,0 +1,8 @@
+variable,units,shortname,vertical
+ta,degC,tas,near-surface
+tasmax,degC,tasmin,near-surface
+tasmin,degC,tasmin,near-surface
+tos,Pascals,ssl,surface
+tp,mm,tp,surface
+O2,,,near-surface
+pH,,,near-surface
