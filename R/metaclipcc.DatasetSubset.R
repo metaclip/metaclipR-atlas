@@ -47,6 +47,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                                      season = 1:12,
                                      years) {
     time.res.orig <- match.arg(time.res.orig, choices = c("P1D", "P1M"), several.ok = FALSE)
+    variable <- match.arg(variable, choices = c("ta","tasmax","tasmin","tos","tp","O2","pH"), several.ok = FALSE)
     graph <- metaclipcc.Dataset$graph
     parent.node <- metaclipcc.Dataset$parentnodename
     DatasetSubset.nodename <- paste0("DatasetSubset.", randomName())
@@ -71,8 +72,6 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                              attr = list("ds:withUnits" = ref$units,
                                          "ds:hasShortName" = ref$shortname,
                                          "ds:hasVerticalLevel" = ref$vertical))
-                                         #"ds:hasHorizontalResX" = attr(grd, "resX"),
-                                         #"ds:hasHorizontalResY" = attr(grd, "resY")))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, DatasetSubset.nodename),
                          getNodeIndexbyName(graph, var.nodename)),
@@ -99,17 +98,26 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     # prefix <- ifelse(ipcc.region == "GlobalExtent", "ds:", "ipcc:")
     # spatextent.nodename <- paste0(prefix, ipcc.region)
     spatextent.nodename <- paste0("SpatialExtent.", randomName())
+    if (ref$realm == "atmos") {
+        attr.list <- list("ds:xmin" = -180,
+                          "ds:xmax" = 180,
+                          "ds:ymin" = -90,
+                          "ds:ymax" = 90,
+                          "ds:hasProjection" = "EPSG:54030",
+                          "ds:hasHorizontalResX" = ref1$resX.atmos,
+                          "ds:hasHorizontalResY" = ref1$resX.atmos)
+    } else {
+        attr.list <- list("ds:xmin" = -180,
+                          "ds:xmax" = 180,
+                          "ds:ymin" = -90,
+                          "ds:ymax" = 90,
+                          "ds:hasProjection" = "EPSG:54030")
+    }
     graph <- my_add_vertices(graph,
                              name = spatextent.nodename,
                              label = "Spatial Domain",
                              className = "ds:HorizontalExtent",
-                             attr = list("ds:xmin" = -180,
-                                          "ds:xmax" = 180,
-                                          "ds:ymin" = -90,
-                                          "ds:ymax" = 90,
-                                          "ds:hasProjection" = "EPSG:54030",
-                                          "ds:hasHorizontalResX" = ref1$resX.atmos,
-                                          "ds:hasHorizontalResY" = ref1$resX.atmos))
+                             attr = attr.list)
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, DatasetSubset.nodename),
                          getNodeIndexbyName(graph, spatextent.nodename)),
