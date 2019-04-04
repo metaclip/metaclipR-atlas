@@ -48,6 +48,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                                      years) {
     time.res.orig <- match.arg(time.res.orig, choices = c("P1D", "P1M"), several.ok = FALSE)
     variable <- match.arg(variable, choices = c("ta","tasmax","tasmin","tos","tp","O2","pH"), several.ok = FALSE)
+    if (length(years) != 2) stop("Argument \'years\' must be of length two")
     graph <- metaclipcc.Dataset$graph
     parent.node <- metaclipcc.Dataset$parentnodename
     DatasetSubset.nodename <- paste0("DatasetSubset.", randomName())
@@ -143,7 +144,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     filter.month <- as.list(season)
     startYear <- years[1]
     endYear <- years[2]
-    endMonth <- tail(season[1]) + 1
+    endMonth <- tail(season, 1)
     if (!identical(season, sort(season))) startYear <- startYear - 1
     if (endMonth == 12) {
         endYear <- endYear + 1
