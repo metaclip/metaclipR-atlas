@@ -1,8 +1,8 @@
-variable,units,shortname,vertical,time_step,cellfun,aggr.m,aggr.y
-ta,degC,tas,near-surface,P1D,mean,mean,mean
-tasmax,degC,tasmin,near-surface,P1D,max,mean,mean
-tasmin,degC,tasmin,near-surface,P1D,min,mean,mean
-tos,Pascals,ssl,surface,P1D,mean,mean,mean
-tp,mm,tp,surface,P1D,sum,sum,sum
-O2,,,near-surface,P1D,mean,mean,mean
-pH,,,near-surface,P1D,mean,mean,mean
+variable,units,shortname,vertical,time_step,cellfun,realm
+ta,degC,tas,near-surface,P1D,mean,atmos
+tasmax,degC,tasmin,near-surface,P1D,max,atmos
+tasmin,degC,tasmin,near-surface,P1D,min,atmos
+tos,Pascals,ssl,surface,P1D,mean,ocean
+tp,mm,tp,surface,P1D,sum,atmos
+O2,,,near-surface,P1D,mean,ocean
+pH,,,near-surface,P1D,mean,ocean
