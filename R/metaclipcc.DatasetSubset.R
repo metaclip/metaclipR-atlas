@@ -21,6 +21,8 @@
 #' @param variable Code of the ECV. This must be an individual instance of \code{ds:Variable}.
 #' @param Dataset.name Name (label) of the Dataset. This dataset must be included in the internal
 #'  lookup table, that can be accessed via \code{\link{showIPCCdatasets}}.
+#' @param time.res.orig Temporal resolution of the original data, as downloaded from ESGF. Monthly (\code{"P1M"})for ECV maps,
+#'  and daily (\code{"P1D"}) for index calculation.
 #' @param ipcc.region Code of the IPCC region. This must be an individual instance of \code{ds:HorizontalExtent}.
 #' @param season Season. Integer vector of (correlative) months, e.g.: \code{c(12,1,2)} for DJF (boreal winter).
 #' @param years Integer vector of length two with start/end year of the period, e.g.: \code{c(2016,2035)} for the AR5 baseline.
@@ -40,9 +42,11 @@
 metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                                      Dataset.name,
                                      variable,
+                                     time.res.orig = c("P1D", "P1M"),
                                      ipcc.region = "GlobalExtent",
                                      season = 1:12,
                                      years) {
+    time.res.orig <- match.arg(time.res.orig, choices = c("P1D", "P1M"), several.ok = FALSE)
     graph <- metaclipcc.Dataset$graph
     parent.node <- metaclipcc.Dataset$parentnodename
     DatasetSubset.nodename <- paste0("DatasetSubset.", randomName())
@@ -75,12 +79,13 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                        label = "ds:hasVariable")
     # TemporalResolution ---------------------
     timeres.nodename <- paste("TemporalResolution", randomName(), sep = ".")
+    label <- ifelse(time.res.orig == "P1M", "Monthly", "Daily")
     graph <- my_add_vertices(graph,
-                          name = timeres.nodename,
-                          label = "Daily",
-                          className = "ds:TemporalResolution",
-                          attr = list("ds:hasTimeStep" = "P1D",
-                                      "ds:hasCellMethod" = ref$cellfun))
+                             name = timeres.nodename,
+                             label = label,
+                             className = "ds:TemporalResolution",
+                             attr = list("ds:hasTimeStep" = time.res.orig,
+                                         "ds:hasCellMethod" = ref$cellfun))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, DatasetSubset.nodename),
                          getNodeIndexbyName(graph, timeres.nodename)),
