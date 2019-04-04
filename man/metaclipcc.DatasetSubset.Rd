@@ -5,7 +5,8 @@
 \title{Directed metadata graph construction for IPCC Atlas product data sources}
 \usage{
 metaclipcc.DatasetSubset(metaclipcc.Dataset, Dataset.name, variable,
-  ipcc.region = "GlobalExtent", season = 1:12, years)
+  time.res.orig = c("P1D", "P1M"), ipcc.region = "GlobalExtent",
+  season = 1:12, years)
 }
 \arguments{
 \item{metaclipcc.Dataset}{METACLIP description of the Dataset, as returned by \code{\link{metaclipcc.Dataset}}.}
@@ -14,6 +15,9 @@ metaclipcc.DatasetSubset(metaclipcc.Dataset, Dataset.name, variable,
 lookup table, that can be accessed via \code{\link{showIPCCdatasets}}.}
 
 \item{variable}{Code of the ECV. This must be an individual instance of \code{ds:Variable}.}
+
+\item{time.res.orig}{Temporal resolution of the original data, as downloaded from ESGF. Monthly (\code{"P1M"})for ECV maps,
+and daily (\code{"P1D"}) for index calculation.}
 
 \item{ipcc.region}{Code of the IPCC region. This must be an individual instance of \code{ds:HorizontalExtent}.}
 

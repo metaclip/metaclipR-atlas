@@ -2,7 +2,7 @@
 % Please edit documentation in R/metaclipcc.Dataset.R
 \name{metaclipcc.Dataset}
 \alias{metaclipcc.Dataset}
-\title{Directed metadata graph construction for IPCC Atalas product data sources}
+\title{Directed metadata graph construction for IPCC Atlas product data sources}
 \usage{
 metaclipcc.Dataset(Dataset.name = NULL)
 }

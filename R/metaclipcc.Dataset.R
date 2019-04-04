@@ -15,7 +15,7 @@
 ##     You should have received a copy of the GNU General Public License
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' @title Directed metadata graph construction for IPCC Atalas product data sources
+#' @title Directed metadata graph construction for IPCC Atlas product data sources
 #' @description Build a directed metadata graph describing a data source. This is usually the initial
 #' step to build METACLIP graphs
 #'
