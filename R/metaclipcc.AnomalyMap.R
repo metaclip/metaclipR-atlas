@@ -43,18 +43,19 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                           name = maplayer.nodename,
                           label = "Coastline",
                           className = "go:MapLines",
-                          attr = list("go:hasLayerDescription" = "Physical vector map of coastline boundaries"))
+                          attr = list("dc:description" = "Physical vector map of coastline boundaries"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
                          getNodeIndexbyName(graph, maplayer.nodename)),
                        label = "go:hasMapLayer")
     # IPCC regions
+    maplayer.nodename <- paste("mapLayer", randomName(), sep = ".")
     graph <- add_vertices(graph,
                           nv = 1,
                           name = maplayer.nodename,
                           label = "IPCC World Regions",
                           className = "go:MapLines",
-                          attr = list("go:hasLayerDescription" = "IPCC-AR5 World Regions"))
+                          attr = list("dc:description" = "IPCC-AR5 World Regions"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
                          getNodeIndexbyName(graph, maplayer.nodename)),
