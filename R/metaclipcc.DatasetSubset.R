@@ -150,6 +150,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
         endYear <- endYear + 1
         endMonth <- 1
     }
+    season.string <- month.abb[season] %>% paste(collapse = "-")
     startTime <- paste0(startYear, "-", season[1], "-01") %>% as.POSIXlt(tz = "GMT") %>%
         as.POSIXct() %>% format(format = "%Y-%m-%d %H:%M:%S", usetz = TRUE)
     endTime <- paste0(endYear, "-", endMonth, "-01") %>% as.POSIXlt(tz = "GMT") %>%
@@ -157,13 +158,14 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     names(filter.month) <- paste("ds:filterMonth", 1:length(filter.month), sep = ".")
     timeper.nodename <- paste("TemporalPeriod", randomName(), sep = ".")
     graph <- my_add_vertices(graph,
-                           name = timeper.nodename,
-                           label = "Season",
-                           className = "ds:TemporalPeriod",
-                           attr = c(
-                               list("prov:startedAtTime" = startTime,
-                                    "prov:endedAtTime" = endTime),
-                               filter.month))
+                             name = timeper.nodename,
+                             label = "Season",
+                             className = "ds:TemporalPeriod",
+                             attr = c(
+                                 list("ds:season" = season.string,
+                                      "prov:startedAtTime" = startTime,
+                                      "prov:endedAtTime" = endTime),
+                                 filter.month))
     graph <- add_edges(graph,
                         c(getNodeIndexbyName(graph, DatasetSubset.nodename),
                           getNodeIndexbyName(graph, timeper.nodename)),
