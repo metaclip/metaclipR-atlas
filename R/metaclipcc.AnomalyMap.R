@@ -60,5 +60,20 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                        c(getNodeIndexbyName(graph, map.nodename),
                          getNodeIndexbyName(graph, maplayer.nodename)),
                        label = "go:hasMapLayer")
+    # STIPPLING
+    # IPCC regions
+    maplayer.nodename <- paste("mapLayer", randomName(), sep = ".")
+    graph <- add_vertices(graph,
+                          nv = 1,
+                          name = maplayer.nodename,
+                          label = "Consensus Stippling",
+                          className = "go:MapPoints",
+                          attr = list("dc:description" = "Grid points with less than 66% of model agreement"))
+    graph <- add_edges(graph,
+                       c(getNodeIndexbyName(graph, map.nodename),
+                         getNodeIndexbyName(graph, maplayer.nodename)),
+                       label = "go:hasMapLayer")
+
+
     return(list("graph" = graph, "parentnodename" =  map.nodename))
 }
