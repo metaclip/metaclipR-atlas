@@ -1,8 +1,10 @@
 #' @title Launch ECV anomaly map description
 #' @description Generates the full graph describing an anomaly map of an ECV
 #' @param project Currently unused. CMIP5 by default.
+#' @param baseline Vector of length two indicating the start/end years of the baseline (historical) period.
+#'  Default to the AR5 baseline \code{c(1986,2005)}.
 #' @param experiment code of the experiment
-#' @param future.period future period
+#' @param future.period future period. Current options include the standard AR5 future time slices.
 #' @param variable variable
 #' @param proj projection string
 #' @param season season
@@ -13,19 +15,12 @@
 #' @author J. Bedia
 #' @export
 
-# a <- anomalyMap.ECV.ipcc(experiment = "rcp85",
-#                          future.period = "mid",
-#                          season = 1:12,
-#                          variable = "ta",
-#                          anomaly.type = "absolute",
-#                          time.res.orig = "P1M")
-# graph2json(a$graph, "/tmp/anomaly_tas_RCP85_midterm.json")
-
-
 anomalyMap.ECV.ipcc <- function(project = "CMIP5",
                                 experiment = c("rcp45", "rcp85"),
                                 future.period = c("near", "mid", "long"),
-                                variable, season,
+                                baseline = c(1986,2005),
+                                variable,
+                                season,
                                 time.res.orig = c("P1D", "P1M"),
                                 proj = "EPSG:54030",
                                 anomaly.type = c("absolute", "relative")) {
@@ -49,7 +44,7 @@ anomalyMap.ECV.ipcc <- function(project = "CMIP5",
         graph <- metaclipcc.Dataset(hist.list[x])
         graph <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph, Dataset.name = hist.list[x],
                                           time.res.orig = time.res.orig, variable = variable,
-                                          season = season, years = c(1986,2005))
+                                          season = season, years = baseline)
         ref <- showIPCCvars(names.only = FALSE)
         ref <- ref[grep(paste0("^",variable,"$"), ref$variable), ]
         arg.list <- NULL

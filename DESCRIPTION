@@ -9,7 +9,7 @@ Imports:
     utils
 Title: METACLIP for the IPCC-AR6
 Version: 0.0.1
-Date: 2019-04-02
+Date: 2019-04-05
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://www.meteo.unican.es/en> [cph]",
     "Joaquín Bedia <bediaj@unican.es> [aut, cre]",

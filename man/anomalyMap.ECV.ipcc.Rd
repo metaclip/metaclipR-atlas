@@ -5,16 +5,20 @@
 \title{Launch ECV anomaly map description}
 \usage{
 anomalyMap.ECV.ipcc(project = "CMIP5", experiment = c("rcp45",
-  "rcp85"), future.period = c("near", "mid", "long"), variable, season,
-  time.res.orig = c("P1D", "P1M"), proj = "EPSG:54030",
-  anomaly.type = c("absolute", "relative"))
+  "rcp85"), future.period = c("near", "mid", "long"),
+  baseline = c(1986, 2005), variable, season, time.res.orig = c("P1D",
+  "P1M"), proj = "EPSG:54030", anomaly.type = c("absolute",
+  "relative"))
 }
 \arguments{
 \item{project}{Currently unused. CMIP5 by default.}
 
 \item{experiment}{code of the experiment}
 
-\item{future.period}{future period}
+\item{future.period}{future period. Current options include the standard AR5 future time slices.}
+
+\item{baseline}{Vector of length two indicating the start/end years of the baseline (historical) period.
+Default to the AR5 baseline \code{c(1986,2005)}.}
 
 \item{variable}{variable}
 
