@@ -13,6 +13,15 @@
 #' @author J. Bedia
 #' @export
 
+# a <- anomalyMap.ECV.ipcc(experiment = "rcp85",
+#                          future.period = "mid",
+#                          season = 1:12,
+#                          variable = "ta",
+#                          anomaly.type = "absolute",
+#                          time.res.orig = "P1M")
+# graph2json(a$graph, "/tmp/anomaly_tas_RCP85_midterm.json")
+
+
 anomalyMap.ECV.ipcc <- function(project = "CMIP5",
                                 experiment = c("rcp45", "rcp85"),
                                 future.period = c("near", "mid", "long"),
@@ -43,11 +52,14 @@ anomalyMap.ECV.ipcc <- function(project = "CMIP5",
                                           season = season, years = c(1986,2005))
         ref <- showIPCCvars(names.only = FALSE)
         ref <- ref[grep(paste0("^",variable,"$"), ref$variable), ]
+        arg.list <- NULL
         if (time.res.orig == "P1M") {
-            arg.list <- list(aggr.y = list(FUN = ref$aggr.y))
+            arg.list <- list()
+            arg.list$aggr.y$FUN <- ref$aggr.y
         } else {
-            arg.list <- list(aggr.m = list(FUN = ref$aggr.m),
-                             aggr.y = list(FUN = ref$aggr.y))
+            arg.list <- list()
+            arg.list$aggr.m$FUN <- ref$aggr.m
+            arg.list$aggr.y$FUN <- ref$aggr.y
         }
         graph <- metaclipR.Aggregation(graph = graph, disable.command = TRUE, arg.list = arg.list)
         ds <- rcp.list[x]
