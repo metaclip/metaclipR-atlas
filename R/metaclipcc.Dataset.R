@@ -41,7 +41,8 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     graph <- my_add_vertices(graph,
                              name = Dataset.name,
                              label = Dataset.name,
-                             className = "ds:MultiDecadalSimulation")
+                             className = "ds:MultiDecadalSimulation",
+                             attr = list("ds:referenceURL" = ref$doi))
     # DataProvider
     graph <- my_add_vertices(graph,
                              name = "ipcc:ESGF",
