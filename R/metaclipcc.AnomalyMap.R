@@ -17,7 +17,8 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                           name = map.nodename,
                           label = "Anomaly Map",
                           className = "go:Map",
-                          attr = list("go:hasProjection" = proj))
+                          attr = list("go:hasProjection" = proj,
+                                      "dc:description" = "Final map product, composed upon different layers and other graphical elements"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
                          getNodeIndexbyName(graph, spatial.ref$parentnodename)),
@@ -27,7 +28,8 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                           nv = 1,
                           name = maplayer.nodename,
                           label = "Heatmap of anomalies",
-                          className = "go:MapRaster")
+                          className = "go:MapRaster",
+                          attr = list("dc:description" = "The anomalies are graphically displayed on the map as a raster \"heatmap\" layer"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, withInput),
                          getNodeIndexbyName(graph, maplayer.nodename)),
@@ -43,23 +45,23 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                           name = maplayer.nodename,
                           label = "Coastline",
                           className = "go:MapLines",
-                          attr = list("dc:description" = "Physical vector map of coastline boundaries"))
+                          attr = list("dc:description" = "Vector layer. Physical map of coastline boundaries"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
                          getNodeIndexbyName(graph, maplayer.nodename)),
                        label = "go:hasMapLayer")
     # IPCC regions
-    maplayer.nodename <- paste("mapLayer", randomName(), sep = ".")
-    graph <- add_vertices(graph,
-                          nv = 1,
-                          name = maplayer.nodename,
-                          label = "IPCC World Regions",
-                          className = "go:MapLines",
-                          attr = list("dc:description" = "IPCC-AR5 World Regions"))
-    graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, map.nodename),
-                         getNodeIndexbyName(graph, maplayer.nodename)),
-                       label = "go:hasMapLayer")
+    # maplayer.nodename <- paste("mapLayer", randomName(), sep = ".")
+    # graph <- add_vertices(graph,
+    #                       nv = 1,
+    #                       name = maplayer.nodename,
+    #                       label = "IPCC World Regions",
+    #                       className = "go:MapLines",
+    #                       attr = list("dc:description" = "IPCC-AR5 World Regions"))
+    # graph <- add_edges(graph,
+    #                    c(getNodeIndexbyName(graph, map.nodename),
+    #                      getNodeIndexbyName(graph, maplayer.nodename)),
+    #                    label = "go:hasMapLayer")
     # STIPPLING
     # IPCC regions
     maplayer.nodename <- paste("mapLayer", randomName(), sep = ".")
@@ -68,7 +70,7 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                           name = maplayer.nodename,
                           label = "Consensus Stippling",
                           className = "go:MapPoints",
-                          attr = list("dc:description" = "Grid points with less than 66% of model agreement"))
+                          attr = list("dc:description" = "The underlying anomaly grid cells with less than 66% of model agreement are partially masked by the stippling point layer"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
                          getNodeIndexbyName(graph, maplayer.nodename)),
