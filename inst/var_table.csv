@@ -1,8 +1,8 @@
-variable,units,shortname,vertical,time_step,cellfun,realm,aggr.m,aggr.y
-ta,degC,tas,near-surface,P1D,mean,atmos,mean,mean
-tasmax,degC,tasmin,near-surface,P1D,max,atmos,mean,mean
-tasmin,degC,tasmin,near-surface,P1D,min,atmos,mean,mean
-tos,Pascals,ssl,surface,P1D,mean,ocean,mean,mean
-tp,mm,tp,surface,P1D,sum,atmos,sum,sum
-O2,,,near-surface,P1D,mean,ocean,mean,mean
-pH,,,near-surface,P1D,mean,ocean,mean,mean
+variable,description,units,shortname,vertical,time_step,cellfun,realm,aggr.m,aggr.y
+ta,mean near-surface air temperature,degC,tas,near-surface,P1D,mean,atmos,mean,mean
+tasmax,maximum near-surface air temperature,degC,tasmin,near-surface,P1D,max,atmos,mean,mean
+tasmin,minimum near-surface air temperature,degC,tasmin,near-surface,P1D,min,atmos,mean,mean
+tos,sea-surface temperature,Pascals,ssl,surface,P1D,mean,ocean,mean,mean
+tp,total precipitation amount,mm,tp,surface,P1D,sum,atmos,sum,sum
+O2,dissolved oxygen in sea water,mol/m3,,near-surface,P1D,mean,ocean,mean,mean
+pH,pH,,,near-surface,P1D,mean,ocean,mean,mean
