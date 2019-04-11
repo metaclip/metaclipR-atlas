@@ -27,7 +27,7 @@
 #' @export
 #' @author J. Bedia
 
-# graph <- metaclipcc.Dataset("CMIP5_CNRM-CERFACS-CNRM-CM5_historical")
+# graph <- metaclipcc.Dataset(Dataset.name = "CMIP5_CNRM-CERFACS-CNRM-CM5_historical")
 # plot(graph$graph)
 # graph2json(graph = graph$graph, output.file = "/tmp/cnrm.json")
 
@@ -35,14 +35,27 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     ref <- showIPCCdatasets(names.only = FALSE)
     if (!Dataset.name %in% ref$name) stop("Invalid Dataset.name value. Use \'showIPCCdatasets()\' to check dataset availability and spelling")
     # Identify the dataset and initialize a new empty graph
+
     ref <- ref[grep(Dataset.name, ref$name),]
     graph <- make_empty_graph(directed = TRUE)
     # Dataset node
+    ref$Experiment
+    if (is.na(ref$RCM)) {
+        descr <- paste("A dataset of the CMIP5 project containing simulations of the",
+                       ref$GCM, "GCM for the",
+                       ref$Experiment, "experiment")
+    } else {
+        descr <- paste("A dataset of the CMIP5 project containing simulations of the",
+                       ref$RCM, "RCM coupled to the",
+                       ref$GCM, "GCM for the",
+                       ref$Experiment, "experiment")
+    }
     graph <- my_add_vertices(graph,
                              name = Dataset.name,
                              label = Dataset.name,
                              className = "ds:MultiDecadalSimulation",
-                             attr = list("ds:referenceURL" = ref$doi))
+                             attr = list("ds:referenceURL" = ref$doi,
+                                         "dc:description" = descr))
     # DataProvider
     graph <- my_add_vertices(graph,
                              name = "ipcc:ESGF",
