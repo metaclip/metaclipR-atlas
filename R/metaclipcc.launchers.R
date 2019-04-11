@@ -35,8 +35,8 @@ anomalyMap.ECV.ipcc <- function(project = "CMIP5",
                                         ymin = -90,
                                         ymax = 90,
                                         proj = proj,
-                                        resX = "1.5deg",
-                                        resY = "1.5deg")
+                                        resX = "2 deg",
+                                        resY = "2 deg")
     ls <- showIPCCdatasets(names.only = TRUE)
     hist.list <- ls[which(grepl(paste0("^", project, ".*historical"), ls))]
     rcp.list <- gsub("historical", RCP, hist.list)
