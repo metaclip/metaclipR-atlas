@@ -18,7 +18,7 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                           label = "Anomaly Map",
                           className = "go:Map",
                           attr = list("go:hasProjection" = proj,
-                                      "dc:description" = "Final map product, composed upon different layers and other graphical elements"))
+                                      "dc:description" = "Final map product, consisting of different supoerposed layers and other graphical elements (legend, title etc.)"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
                          getNodeIndexbyName(graph, spatial.ref$parentnodename)),
@@ -43,7 +43,7 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
     graph <- add_vertices(graph,
                           nv = 1,
                           name = maplayer.nodename,
-                          label = "Coastline",
+                          label = "Coastline boundaries",
                           className = "go:MapLines",
                           attr = list("dc:description" = "Vector layer. Physical map of coastline boundaries"))
     graph <- add_edges(graph,
@@ -69,7 +69,7 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                           nv = 1,
                           name = maplayer.nodename,
                           label = "Consensus Stippling",
-                          className = "go:MapPoints",
+                          className = "go:Mask",
                           attr = list("dc:description" = "The underlying anomaly grid cells with less than 66% of model agreement are partially masked by the stippling point layer"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
