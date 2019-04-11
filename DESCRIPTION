@@ -14,7 +14,7 @@ Authors@R: as.person(c(
     "Santander Meteorology Group <http://www.meteo.unican.es/en> [cph]",
     "Joaquín Bedia <bediaj@unican.es> [aut, cre]",
     "Daniel San Martín <daniel@predictia.es> [aut]"))
-BugReports: https://github.com/predictia/metaclipR.qa4seas/issues
+BugReports: https://github.com/metaclip/metaclipcc/issues
 Maintainer: J. Bedia <bediaj@unican.es>
 Description: Extend the METACLIP Provenance Framework for the products to be delivered by the IPCC-AR6 Interactive Atlas.
 License: GPL-3
