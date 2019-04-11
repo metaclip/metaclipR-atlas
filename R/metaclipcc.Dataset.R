@@ -35,17 +35,15 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     ref <- showIPCCdatasets(names.only = FALSE)
     if (!Dataset.name %in% ref$name) stop("Invalid Dataset.name value. Use \'showIPCCdatasets()\' to check dataset availability and spelling")
     # Identify the dataset and initialize a new empty graph
-
     ref <- ref[grep(Dataset.name, ref$name),]
     graph <- make_empty_graph(directed = TRUE)
     # Dataset node
-    ref$Experiment
     if (is.na(ref$RCM)) {
-        descr <- paste("A dataset of the CMIP5 project containing simulations of the",
+        descr <- paste("A dataset of the", ref$Project, "project containing simulations of the",
                        ref$GCM, "GCM for the",
                        ref$Experiment, "experiment")
     } else {
-        descr <- paste("A dataset of the CMIP5 project containing simulations of the",
+        descr <- paste("A dataset of the", ref$Project, "CMIP5 project containing simulations of the",
                        ref$RCM, "RCM coupled to the",
                        ref$GCM, "GCM for the",
                        ref$Experiment, "experiment")

@@ -51,20 +51,22 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     if (length(years) != 2) stop("Argument \'years\' must be of length two")
     graph <- metaclipcc.Dataset$graph
     parent.node <- metaclipcc.Dataset$parentnodename
+    ref <- showIPCCvars(names.only = FALSE)
+    if (!variable %in% ref$variable) stop("Invalid Dataset.name value. Use \'showIPCCdatasets()\' to check dataset availability and spelling")
+    ref <- ref[grep(pattern = paste0("^", variable, "$"), x = ref$variable),]
     DatasetSubset.nodename <- paste0("DatasetSubset.", randomName())
+    descr <- paste("This step entails extracting a spatio-temporal domain that is a logical subset of the antecedent Dataset for", ref$description)
     graph <- my_add_vertices(graph,
                              name = DatasetSubset.nodename,
                              label = "DatasetSubset",
-                             className = "ds:DatasetSubset")
+                             className = "ds:DatasetSubset",
+                             attr = list("dc:description" = descr))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, parent.node),
                          getNodeIndexbyName(graph, DatasetSubset.nodename)),
                        label = paste0("ds:hadDatasetSubset"))
 
     # Variable  ---------------------
-    ref <- showIPCCvars(names.only = FALSE)
-    if (!variable %in% ref$variable) stop("Invalid Dataset.name value. Use \'showIPCCdatasets()\' to check dataset availability and spelling")
-    ref <- ref[grep(pattern = paste0("^", variable, "$"), x = ref$variable),]
     var.nodename <- paste0("ds:", variable)
     graph <- my_add_vertices(graph,
                              name = var.nodename,

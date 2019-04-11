@@ -18,7 +18,7 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                           label = "Anomaly Map",
                           className = "go:Map",
                           attr = list("go:hasProjection" = proj,
-                                      "dc:description" = "Final map product, consisting of different supoerposed layers and other graphical elements (legend, title etc.)"))
+                                      "dc:description" = "Final map product, consisting of different superposed layers and other graphical elements (legend, title etc.)"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
                          getNodeIndexbyName(graph, spatial.ref$parentnodename)),
@@ -29,7 +29,7 @@ metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
                           name = maplayer.nodename,
                           label = "Heatmap of anomalies",
                           className = "go:MapRaster",
-                          attr = list("dc:description" = "The anomalies are graphically displayed on the map as a raster \"heatmap\" layer"))
+                          attr = list("dc:description" = "The anomalies are graphically displayed on the map as a raster heatmap layer"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, withInput),
                          getNodeIndexbyName(graph, maplayer.nodename)),

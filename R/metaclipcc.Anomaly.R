@@ -36,6 +36,7 @@ metaclipcc.AnomalyCalculation <- function(graph,
                                           anomaly.type = c("absolute", "relative")) {
     if (class(graph$graph) != "igraph") stop("Invalid input graph (not an 'igraph-class' object)")
     if (class(referenceGraph$graph) != "igraph") stop("Invalid input reference graph (not an 'igraph-class' object)")
+    anomaly.type <- match.arg(anomaly.type, choices = c("absolute", "relative"), several.ok = FALSE)
     withInput <- graph$parentnodename
     graph <- graph$graph
     orig.nodes.command <- c()
@@ -44,15 +45,17 @@ metaclipcc.AnomalyCalculation <- function(graph,
     if (anomaly.type == "absolute") {
         anom.class <- "ds:DifferenceAnomaly"
         anom.label <- "Absolute Anomaly"
+        descr <- "The anomaly is computed as the arithmetic difference between the climatologies of the future and the historical scenarios"
     } else {
         anom.class <- "ds:RelativeAnomaly"
         anom.label <- "Relative Anomaly"
+        descr <- "The anomaly is computed as the ratio (in %) between the climatologies of the future and the historical scenarios"
     }
     graph <- my_add_vertices(graph,
                              name = anom.nodename,
                              label = anom.label,
-                             className = anom.class) #,
-                             # attr = list("ds:hasTimeFrame" = "none"))
+                             className = anom.class,
+                             attr = list("dc:description" = descr))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, withInput),
                          getNodeIndexbyName(graph, anom.nodename)),
