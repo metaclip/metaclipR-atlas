@@ -4,11 +4,10 @@
 \alias{anomalyMap.ECV.ipcc}
 \title{Launch ECV anomaly map description}
 \usage{
-anomalyMap.ECV.ipcc(project = "CMIP5", experiment = c("rcp45",
-  "rcp85"), future.period = c("near", "mid", "long"),
-  baseline = c(1986, 2005), variable, season, time.res.orig = c("P1D",
-  "P1M"), proj = "EPSG:54030", anomaly.type = c("absolute",
-  "relative"))
+anomalyMap.ECV.ipcc(project = "CMIP5", experiment = "rcp85",
+  future.period = "mid", baseline = c(1986, 2005), variable, season,
+  time.res.orig = "P1M", proj = "EPSG:54030",
+  anomaly.type = "absolute")
 }
 \arguments{
 \item{project}{Currently unused. CMIP5 by default.}
