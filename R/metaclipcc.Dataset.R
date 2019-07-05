@@ -53,7 +53,8 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
                              label = Dataset.name,
                              className = "ds:MultiDecadalSimulation",
                              attr = list("ds:referenceURL" = ref$doi,
-                                         "dc:description" = descr))
+                                         "dc:description" = descr,
+                                         "ds:hasRun" = ref$Run))
     # DataProvider
     graph <- my_add_vertices(graph,
                              name = "ipcc:ESGF",
@@ -105,8 +106,7 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     graph <- my_add_vertices(graph,
                              name = gcm.nodename,
                              label = GCM,
-                             className = "ds:GCM",
-                             attr = list("ds:hasRun" = ref$Run))
+                             className = "ds:GCM")
     if (is.na(RCM)) {
         graph <- add_edges(graph,
                            c(getNodeIndexbyName(graph, Dataset.name),
