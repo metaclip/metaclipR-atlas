@@ -1,5 +1,5 @@
-#' @title Launch ECV anomaly map description
-#' @description Generates the full graph describing an anomaly map of an ECV
+#' @title Launch ECV delta map description
+#' @description Generates the full graph describing a delta map of an ECV
 #' @param project Currently unused. CMIP5 by default.
 #' @param baseline Vector of length two indicating the start/end years of the baseline (historical) period.
 #'  Default to the AR5 baseline \code{c(1986,2005)}.
@@ -9,13 +9,13 @@
 #' @param proj projection string
 #' @param season season
 #' @param time.res.orig original temporal resolution of the variable
-#' @param anomaly.type type of anomaly (absolute or relative)
-#' @return A METACLIP object describing the generation of an anomaly map.
+#' @param delta.type type of delta (absolute or relative)
+#' @return A METACLIP object describing the generation of a delta map.
 #' @importFrom metaclipR metaclipR.SpatialExtent metaclipR.Aggregation metaclipR.Interpolation metaclipR.Ensemble metaclipR.Climatology
 #' @author J. Bedia
 #' @export
 
-anomalyMap.ECV.ipcc <- function(project = "CMIP5",
+deltaMap.ECV.ipcc <- function(project = "CMIP5",
                                 experiment = "rcp85",
                                 future.period = "mid",
                                 baseline = c(1986,2005),
@@ -23,12 +23,12 @@ anomalyMap.ECV.ipcc <- function(project = "CMIP5",
                                 season,
                                 time.res.orig = "P1M",
                                 proj = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-                                anomaly.type = "absolute") {
+                                delta.type = "absolute") {
     RCP <- match.arg(experiment, choices = c("rcp45", "rcp85"), several.ok = FALSE)
     future.period <- match.arg(future.period, choices = c("near", "mid", "long"), several.ok = FALSE)
     time.res.orig <- match.arg(time.res.orig, choices = c("P1D", "P1M"), several.ok = FALSE)
     variable <- match.arg(variable, choices = c("ta","tasmax","tasmin","tos","tp","O2","pH"), several.ok = FALSE)
-    anomaly.type <- match.arg(anomaly.type, choices = c("absolute", "relative"), several.ok = FALSE)
+    delta.type <- match.arg(delta.type, choices = c("absolute", "relative"), several.ok = FALSE)
     spExtent <- metaclipR.SpatialExtent(region = "GlobalExtent",
                                         xmin = -180,
                                         xmax = 180,
@@ -77,7 +77,7 @@ anomalyMap.ECV.ipcc <- function(project = "CMIP5",
         #                                 dc.description = "Temporal aggregation of the antecedent dataset subset")
         graph2 <- metaclipR.Climatology(graph = graph2, arg.list = arg.list, disable.command = TRUE,
                                        dc.description = "The climatology is calculated as the mean value for the given season of the antecedent dataset subset")
-        graph3 <- metaclipcc.AnomalyCalculation(graph = graph2, referenceGraph = graph, anomaly.type = anomaly.type)
+        graph3 <- metaclipcc.AnomalyCalculation(graph = graph2, referenceGraph = graph, anomaly.type = delta.type)
         graph2 <- graph <- NULL
         graph3 <- metaclipR.Interpolation(graph = graph3, RefSpatialExtent = spExtent,
                                           disable.command = TRUE,
@@ -91,7 +91,7 @@ anomalyMap.ECV.ipcc <- function(project = "CMIP5",
                                     dc.description = "The multi-model ensemble is built by joining the (regridded) individual member anomalies along the new dimension 'member'")
     al <- list()
     al[['aggr.mem']][['FUN']] <- "mean"
-    dc <- "The aggregation of the data along the new dimension 'member' yiels one single anomaly map, that is the average of the (equally-weighted) individual anomalies of each ensemble member"
+    dc <- "The aggregation of the data along the new dimension 'member' yields one single delta map, that is the average of the (equally-weighted) individual anomalies of each ensemble member"
     ens.graph <- metaclipR.Aggregation(graph = ens.graph, disable.command = TRUE,
                                        arg.list = al, dc.description = dc)
     ## MAP GENERATION
