@@ -40,6 +40,7 @@ deltaMap.ECV.ipcc <- function(project = "CMIP5",
     ls <- showIPCCdatasets(names.only = TRUE)
     hist.list <- ls[which(grepl(paste0("^", project, ".*historical"), ls))]
     rcp.list <- gsub("historical", RCP, hist.list)
+    if (!identical(length(rcp.list), length(hist.list))) stop("historical and future dataset numbers differ")
     graph.list <- lapply(1:length(hist.list), function(x) {
         aux <- showIPCCdatasets(names.only = FALSE)
         ref.gcm <- aux[grep(hist.list[x], aux$name),]
