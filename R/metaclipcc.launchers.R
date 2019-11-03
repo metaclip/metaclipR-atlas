@@ -22,7 +22,7 @@ anomalyMap.ECV.ipcc <- function(project = "CMIP5",
                                 variable,
                                 season,
                                 time.res.orig = "P1M",
-                                proj = "EPSG:54030",
+                                proj = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
                                 anomaly.type = "absolute") {
     RCP <- match.arg(experiment, choices = c("rcp45", "rcp85"), several.ok = FALSE)
     future.period <- match.arg(future.period, choices = c("near", "mid", "long"), several.ok = FALSE)
