@@ -9,11 +9,11 @@ Imports:
     utils
 Title: METACLIP for the IPCC-AR6 Interactive Atlas
 Version: 0.1.0
-Date: 2019-07-05
-Authors@R: as.person(c(
-    "Santander Meteorology Group <http://www.meteo.unican.es/en> [cph]",
-    "Joaquín Bedia <bediaj@unican.es> [aut, cre]",
-    "Daniel San Martín <daniel@predictia.es> [aut]"))
+Date: 2019-11-03
+Authors@R: c(
+    person("Bedia", "Joaquín", email = "bediaj@unican.es", role = c("aut","cre"), comment = c(ORCID = "0000-0001-6219-4312")),
+    person("Daniel", "San Martín", email = "daniel@predictia.es", role = "aut"),
+    person("Santander Meteorology Group", comment = "<http://www.meteo.unican.es/en>", role = "cph"))
 BugReports: https://github.com/metaclip/metaclipcc/issues
 Maintainer: J. Bedia <bediaj@unican.es>
 Description: Extend the METACLIP Provenance Framework for the products to be delivered by the IPCC-AR6 Interactive Atlas.

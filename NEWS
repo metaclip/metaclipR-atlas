@@ -4,5 +4,8 @@ metaclipcc changelog
 ## v0.0.0 (12 April 2019)
  * First package version, used for preparing the IPCC AR6 FoD
 
-## V0.1.0 (05 Jul 2019)
+## V0.1.0 (03 Nov 2019)
  * The 'hasRun' property is moved to the Dataset domain (it was previously in GCM)
+ * Set default projection in delta maps to Robin, as a proj4 string
+ * Replace term 'anomaly' by 'delta' when necessary
+ * Other minor changes
