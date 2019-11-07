@@ -18,7 +18,12 @@ Shows the internal table with IPCC Variables and relevant metadata
 \examples{
 showIPCCvars()
 }
+\seealso{
+Other lookup-tables: \code{\link{showIPCCdatasets}},
+  \code{\link{showOBSdatasets}}
+}
 \author{
 J Bedia
 }
+\concept{lookup-tables}
 \keyword{internal}
