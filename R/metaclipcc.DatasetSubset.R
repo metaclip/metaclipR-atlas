@@ -106,7 +106,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                           "ds:xmax" = 180,
                           "ds:ymin" = -90,
                           "ds:ymax" = 90,
-                          "ds:hasProjection" = "EPSG:54030",
+                          "ds:hasProjection" = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
                           "ds:hasHorizontalResX" = ref1$resX.atmos,
                           "ds:hasHorizontalResY" = ref1$resX.atmos)
     } else {
@@ -114,7 +114,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                           "ds:xmax" = 180,
                           "ds:ymin" = -90,
                           "ds:ymax" = 90,
-                          "ds:hasProjection" = "EPSG:54030")
+                          "ds:hasProjection" = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
     }
     graph <- my_add_vertices(graph,
                              name = spatextent.nodename,
