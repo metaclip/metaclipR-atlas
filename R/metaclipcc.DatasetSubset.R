@@ -52,7 +52,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     graph <- metaclipcc.Dataset$graph
     parent.node <- metaclipcc.Dataset$parentnodename
     ref <- showIPCCvars(names.only = FALSE)
-    if (!variable %in% ref$variable) stop("Invalid Dataset.name value. Use \'showIPCCdatasets()\' to check dataset availability and spelling")
+    if (!variable %in% ref$variable) stop("Invalid variable name. Use \'showIPCCvars()\' to check valid variables")
     ref <- ref[grep(pattern = paste0("^", variable, "$"), x = ref$variable),]
     DatasetSubset.nodename <- paste0("DatasetSubset.", randomName())
     descr <- paste("This step entails extracting a spatio-temporal domain that is a logical subset of the antecedent Dataset for", ref$description)

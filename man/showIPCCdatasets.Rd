@@ -19,8 +19,7 @@ Shows the internal table with IPCC Datasets and relevant metadata
 showIPCCdatasets()
 }
 \seealso{
-Other lookup-tables: \code{\link{showIPCCvars}},
-  \code{\link{showOBSdatasets}}
+Other lookup-tables: \code{\link{showIPCCvars}}
 }
 \author{
 J Bedia
