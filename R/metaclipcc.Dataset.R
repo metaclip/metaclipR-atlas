@@ -38,23 +38,37 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     ref <- ref[grep(Dataset.name, ref$name),]
     graph <- make_empty_graph(directed = TRUE)
     # Dataset node
-    if (is.na(ref$RCM)) {
-        descr <- paste("A dataset of the", ref$Project, "project containing simulations of the",
-                       ref$GCM, "GCM for the",
-                       ref$Experiment, "experiment")
+    if (!is.na(ref$classObs)) {
+        descr <- paste("A dataset of the", ref$Project, "project containing observed reference records of the",
+                       ref$classObs, "class")
+        classname <- paste0(ref$vocabulary, ref$classObs)
+        graph <- my_add_vertices(graph,
+                                 name = Dataset.name,
+                                 label = Dataset.name,
+                                 className = classname,
+                                 attr = list("ds:referenceURL" = ref$doi,
+                                             "dc:description" = descr,
+                                             "ds:withVersionTag" = ref$SoftwareVersion))
     } else {
-        descr <- paste("A dataset of the", ref$Project, "CMIP5 project containing simulations of the",
-                       ref$RCM, "RCM coupled to the",
-                       ref$GCM, "GCM for the",
-                       ref$Experiment, "experiment")
+        classname <- paste0(ref$vocabulary, "ds:MultiDecadalSimulation")
+        if (is.na(ref$RCM)) {
+            descr <- paste("A dataset of the", ref$Project, "project containing simulations of the",
+                           ref$GCM, "GCM for the",
+                           ref$Experiment, "experiment")
+        } else {
+            descr <- paste("A dataset of the", ref$Project, "CMIP5 project containing simulations of the",
+                           ref$RCM, "RCM coupled to the",
+                           ref$GCM, "GCM for the",
+                           ref$Experiment, "experiment")
+        }
+        graph <- my_add_vertices(graph,
+                                 name = Dataset.name,
+                                 label = Dataset.name,
+                                 className = classname,
+                                 attr = list("ds:referenceURL" = ref$doi,
+                                             "dc:description" = descr,
+                                             "ds:hasRun" = ref$Run))
     }
-    graph <- my_add_vertices(graph,
-                             name = Dataset.name,
-                             label = Dataset.name,
-                             className = "ds:MultiDecadalSimulation",
-                             attr = list("ds:referenceURL" = ref$doi,
-                                         "dc:description" = descr,
-                                         "ds:hasRun" = ref$Run))
     # DataProvider
     graph <- my_add_vertices(graph,
                              name = "ipcc:ESGF",
@@ -67,7 +81,7 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     # ModellingCenter
     ModellingCenter <- ref$ModellingCenter %>% strsplit(split = "-/-", fixed = TRUE) %>% unlist()
     for (i in 1:length(ModellingCenter)) {
-        mc.nodename <- paste0("ipcc:", ModellingCenter[i])
+        mc.nodename <- paste(ref$vocabulary, ModellingCenter[i], sep = ":")
         graph <- my_add_vertices(graph,
                                  name = mc.nodename,
                                  label = ModellingCenter[i],
@@ -79,7 +93,7 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
     }
     # Project
     Project <- ref$Project
-    project.nodename <- paste0("ipcc:", Project)
+    project.nodename <- paste(ref$vocabulary, Project, sep = ":")
     graph <- my_add_vertices(graph,
                              name = project.nodename,
                              label = Project,
@@ -90,45 +104,49 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
                        label = "ds:hadProject")
     # Experiment
     Experiment <- ref$Experiment
-    exp.nodename <- paste0("ipcc:", Experiment)
-    graph <- my_add_vertices(graph,
-                             name = exp.nodename,
-                             label = Experiment,
-                             className = "ds:Experiment")
-    graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, Dataset.name),
-                         getNodeIndexbyName(graph, exp.nodename)),
-                       label = "ds:hadExperiment")
+    if (!is.na(Experiment)) {
+        exp.nodename <- paste0("ipcc:", Experiment)
+        graph <- my_add_vertices(graph,
+                                 name = exp.nodename,
+                                 label = Experiment,
+                                 className = "ds:Experiment")
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, Dataset.name),
+                             getNodeIndexbyName(graph, exp.nodename)),
+                           label = "ds:hadExperiment")
+    }
     ## GCM simulations
     GCM <- ref$GCM
-    gcm.nodename <- paste0("ipcc:", GCM)
-    RCM <- ref$RCM
-    graph <- my_add_vertices(graph,
-                             name = gcm.nodename,
-                             label = GCM,
-                             className = "ds:GCM")
-    if (is.na(RCM)) {
-        graph <- add_edges(graph,
-                           c(getNodeIndexbyName(graph, Dataset.name),
-                             getNodeIndexbyName(graph, gcm.nodename)),
-                           label = "ds:hadSimulationModel")
-    } else {## RCM simulations
-        rcm.nodename <- paste0("ipcc:", RCM)
+    if (!is.na(GCM)) {
+        gcm.nodename <- paste0("ipcc:", GCM)
+        RCM <- ref$RCM
         graph <- my_add_vertices(graph,
-                                 name = rcm.nodename,
-                                 label = RCM,
-                                 className = "ds:RCM",
-                                 attr = list("ds:withSimulationDomain" = ref$SimulationDomain,
-                                             "ds:withVersionTag" = ref$SoftwareVersion))
-        graph <- add_edges(graph,
-                           c(getNodeIndexbyName(graph, Dataset.name),
-                             getNodeIndexbyName(graph, rcm.nodename)),
-                           label = "ds:hadSimulationModel")
-        # Driving GCM
-        graph <- add_edges(graph,
-                           c(getNodeIndexbyName(graph, rcm.nodename),
-                             getNodeIndexbyName(graph, gcm.nodename)),
-                           label = "ds:hadDrivingGCM")
+                                 name = gcm.nodename,
+                                 label = GCM,
+                                 className = "ds:GCM")
+        if (is.na(RCM)) {
+            graph <- add_edges(graph,
+                               c(getNodeIndexbyName(graph, Dataset.name),
+                                 getNodeIndexbyName(graph, gcm.nodename)),
+                               label = "ds:hadSimulationModel")
+        } else {## RCM simulations
+            rcm.nodename <- paste0("ipcc:", RCM)
+            graph <- my_add_vertices(graph,
+                                     name = rcm.nodename,
+                                     label = RCM,
+                                     className = "ds:RCM",
+                                     attr = list("ds:withSimulationDomain" = ref$SimulationDomain,
+                                                 "ds:withVersionTag" = ref$SoftwareVersion))
+            graph <- add_edges(graph,
+                               c(getNodeIndexbyName(graph, Dataset.name),
+                                 getNodeIndexbyName(graph, rcm.nodename)),
+                               label = "ds:hadSimulationModel")
+            # Driving GCM
+            graph <- add_edges(graph,
+                               c(getNodeIndexbyName(graph, rcm.nodename),
+                                 getNodeIndexbyName(graph, gcm.nodename)),
+                               label = "ds:hadDrivingGCM")
+        }
     }
     return(list("graph" = graph, "parentnodename" = Dataset.name))
 }
