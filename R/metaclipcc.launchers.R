@@ -16,14 +16,14 @@
 #' @export
 
 deltaMap.ECV.ipcc <- function(project = "CMIP5",
-                                experiment = "rcp85",
-                                future.period = "mid",
-                                baseline = c(1986,2005),
-                                variable,
-                                season,
-                                time.res.orig = "P1M",
-                                proj = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-                                delta.type = "absolute") {
+                              experiment = "rcp85",
+                              future.period = "mid",
+                              baseline = c(1986,2005),
+                              variable,
+                              season,
+                              time.res.orig = "P1M",
+                              proj = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                              delta.type = "absolute") {
     RCP <- match.arg(experiment, choices = c("rcp45", "rcp85"), several.ok = FALSE)
     future.period <- match.arg(future.period, choices = c("near", "mid", "long"), several.ok = FALSE)
     time.res.orig <- match.arg(time.res.orig, choices = c("P1D", "P1M"), several.ok = FALSE)
@@ -77,7 +77,7 @@ deltaMap.ECV.ipcc <- function(project = "CMIP5",
         # graph2 <- metaclipR.Aggregation(graph = graph2, disable.command = TRUE, arg.list = arg.list,
         #                                 dc.description = "Temporal aggregation of the antecedent dataset subset")
         graph2 <- metaclipR.Climatology(graph = graph2, arg.list = arg.list, disable.command = TRUE,
-                                       dc.description = "The climatology is calculated as the mean value for the given season of the antecedent dataset subset")
+                                        dc.description = "The climatology is calculated as the mean value for the given season of the antecedent dataset subset")
         graph3 <- metaclipcc.AnomalyCalculation(graph = graph2, referenceGraph = graph, anomaly.type = delta.type)
         graph2 <- graph <- NULL
         graph3 <- metaclipR.Interpolation(graph = graph3, RefSpatialExtent = spExtent,
