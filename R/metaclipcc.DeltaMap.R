@@ -7,7 +7,7 @@
 #' @export
 #' @author J Bedia
 
-metaclipcc.AnomalyMap <- function(graph, proj, spatial.ref) {
+metaclipcc.DeltaMap <- function(graph, proj, spatial.ref) {
     if (class(graph$graph) != "igraph") stop("Invalid input graph (not an 'igraph-class' object)")
     withInput <- graph$parentnodename
     graph <- graph$graph
