@@ -1,5 +1,5 @@
 variable,description,units,shortname,vertical,time_step,cellfun,realm,aggr.m,aggr.y
-ta,mean near-surface air temperature,degC,tas,near-surface,P1D,mean,atmos,mean,mean
+tas,mean near-surface air temperature,degC,tas,near-surface,P1D,mean,atmos,mean,mean
 tasmax,maximum near-surface air temperature,degC,tasmin,near-surface,P1D,max,atmos,mean,mean
 tasmin,minimum near-surface air temperature,degC,tasmin,near-surface,P1D,min,atmos,mean,mean
 tos,sea-surface temperature,Pascals,ssl,surface,P1D,mean,ocean,mean,mean
