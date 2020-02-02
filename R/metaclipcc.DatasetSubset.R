@@ -1,6 +1,6 @@
 ##     metaclipcc.DatasetSubset METACLIP description of a DatasetSubset
 ##
-##     Copyright (C) 2019 Santander Meteorology Group (http://www.meteo.unican.es)
+##     Copyright (C) 2020 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
 ##     This program is free software: you can redistribute it and/or modify
 ##     it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                                      season = 1:12,
                                      years) {
     time.res.orig <- match.arg(time.res.orig, choices = c("P1D", "P1M"), several.ok = FALSE)
-    variable <- match.arg(variable, choices = c("ta","tasmax","tasmin","tos","tp","O2","pH"), several.ok = FALSE)
+    variable <- match.arg(variable, choices = c("tas","tasmax","tasmin","tos","pr","O2","pH"), several.ok = FALSE)
     if (length(years) != 2) stop("Argument \'years\' must be of length two")
     graph <- metaclipcc.Dataset$graph
     parent.node <- metaclipcc.Dataset$parentnodename
@@ -100,30 +100,36 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     ref1 <- ref1[grep(Dataset.name, ref1$name),]
     # prefix <- ifelse(ipcc.region == "GlobalExtent", "ds:", "ipcc:")
     # spatextent.nodename <- paste0(prefix, ipcc.region)
-    spatextent.nodename <- paste0("SpatialExtent.", randomName())
+    # spatextent.nodename <- paste0("SpatialExtent.", randomName())
+
+    # reg <- showIPCCregions(names.only = FALSE)[showIPCCregions(names.only = FALSE) %>% extract2("HorizontalExtent") %>% grep(pattern = ipcc.region), ]
+    # spExtent <- metaclipR.SpatialExtent(region = reg$HorizontalExtent,
+    #                                     xmin = reg$xmin,
+    #                                     xmax = reg$xmax,
+    #                                     ymin = reg$ymin,
+    #                                     ymax = reg$ymax,
+    #                                     resX = reg$resX,
+    #                                     resY = reg$resY)
     if (ref$realm == "atmos") {
-        attr.list <- list("ds:xmin" = -180,
-                          "ds:xmax" = 180,
-                          "ds:ymin" = -90,
-                          "ds:ymax" = 90,
-                          "ds:hasProjection" = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+        attr.list <- list("ds:xmin" = ref1$xmin.atmos,
+                          "ds:xmax" = ref1$xmax.atmos,
+                          "ds:ymin" = ref1$ymin.atmos,
+                          "ds:ymax" = ref1$ymax.atmos,
                           "ds:hasHorizontalResX" = ref1$resX.atmos,
                           "ds:hasHorizontalResY" = ref1$resX.atmos)
     } else {
-        attr.list <- list("ds:xmin" = -180,
-                          "ds:xmax" = 180,
-                          "ds:ymin" = -90,
-                          "ds:ymax" = 90,
-                          "ds:hasProjection" = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+        # TODO: Find ocean model resolutions and include in reference table!
+        attr.list <- list()
     }
+    prefix <- ifelse(ref1$SimulationDomain == "GlobalDomain", "ds:", "ipcc:")
     graph <- my_add_vertices(graph,
-                             name = spatextent.nodename,
-                             label = "Spatial Domain",
-                             className = "ds:HorizontalExtent",
+                             name = ref1$SimulationDomain,
+                             label = ref1$SimulationDomain,
+                             className = paste0(prefix, ref1$SimulationDomain),
                              attr = attr.list)
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, DatasetSubset.nodename),
-                         getNodeIndexbyName(graph, spatextent.nodename)),
+                         getNodeIndexbyName(graph, ref1$SimulationDomain)),
                        label = "ds:hasHorizontalExtent")
     # Spatial Extent (Vertical) --------------------------------------
     vextent.nodename <- paste("VerticalExtent", randomName(), sep = ".")
