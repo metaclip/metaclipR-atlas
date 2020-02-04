@@ -54,7 +54,9 @@ metaclipcc.ClimateIndex <- function(graph.list, index.code) {
                                  name = timeres.nodename,
                                  label = paste("Update time resolution to", ref$time_step),
                                  className = "ds:TemporalResolution",
-                                 attr = list("ds:hasTimeStep" = ref$time_step))
+                                 attr = list("ds:hasTimeStep" = ref$time_step.
+                                             "dc:description" = paste("The data time resolution is updated to the monthly time resolution of",
+                                                                      ref$description)))
         graph <- add_edges(graph,
                            c(getNodeIndexbyName(graph, nodename),
                              getNodeIndexbyName(graph, timeres.nodename)),
