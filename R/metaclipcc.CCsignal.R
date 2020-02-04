@@ -21,7 +21,7 @@
 #'  the input grid whose anomaly is to be computed, plus the terminal node from which the Anomaly Step will hang
 #' @param referenceGraph An output from a previous \pkg{metaclipR} function containing a list with the i-graph class object containing the reference Transformation-class object
 #' used as base to compute the climatology, plus the name of its terminal node
-#' @param anomaly.type Character string. Either \code{"absolute"} (default), or \code{"relative"}, if the delta change is computed as a
+#' @param delta.type Character string. Either \code{"absolute"} (default), or \code{"relative"}, if the delta change is computed as a
 #'  ratio instead of a difference.
 #' @details This function takes as reference the semantics defined in the Data Source and Transformation ontology
 #' defined in the Metaclip Framework (\url{http://www.metaclip.org}).

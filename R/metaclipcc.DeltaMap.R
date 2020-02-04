@@ -1,5 +1,4 @@
-
-#' @title Encode metadata of graphical output for anomaly maps
+#' @title Encode metadata of graphical output for delta maps
 #' @param graph input METACLIP graph structure
 #' @param proj Projection string
 #' @param spatial.ref Input spatial reference indicating map spatial extent
@@ -27,9 +26,9 @@ metaclipcc.DeltaMap <- function(graph, proj, spatial.ref) {
     graph <- add_vertices(graph,
                           nv = 1,
                           name = maplayer.nodename,
-                          label = "Heatmap of anomalies",
+                          label = "Heatmap of delta change",
                           className = "go:MapRaster",
-                          attr = list("dc:description" = "The anomalies are graphically displayed on the map as a raster heatmap layer"))
+                          attr = list("dc:description" = "The deltas are graphically displayed on the map as a raster heatmap layer"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, withInput),
                          getNodeIndexbyName(graph, maplayer.nodename)),

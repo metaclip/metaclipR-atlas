@@ -78,7 +78,7 @@ deltaMap.ECV.ipcc <- function(project = "CMIP5",
         #                                 dc.description = "Temporal aggregation of the antecedent dataset subset")
         graph2 <- metaclipR.Climatology(graph = graph2, arg.list = arg.list, disable.command = TRUE,
                                         dc.description = "The climatology is calculated as the mean value for the given season of the antecedent dataset subset")
-        graph3 <- metaclipcc.AnomalyCalculation(graph = graph2, referenceGraph = graph, anomaly.type = delta.type)
+        graph3 <- metaclipcc.DeltaChangeCalculation(graph = graph2, referenceGraph = graph, delta.type = delta.type)
         graph2 <- graph <- NULL
         graph3 <- metaclipR.Interpolation(graph = graph3, RefSpatialExtent = spExtent,
                                           disable.command = TRUE,
@@ -96,7 +96,7 @@ deltaMap.ECV.ipcc <- function(project = "CMIP5",
     ens.graph <- metaclipR.Aggregation(graph = ens.graph, disable.command = TRUE,
                                        arg.list = al, dc.description = dc)
     ## MAP GENERATION
-    ens.graph <- metaclipcc.AnomalyMap(graph = ens.graph, proj = proj, spatial.ref =  spExtent)
+    ens.graph <- metaclipcc.DeltaMap(graph = ens.graph, proj = proj, spatial.ref =  spExtent)
     return(ens.graph)
 }
 
