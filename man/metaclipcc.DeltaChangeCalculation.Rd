@@ -14,7 +14,7 @@ the input grid whose anomaly is to be computed, plus the terminal node from whic
 \item{referenceGraph}{An output from a previous \pkg{metaclipR} function containing a list with the i-graph class object containing the reference Transformation-class object
 used as base to compute the climatology, plus the name of its terminal node}
 
-\item{anomaly.type}{Character string. Either \code{"absolute"} (default), or \code{"relative"}, if the delta change is computed as a
+\item{delta.type}{Character string. Either \code{"absolute"} (default), or \code{"relative"}, if the delta change is computed as a
 ratio instead of a difference.}
 }
 \description{

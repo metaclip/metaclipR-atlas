@@ -4,14 +4,12 @@
 \alias{metaclipcc.ClimateIndex}
 \title{Encode metadata for IPCC product climate index definition}
 \usage{
-metaclipcc.ClimateIndex(graph, index.code, new.time.res = "P1M")
+metaclipcc.ClimateIndex(graph.list, index.code)
 }
 \arguments{
-\item{graph}{Input graph}
+\item{graph.list}{A list of input graphs.}
 
 \item{index.code}{Index code}
-
-\item{new.time.res}{Temporal resolution of the index. Default to monthly}
 }
 \value{
 A metaclipR object

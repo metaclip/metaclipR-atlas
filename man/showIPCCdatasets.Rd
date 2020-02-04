@@ -19,7 +19,8 @@ Shows the internal table with IPCC Datasets and relevant metadata
 showIPCCdatasets()
 }
 \seealso{
-Other lookup-tables: \code{\link{showIPCCvars}}
+Other lookup-tables: \code{\link{metaclipcc.getFuturePeriod}},
+  \code{\link{showIPCCvars}}
 }
 \author{
 J Bedia

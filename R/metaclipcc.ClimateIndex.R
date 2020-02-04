@@ -2,7 +2,6 @@
 #' @description Encode metadata for IPCC product climate index definition
 #' @param graph.list A list of input graphs.
 #' @param index.code Index code
-#' @param dc.description Optional field to inster dc:description annotations to the
 #' @return A metaclipR object
 #' @details The function asssumes that the index.code passed as argument is an individual instance of the ds:ClimateIndex class,
 #' defined in the ipcc_terms vocabulary
@@ -54,7 +53,7 @@ metaclipcc.ClimateIndex <- function(graph.list, index.code) {
                                  name = timeres.nodename,
                                  label = paste("Update time resolution to", ref$time_step),
                                  className = "ds:TemporalResolution",
-                                 attr = list("ds:hasTimeStep" = ref$time_step.
+                                 attr = list("ds:hasTimeStep" = ref$time_step,
                                              "dc:description" = paste("The data time resolution is updated to the monthly time resolution of",
                                                                       ref$description)))
         graph <- add_edges(graph,
