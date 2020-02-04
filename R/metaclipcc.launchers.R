@@ -78,7 +78,7 @@ deltaMap.ECV.ipcc <- function(project = "CMIP5",
         #                                 dc.description = "Temporal aggregation of the antecedent dataset subset")
         graph2 <- metaclipR.Climatology(graph = graph2, arg.list = arg.list, disable.command = TRUE,
                                         dc.description = "The climatology is calculated as the mean value for the given season of the antecedent dataset subset")
-        graph3 <- metaclipcc.DeltaChangeCalculation(graph = graph2, referenceGraph = graph, delta.type = delta.type)
+        graph3 <- metaclipcc.Delta(graph = graph2, referenceGraph = graph, delta.type = delta.type)
         graph2 <- graph <- NULL
         graph3 <- metaclipR.Interpolation(graph = graph3, RefSpatialExtent = spExtent,
                                           disable.command = TRUE,
