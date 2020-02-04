@@ -23,6 +23,8 @@
 #' used as base to compute the climatology, plus the name of its terminal node
 #' @param delta.type Character string. Either \code{"absolute"} (default), or \code{"relative"}, if the delta change is computed as a
 #'  ratio instead of a difference.
+#' @param dc.description Default to \code{NULL} and unused. Otherwise, this is a character string that will be appendend as a
+#'  "dc:description" annotation to the ds:ClimateChangeSignal-class node.
 #' @details This function takes as reference the semantics defined in the Data Source and Transformation ontology
 #' defined in the Metaclip Framework (\url{http://www.metaclip.org}).
 #' @family transformation
@@ -33,7 +35,8 @@
 
 metaclipcc.Delta <- function(graph,
                              referenceGraph = NULL,
-                             delta.type = c("absolute", "relative")) {
+                             delta.type = c("absolute", "relative"),
+                             dc.description = NULL) {
     if (class(graph$graph) != "igraph") stop("Invalid input graph (not an 'igraph-class' object)")
     if (class(referenceGraph$graph) != "igraph") stop("Invalid input reference graph (not an 'igraph-class' object)")
     delta.type <- match.arg(delta.type, choices = c("absolute", "relative"), several.ok = FALSE)
@@ -45,17 +48,24 @@ metaclipcc.Delta <- function(graph,
     if (delta.type == "absolute") {
         anom.class <- "ds:DifferenceSignal"
         anom.label <- "Absolute Delta Change"
-        descr <- "The climate change signal is computed as the arithmetic difference between the climatologies of the future time slice and the historical scenario"
+        # descr <- "The climate change signal is computed as the arithmetic difference between the climatologies of the future time slice and the historical scenario"
     } else {
         anom.class <- "ds:RelativeSignal"
         anom.label <- "Relative Delta Change"
-        descr <- "The climate change signal is computed as the ratio (in %) between the climatologies of the future and the historical scenarios"
+        # descr <- "The climate change signal is computed as the ratio (in %) between the climatologies of the future and the historical scenarios"
     }
-    graph <- my_add_vertices(graph,
-                             name = anom.nodename,
-                             label = anom.label,
-                             className = anom.class,
-                             attr = list("dc:description" = descr))
+    if (is.null(dc.description)) {
+        graph <- my_add_vertices(graph,
+                                 name = anom.nodename,
+                                 label = anom.label,
+                                 className = anom.class)
+    } else {
+        graph <- my_add_vertices(graph,
+                                 name = anom.nodename,
+                                 label = anom.label,
+                                 className = anom.class,
+                                 attr = list("dc:description" = dc.description))
+    }
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, withInput),
                          getNodeIndexbyName(graph, anom.nodename)),

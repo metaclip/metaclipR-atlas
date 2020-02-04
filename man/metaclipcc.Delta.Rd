@@ -5,7 +5,7 @@
 \title{Directed metadata graph construction for Climate Change Signal calculation}
 \usage{
 metaclipcc.Delta(graph, referenceGraph = NULL,
-  delta.type = c("absolute", "relative"))
+  delta.type = c("absolute", "relative"), dc.description = NULL)
 }
 \arguments{
 \item{graph}{An output from a previous \pkg{metaclipR} function containing a list with the i-graph class object containing
@@ -16,6 +16,9 @@ used as base to compute the climatology, plus the name of its terminal node}
 
 \item{delta.type}{Character string. Either \code{"absolute"} (default), or \code{"relative"}, if the delta change is computed as a
 ratio instead of a difference.}
+
+\item{dc.description}{Default to \code{NULL} and unused. Otherwise, this is a character string that will be appendend as a
+"dc:description" annotation to the ds:ClimateChangeSignal-class node.}
 }
 \description{
 Build a directed metadata graph describing a Climate Change Signal calculation
