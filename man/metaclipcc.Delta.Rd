@@ -4,15 +4,13 @@
 \alias{metaclipcc.Delta}
 \title{Directed metadata graph construction for Climate Change Signal calculation}
 \usage{
-metaclipcc.Delta(graph, referenceGraph = NULL,
-  delta.type = c("absolute", "relative"), dc.description = NULL)
+metaclipcc.Delta(graph, referenceGraph, delta.type = c("absolute",
+  "relative"), dc.description = NULL)
 }
 \arguments{
-\item{graph}{An output from a previous \pkg{metaclipR} function containing a list with the i-graph class object containing
-the input grid whose anomaly is to be computed, plus the terminal node from which the Anomaly Step will hang}
+\item{graph}{metaclip object containing the future time slice}
 
-\item{referenceGraph}{An output from a previous \pkg{metaclipR} function containing a list with the i-graph class object containing the reference Transformation-class object
-used as base to compute the climatology, plus the name of its terminal node}
+\item{referenceGraph}{metaclip object containing the baseline (historical) data}
 
 \item{delta.type}{Character string. Either \code{"absolute"} (default), or \code{"relative"}, if the delta change is computed as a
 ratio instead of a difference.}

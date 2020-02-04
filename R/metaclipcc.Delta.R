@@ -17,10 +17,8 @@
 
 #' @title Directed metadata graph construction for Climate Change Signal calculation
 #' @description Build a directed metadata graph describing a Climate Change Signal calculation
-#' @param graph An output from a previous \pkg{metaclipR} function containing a list with the i-graph class object containing
-#'  the input grid whose anomaly is to be computed, plus the terminal node from which the Anomaly Step will hang
-#' @param referenceGraph An output from a previous \pkg{metaclipR} function containing a list with the i-graph class object containing the reference Transformation-class object
-#' used as base to compute the climatology, plus the name of its terminal node
+#' @param graph metaclip object containing the future time slice
+#' @param referenceGraph metaclip object containing the baseline (historical) data
 #' @param delta.type Character string. Either \code{"absolute"} (default), or \code{"relative"}, if the delta change is computed as a
 #'  ratio instead of a difference.
 #' @param dc.description Default to \code{NULL} and unused. Otherwise, this is a character string that will be appendend as a
@@ -34,7 +32,7 @@
 #' @author J. Bedia
 
 metaclipcc.Delta <- function(graph,
-                             referenceGraph = NULL,
+                             referenceGraph,
                              delta.type = c("absolute", "relative"),
                              dc.description = NULL) {
     if (class(graph$graph) != "igraph") stop("Invalid input graph (not an 'igraph-class' object)")
