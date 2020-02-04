@@ -1,4 +1,4 @@
-##     metaclipcc.DeltaChangeCalculation Construct a directed graph for encoding climate change signal calculation
+##     metaclipcc.Delta Construct a directed graph for encoding climate change signal calculation
 ##
 ##     Copyright (C) 2020 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
@@ -31,9 +31,9 @@
 #' @importFrom metaclipR my_add_vertices my_union_graph
 #' @author J. Bedia
 
-metaclipcc.DeltaChangeCalculation <- function(graph,
-                                              referenceGraph = NULL,
-                                              delta.type = c("absolute", "relative")) {
+metaclipcc.Delta <- function(graph,
+                             referenceGraph = NULL,
+                             delta.type = c("absolute", "relative")) {
     if (class(graph$graph) != "igraph") stop("Invalid input graph (not an 'igraph-class' object)")
     if (class(referenceGraph$graph) != "igraph") stop("Invalid input reference graph (not an 'igraph-class' object)")
     delta.type <- match.arg(delta.type, choices = c("absolute", "relative"), several.ok = FALSE)
