@@ -19,6 +19,7 @@
 #' @description Build a directed metadata graph describing a regridding step
 #' @param graph Input metaclip graph structure
 #' @param RefSpatialExtent A reference spatial extent used for interpolation. The reference spatial extent can be initiated with \code{\link{metaclipR.SpatialExtent}}
+#' @param RefRectangularGrid A reference rectangular grid used for interpolation. The reference rectangular extent can be initiated with \code{\link{metaclipR.RectangularGrid}}
 #' @param InterpolationMethod Interpolation method. Current possible choices include \code{"nearest"}, \code{"bilinear"}, \code{"bicubic"},
 #'  \code{"IDW"}, \code{"spline"} and \code{"ConservativeRemapping"}, although some of them won't be probably used in the IPCC AR6 Atlas
 #' @param dc.description Default to \code{NULL} and unused. Otherwise, this is a character string that will be appendend as a
@@ -29,9 +30,10 @@
 #' @keywords internal
 
 metaclipcc.Regridding <- function(graph,
-                                     RefSpatialExtent = NULL,
-                                     InterpolationMethod,
-                                     dc.description = NULL) {
+                                  RefSpatialExtent = NULL,
+                                  RefRectangularGrid = NULL,
+                                  InterpolationMethod,
+                                  dc.description = NULL) {
     if (class(graph$graph) != "igraph") stop("Invalid input graph (not an 'igraph-class' object)")
     interp.method <- match.arg(InterpolationMethod,
                                choices = c("nearest", "bilinear", "bicubic", "IDW", "spline", "conservative"))
@@ -85,6 +87,16 @@ metaclipcc.Regridding <- function(graph,
         graph <- add_edges(graph,
                            c(getNodeIndexbyName(graph, regnodename),
                              getNodeIndexbyName(graph, spatextent.nodename)),
+                           label = "ds:hasHorizontalExtent")
+    }
+    # Link Grid
+    if (!is.null(RefRectangularGrid)) {
+        if (class(RefRectangularGrid$graph) != "igraph") stop("Invalid \'RefRectangularGrid\' structure")
+        grid.nodename <- RefRectangularGrid$parentnodename
+        graph <- my_union_graph(graph, RefRectangularGrid$graph)
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, regnodename),
+                             getNodeIndexbyName(graph, grid.nodename)),
                            label = "ds:usedReferenceCoordinates")
     }
     return(list("graph" = graph, "parentnodename" = regnodename))

@@ -1,6 +1,6 @@
-##     metaclipcc. Dataset Define the initial node of a METACLIP graph with data source description
+##     metaclipcc.Dataset Define the initial node of a METACLIP graph with data source description
 ##
-##     Copyright (C) 2019 Santander Meteorology Group (http://www.meteo.unican.es)
+##     Copyright (C) 2020 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
 ##     This program is free software: you can redistribute it and/or modify
 ##     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #'
 #' @param Dataset.name Name (label) of the Dataset. This dataset must be included in the internal
 #'  lookup table, that can be accessed via \code{\link{showIPCCdatasets}}.
+#' @param RectangularGrid a metaclipR object containing a ds:Rectangular Grid definition
 #' @importFrom igraph make_empty_graph add_edges
 #' @importFrom magrittr %>%
 #' @importFrom metaclipR my_add_vertices getNodeIndexbyName
@@ -31,9 +32,10 @@
 # plot(graph$graph)
 # graph2json(graph = graph$graph, output.file = "/tmp/cnrm.json")
 
-metaclipcc.Dataset <- function(Dataset.name = NULL) {
+metaclipcc.Dataset <- function(Dataset.name, RectangularGrid) {
     ref <- showIPCCdatasets(names.only = FALSE)
     if (!Dataset.name %in% ref$name) stop("Invalid Dataset.name value. Use \'showIPCCdatasets()\' to check dataset availability and spelling")
+    if (class(RectangularGrid$graph) != "igraph") stop("Invalid RectangularGrid graph (not an 'igraph-class' object)")
     # Identify the dataset and initialize a new empty graph
     ref <- ref[grep(Dataset.name, ref$name),]
     graph <- make_empty_graph(directed = TRUE)
@@ -148,5 +150,11 @@ metaclipcc.Dataset <- function(Dataset.name = NULL) {
                                label = "ds:hadDrivingGCM")
         }
     }
+    ## Model Grid
+    graph <- my_union_graph(graph, RectangularGrid[["graph"]])
+    graph <- add_edges(graph,
+                       c(getNodeIndexbyName(graph, Dataset.name),
+                         getNodeIndexbyName(graph, RectangularGrid[["parentnodename"]])),
+                       label = "ds:hasRectangularGrid")
     return(list("graph" = graph, "parentnodename" = Dataset.name))
 }

@@ -5,12 +5,15 @@
 \title{Directed metadata graph construction for Regridding Transformations}
 \usage{
 metaclipcc.Regridding(graph, RefSpatialExtent = NULL,
-  InterpolationMethod, dc.description = NULL)
+  RefRectangularGrid = NULL, InterpolationMethod,
+  dc.description = NULL)
 }
 \arguments{
 \item{graph}{Input metaclip graph structure}
 
 \item{RefSpatialExtent}{A reference spatial extent used for interpolation. The reference spatial extent can be initiated with \code{\link{metaclipR.SpatialExtent}}}
+
+\item{RefRectangularGrid}{A reference rectangular grid used for interpolation. The reference rectangular extent can be initiated with \code{\link{metaclipR.RectangularGrid}}}
 
 \item{InterpolationMethod}{Interpolation method. Current possible choices include \code{"nearest"}, \code{"bilinear"}, \code{"bicubic"},
 \code{"IDW"}, \code{"spline"} and \code{"ConservativeRemapping"}, although some of them won't be probably used in the IPCC AR6 Atlas}
