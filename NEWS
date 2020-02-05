@@ -14,5 +14,6 @@ metaclipcc changelog
  * New wrapper `metaclipcc.Map`, to encode all posible map products
  * `metaclipcc.ClimateIndex` accepts grid lists as input to define multivariate indices
  * New `metaclipcc.Regridding`
+ * Several modifications to include the new class ds:RectangularGrid
  * Updates in variables and datasets lookup tables
  * Other minor changes

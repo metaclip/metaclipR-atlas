@@ -4,11 +4,13 @@
 \alias{metaclipcc.Dataset}
 \title{Directed metadata graph construction for IPCC Atlas product data sources}
 \usage{
-metaclipcc.Dataset(Dataset.name = NULL)
+metaclipcc.Dataset(Dataset.name, RectagularGrid)
 }
 \arguments{
 \item{Dataset.name}{Name (label) of the Dataset. This dataset must be included in the internal
 lookup table, that can be accessed via \code{\link{showIPCCdatasets}}.}
+
+\item{RectangularGrid}{a metaclipR object containing a ds:Rectangular Grid definition}
 }
 \description{
 Build a directed metadata graph describing a data source. This is usually the initial

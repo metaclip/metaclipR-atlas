@@ -80,6 +80,7 @@ metaclipcc.Regridding <- function(graph,
                          getNodeIndexbyName(graph, regmethod.nodename)),
                        label = "ds:hadInterpolationMethod")
     # Link SpatialExtent
+
     if (!is.null(RefSpatialExtent)) {
         if (class(RefSpatialExtent$graph) != "igraph") stop("Invalid \'RefSpatialExtent\' structure")
         spatextent.nodename <- RefSpatialExtent$parentnodename
