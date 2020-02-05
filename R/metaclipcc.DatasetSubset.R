@@ -110,23 +110,22 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     #                                     ymax = reg$ymax,
     #                                     resX = reg$resX,
     #                                     resY = reg$resY)
-    if (ref$realm == "atmos") {
-        attr.list <- list("ds:xmin" = ref1$xmin.atmos,
-                          "ds:xmax" = ref1$xmax.atmos,
-                          "ds:ymin" = ref1$ymin.atmos,
-                          "ds:ymax" = ref1$ymax.atmos,
-                          "ds:hasHorizontalResX" = ref1$resX.atmos,
-                          "ds:hasHorizontalResY" = ref1$resX.atmos)
-    } else {
-        # TODO: Find ocean model resolutions and include in reference table!
-        attr.list <- list()
-    }
-    prefix <- ifelse(ref1$SimulationDomain == "GlobalDomain", "ds:", "ipcc:")
+    # if (ref$realm == "atmos") {
+    #     attr.list <- list("ds:xmin" = ref1$xmin.atmos,
+    #                       "ds:xmax" = ref1$xmax.atmos,
+    #                       "ds:ymin" = ref1$ymin.atmos,
+    #                       "ds:ymax" = ref1$ymax.atmos,
+    #                       "ds:hasHorizontalResX" = ref1$resX.atmos,
+    #                       "ds:hasHorizontalResY" = ref1$resX.atmos)
+    # } else {
+    #     # TODO: Find ocean model resolutions and include in reference table!
+    #     attr.list <- list()
+    # }
+    prefix <- ifelse(ref1$SimulationDomain == "GlobalExtent", "ds:", "ipcc:")
     graph <- my_add_vertices(graph,
                              name = ref1$SimulationDomain,
                              label = ref1$SimulationDomain,
-                             className = paste0(prefix, ref1$SimulationDomain),
-                             attr = attr.list)
+                             className = "ds:HorizontalExtent")
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, DatasetSubset.nodename),
                          getNodeIndexbyName(graph, ref1$SimulationDomain)),
