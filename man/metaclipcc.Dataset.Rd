@@ -4,7 +4,7 @@
 \alias{metaclipcc.Dataset}
 \title{Directed metadata graph construction for IPCC Atlas product data sources}
 \usage{
-metaclipcc.Dataset(Dataset.name, RectagularGrid)
+metaclipcc.Dataset(Dataset.name, RectangularGrid)
 }
 \arguments{
 \item{Dataset.name}{Name (label) of the Dataset. This dataset must be included in the internal
