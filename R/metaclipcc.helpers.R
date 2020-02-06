@@ -49,6 +49,7 @@ showIPCCvars <- function(names.only = TRUE) {
 #' @keywords internal
 #' @family lookup-tables
 #' @importFrom utils read.csv
+#' @importFrom magrittr %>%
 
 # #TODO: Handle the way the driving GCM warming level period is retrieved for CORDEX
 # project = "CMIP5"
@@ -67,6 +68,7 @@ metaclipcc.getFuturePeriod <- function(project, model, future.period, rcp) {
         ind.row <- grep(paste0(model, "_"), out$GCM, ignore.case = TRUE)
         ind.col <- grep(paste0(future.period,"_", rcp), names(out), ignore.case = TRUE)
         yr <- out[ind.row, ind.col]
+        if (length(yr) == 0) yr <- NA # No GWL data for that model
         yr <- ifelse(yr == 9999, NA, yr)
         c(yr - 9, yr + 10) %>% return()
     } else {
@@ -74,25 +76,5 @@ metaclipcc.getFuturePeriod <- function(project, model, future.period, rcp) {
     }
 }
 
-# metaclipcc.getGWL("CMIP5")
-
-# #' @title Table of IPCC Atlas Regions
-# #' @description Shows the internal table with IPCC regions relevant metadata
-# #' @param names.only Logical flag indicating that only the HorizontalExtent names are shown. Default to \code{TRUE}. Otherwise, the full metadata table is shown
-# #' @export
-# #' @author J Bedia
-# #' @return Either a vector with all HorizontalExtent names (when \code{names.only = TRUE}) or a \code{data.frame} with all the associated metadata.
-# #' @keywords internal
-# #' @export
-# #' @family lookup-tables
-# #' @importFrom utils read.csv
-# #' @examples showIPCCregions(names.only = FALSE)
-#
-# showIPCCregions <- function(names.only = TRUE) {
-#     out <- read.csv(file.path(find.package("metaclipcc"), "regions_table.csv"),
-#                     stringsAsFactors = FALSE, na.strings = "")
-#     if (isTRUE(names.only)) out <- out$HorizontalExtent
-#     return(out)
-# }
 
 
