@@ -64,11 +64,10 @@ metaclipcc.getFuturePeriod <- function(project, model, future.period, rcp) {
                            "CMIP6" = "gwl_CMIP6.csv")
         out <- read.csv(file.path(find.package("metaclipcc"), filename),
                         stringsAsFactors = FALSE, na.strings = "")
-        match(model, out$GCM)
-        ind.row <- grep(paste0(model, "_"), out$GCM, fixed = TRUE)
+        ind.row <- grep(paste0(model, "_"), out$GCM, ignore.case = TRUE)
         ind.col <- grep(paste0(future.period,"_", rcp), names(out), ignore.case = TRUE)
         yr <- out[ind.row, ind.col]
-        ifelse(yr == 9999, NA, yr)
+        yr <- ifelse(yr == 9999, NA, yr)
         c(yr - 9, yr + 10) %>% return()
     } else {
         strsplit(future.period, split = "-") %>% unlist() %>% as.integer() %>% return()
