@@ -7,7 +7,7 @@
 metaclipcc.Map(project = "CMIP5", variable = NULL,
   climate.index = NULL, delta = NULL, experiment, baseline,
   future.period = NULL, season, bias.adj.method = NULL,
-  ref.obs.dataset = NULL, proj)
+  ref.obs.dataset = NULL, proj, map.bbox = NULL)
 }
 \arguments{
 \item{project}{Project. Unused so far. Default to \code{"CMIP5"}.}
@@ -43,6 +43,9 @@ This is the reference observational dataset to perform the correction. This is a
 
 \item{proj}{Map projection string. Accepted values are \code{"Robin"}, \code{"Arctic"} and \code{"Antarctic"},
 for Robinson and WGS84 Arctic/Antarctic Polar stereographic projections.}
+
+\item{map.bbox}{Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
+zoomed in by the user. If missing, then the HorizontalExtent associated to the \code{project} is assumed.}
 }
 \description{
 Build a directed metadata graph describing a Map product of the AR6 Interactive Atlas

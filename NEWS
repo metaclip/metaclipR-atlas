@@ -11,7 +11,7 @@ metaclipcc changelog
  * Other minor changes
 
 ## v0.2.0 (in devel)
- * New wrapper `metaclipcc.Map`, to encode all posible map products
+ * New wrapper `metaclipcc.Map`, to encode all available map Atlas products
  * `metaclipcc.ClimateIndex` accepts grid lists as input to define multivariate indices
  * New `metaclipcc.Regridding`
  * Several modifications to include the new class ds:RectangularGrid

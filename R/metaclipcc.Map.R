@@ -61,23 +61,22 @@
 
 
 #TODO:
-## Include map bounding box (user-defined in the Atlas viewer)
 ## Include details on color palettes, range of values etc...
 ## Define simulation domains (ds:SpatialExtent individual instances) for CORDEX projects
 ## Deal with grid info for oceanic variables
 
-project = "CMIP5"
-variable = NULL
-climate.index = "T21.5"
-delta = "absolute"
-experiment = "historical"
-baseline = "1980-2010"
-future.period = "1.5"
-season = 1:12
-bias.adj.method = NULL # "EQM"
-ref.obs.dataset = NULL # "EWEMBI"
-proj = "Robin"
-map.bbox = NULL
+# project = "CMIP5"
+# variable = "tasmax"
+# climate.index = "T21.5"
+# delta = "absolute"
+# experiment = "rcp45"
+# baseline = "1986-2005"
+# future.period = "2041-2060"
+# season = 1:12
+# bias.adj.method = NULL # "EQM"
+# ref.obs.dataset = NULL # "EWEMBI"
+# proj = "Robin"
+# map.bbox = c(-10,20,50,60)
 
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
@@ -438,7 +437,7 @@ metaclipcc.Map <- function(project = "CMIP5",
             graph.h <- metaclipcc.ClimateIndex(graph.list = hist.graph.list,
                                                index.code = climate.index)
             if (experiment != "historical") {
-                graph.r <- metaclipcc.ClimateIndex(graph = fut.graph.list,
+                graph.r <- metaclipcc.ClimateIndex(graph.list = fut.graph.list,
                                                    index.code = climate.index)
             }
         } else {
@@ -684,8 +683,6 @@ metaclipcc.Map <- function(project = "CMIP5",
                          getNodeIndexbyName(graph, maplayer.nodename)),
                        label = "go:hasMapLayer")
 
-    # graph2json(graph, output.file = "ignore/prueba.json")
-
     # Map hatching -------------------------------------------------------------
 
     if (!is.null(delta)) {
@@ -709,5 +706,5 @@ metaclipcc.Map <- function(project = "CMIP5",
 
 # graph2json(graph = graph$graph, output.file = "./ignore/prueba.json")
 
-
+# graph2json(graph, output.file = "ignore/prueba.json")
 
