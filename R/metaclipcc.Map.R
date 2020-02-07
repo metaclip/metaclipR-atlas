@@ -40,6 +40,8 @@
 #'   belonging to either classes \code{ds:ObservationalDataset} or \code{ds:Reanalysis}. Currently accepted values are \code{"EWEMBI"}.
 #' @param proj Map projection string. Accepted values are \code{"Robin"}, \code{"Arctic"} and \code{"Antarctic"},
 #' for Robinson and WGS84 Arctic/Antarctic Polar stereographic projections.
+#' @param map.bbox Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
+#' zoomed in by the user. If missing, then the HorizontalExtent associated to the \code{project} is assumed.
 #'
 #' @details
 #'
@@ -64,17 +66,18 @@
 ## Define simulation domains (ds:SpatialExtent individual instances) for CORDEX projects
 ## Deal with grid info for oceanic variables
 
-# project = "CMIP5"
-# variable = "tas"
-# climate.index = NULL
-# delta = "absolute"
-# experiment = "rcp45"
-# baseline = "1980-2010"
-# future.period = "1.5"
-# season = 6:8
-# bias.adj.method = "EQM"
-# ref.obs.dataset = "EWEMBI"
-# proj = "Robin"
+project = "CMIP5"
+variable = NULL
+climate.index = "T21.5"
+delta = "absolute"
+experiment = "historical"
+baseline = "1980-2010"
+future.period = "1.5"
+season = 1:12
+bias.adj.method = NULL # "EQM"
+ref.obs.dataset = NULL # "EWEMBI"
+proj = "Robin"
+map.bbox = NULL
 
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
@@ -86,7 +89,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                            season,
                            bias.adj.method = NULL,
                            ref.obs.dataset = NULL,
-                           proj) {
+                           proj,
+                           map.bbox = NULL) {
 
     # Fixed parameters *******
     ref.period <- c(1980, 2005)
@@ -119,6 +123,12 @@ metaclipcc.Map <- function(project = "CMIP5",
         delta <- match.arg(delta, choices = c("absolute", "relative"))
     }
     experiment <- match.arg(experiment, choices = c("historical", "rcp26", "rcp45", "rcp85"))
+    if (experiment == "historical") {
+        if (!is.null(delta)) {
+            delta <- NULL
+            message("NOTE: \'delta\' argument ignored for the \'experiment=\"historical\"\' setting")
+        }
+    }
     baseline <- match.arg(baseline, choices = c("1980-2010", "1986-2005", "1995-2014"))
     hist.period <- switch(baseline,
                           "1980-2010" = c(1980, 2005),
@@ -133,13 +143,16 @@ metaclipcc.Map <- function(project = "CMIP5",
         future.period <- match.arg(future.period, choices = c("2021-2040", "2041-2060", "2081-2100",
                                                               "1.5", "2", "3"))
     }
+
     proj <- match.arg(proj, choices = c("Robin", "Arctic", "Antarctic"))
+
     if (!is.null(bias.adj.method)) {
         if (is.null(ref.obs.dataset)) stop("A reference observational dataset is required for bias correction", call. = FALSE)
         bias.adj.method <- match.arg(bias.adj.method, choices = "EQM")
         ref.obs.dataset <- match.arg(ref.obs.dataset, choices = "EWEMBI")
     }
-    # ipcc.region <- showIPCCdatasets(names.only = FALSE)[showIPCCdatasets(names.only = FALSE) %>% extract2("Project") %>% grep(pattern = project), ]#"SimulationDomain"] %>% unique()
+
+    if (!is.null(map.bbox)) stopifnot(length(map.bbox) == 4L)
 
     ref.project <- showIPCCdatasets(names.only = FALSE)[showIPCCdatasets(names.only = FALSE) %>% extract2("Project") %>% grep(pattern = project), ]
     ipcc.region <- ref.project$SimulationDomain %>% unique()
@@ -192,25 +205,27 @@ metaclipcc.Map <- function(project = "CMIP5",
     # The observational dataset has a native resolution (obs.spextent)
     # that is then interpolated onto the reference project grid
 
-    obs.meta <- showIPCCdatasets(names.only = FALSE)[grep(ref.obs.dataset,
-                                                          showIPCCdatasets(),
-                                                          fixed = TRUE), ]
+    if (!is.null(bias.adj.method)) {
+        obs.meta <- showIPCCdatasets(names.only = FALSE)[grep(ref.obs.dataset,
+                                                              showIPCCdatasets(),
+                                                              fixed = TRUE), ]
 
-    obs.spextent <- metaclipcc.HorizontalExtent(region = obs.meta$SimulationDomain)
+        obs.spextent <- metaclipcc.HorizontalExtent(region = obs.meta$SimulationDomain)
 
-    descr <- paste("This is the original native grid of", obs.meta$resX.atmos, "x" ,
-                   obs.meta$resX.atmos, "of the",
-                   ref.obs.dataset, "observational gridded dataset")
+        descr <- paste("This is the original native grid of", obs.meta$resX.atmos, "x" ,
+                       obs.meta$resX.atmos, "of the",
+                       ref.obs.dataset, "observational gridded dataset")
 
-    obs.grid <- metaclipR.RectangularGrid(resX = obs.meta$resX.atmos,
-                                          resY = obs.meta$resY.atmos,
-                                          xmin = obs.meta$xmin.atmos,
-                                          xmax = obs.meta$xmax.atmos,
-                                          ymin = obs.meta$ymin.atmos,
-                                          ymax = obs.meta$ymax.atmos,
-                                          dc.description = descr)
+        obs.grid <- metaclipR.RectangularGrid(resX = obs.meta$resX.atmos,
+                                              resY = obs.meta$resY.atmos,
+                                              xmin = obs.meta$xmin.atmos,
+                                              xmax = obs.meta$xmax.atmos,
+                                              ymin = obs.meta$ymin.atmos,
+                                              ymax = obs.meta$ymax.atmos,
+                                              dc.description = descr)
 
-    graph.o <- metaclipcc.Dataset(ref.obs.dataset, RectangularGrid = obs.grid)
+        graph.o <- metaclipcc.Dataset(ref.obs.dataset, RectangularGrid = obs.grid)
+    }
 
     ## Historical scenarios ----------------------------------------------------
 
@@ -236,26 +251,27 @@ metaclipcc.Map <- function(project = "CMIP5",
     }
 
     ## Observational data ------------------------------------------------------
-
-    obs.var.graph.list <- lapply(1:length(vars), function(i) {
-        graph.o <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.o,
-                                            Dataset.name = ref.obs.dataset,
-                                            time.res.orig = time.res.orig,
-                                            ipcc.region = obs.spextent,
-                                            variable = vars[i],
-                                            season = season,
-                                            years = ref.period)
-        descr <- paste0("The " , ref.obs.dataset, " gridded observations data (",
-                        obs.meta$resX.atmos, "x", obs.meta$resY.atmos,
-                        " degree resolution) are re-gridded onto the ",
-                        resX, "x", resY  ," regular grid of ", project)
-        graph.o <- metaclipcc.Regridding(graph = graph.o,
-                                         RefSpatialExtent = reference.extent,
-                                         RefRectangularGrid = reference.grid,
-                                         InterpolationMethod = "bilinear",
-                                         dc.description = descr)
-        return(graph.o)
-    })
+    if (!is.null(bias.adj.method)) {
+        obs.var.graph.list <- lapply(1:length(vars), function(i) {
+            graph.o <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.o,
+                                                Dataset.name = ref.obs.dataset,
+                                                time.res.orig = time.res.orig,
+                                                ipcc.region = obs.spextent,
+                                                variable = vars[i],
+                                                season = season,
+                                                years = ref.period)
+            descr <- paste0("The " , ref.obs.dataset, " gridded observations data (",
+                            obs.meta$resX.atmos, "x", obs.meta$resY.atmos,
+                            " degree resolution) are re-gridded onto the ",
+                            resX, "x", resY  ," regular grid of ", project)
+            graph.o <- metaclipcc.Regridding(graph = graph.o,
+                                             RefSpatialExtent = reference.extent,
+                                             RefRectangularGrid = reference.grid,
+                                             InterpolationMethod = "bilinear",
+                                             dc.description = descr)
+            return(graph.o)
+        })
+    }
 
     ## EMPIEZA BUCLE EN MODELOS ------------------------------------------------
 
@@ -271,14 +287,12 @@ metaclipcc.Map <- function(project = "CMIP5",
         ref.model <- aux[grep(hist.list[x], aux$name, ignore.case = TRUE),]
         message("[", Sys.time(), "] Processing ", ref.model$GCM, " model data")
 
-        ### Filter missing variable --------------------------------------------
-
-        if (ref.model[[variable]] != 1) next
-
-        ### Filter missing Climate Index ---------------------------------------
+        ### Filter missing ECV / Climate Index ---------------------------------------
 
         if (!is.null(climate.index)) {
             if (ref.model[[climate.index]] != 1) next
+        } else {
+            if (ref.model[[variable]] != 1) next
         }
 
         ### Filter missing RCPs OR not reached GWLs ----------------------------
@@ -319,28 +333,17 @@ metaclipcc.Map <- function(project = "CMIP5",
                                                 season = season,
                                                 years = hist.period)
 
-            ## Reference training period for bias correction -------------------
-            # This is used only in case of bias correction, i.e.: bias.adj.method != NULL
-
-            graph.train <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.hist,
-                                                    ipcc.region = ipcc.region,
-                                                    Dataset.name = hist.list[x],
-                                                    time.res.orig = time.res.orig,
-                                                    variable = vars[i],
-                                                    season = season,
-                                                    years = ref.period)
-
-            ## Filling the gap in historical period with RCP -------------------
+           ## Filling the gap in historical period with RCP --------------------
 
             if (!is.null(fill.period)) {
-                ref.dataset <- if (is.null(future.period)) {
+                ref.dataset <- if (experiment == "historical") {
                     aux[grep(rcp85.list[x], aux$name),]
                 } else {
                     aux[grep(rcp.list[x], aux$name),]
                 }
                 graph2 <- metaclipcc.Dataset(ref.dataset$name, RectangularGrid = gcm.grid)
                 graph2 <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph2,
-                                                   Dataset.name = rcp.list[x],
+                                                   Dataset.name = ref.dataset$name,
                                                    variable = vars[i],
                                                    ipcc.region = ipcc.region,
                                                    season = season,
@@ -359,6 +362,17 @@ metaclipcc.Map <- function(project = "CMIP5",
             ## Bias correction of historical data ------------------------------
 
             if (!is.null(bias.adj.method)) {
+
+                ## Reference training period for bias correction ---------------
+
+                graph.train <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.hist,
+                                                        ipcc.region = ipcc.region,
+                                                        Dataset.name = hist.list[x],
+                                                        time.res.orig = time.res.orig,
+                                                        variable = vars[i],
+                                                        season = season,
+                                                        years = ref.period)
+
                 descr <- paste0("In this step the historical time slice is bias-adjusted, using the reference period ",
                                 paste(ref.period, collapse = "-"),
                                 " as training data, and the ",
@@ -393,6 +407,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                     descr <- paste0("In this step the future time slice is bias-adjusted, using the historical experiment simulation as training data, and the ",
                                     ref.obs.dataset,
                                     " observation data as predictand")
+
                     graph.r <- metaclipR.BiasCorrection(graph = graph.r,
                                                         ReferenceGraphSpatialExtent = reference.extent,
                                                         ReferenceGraphRectangularGrid = reference.grid,
@@ -563,14 +578,133 @@ metaclipcc.Map <- function(project = "CMIP5",
                                 disable.command = TRUE,
                                 dc.description = descr)
 
-    ## Map drawing -------------------------------------------------------------
+    ## MAP PRODUCT DESCRIPTION -------------------------------------------------
     ## Include hatching
     ## Colorbars
     ## IPCC regions layer (referenceURL https://github.com/SantanderMetGroup/ATLAS/tree/master/reference_regions)
 
+    ## Map ---------------------------------------------------------------------
+    ### Includes links to a HorizontalExtent and a Projection
 
+    withInput <- graph$parentnodename
+    graph <- graph$graph
+    map.nodename <- paste("Map", randomName(), sep = ".")
+    descr <- "Final map product, consisting of different superposed layers and other graphical elements (legend, title etc.)"
+    graph <- add_vertices(graph,
+                          nv = 1,
+                          name = map.nodename,
+                          label = "Map product",
+                          className = "go:Map",
+                          attr = list( "dc:description" = descr))
+    map.extent <- if (is.null(map.bbox)) {
+        reference.extent
+    } else {
+        metaclipcc.HorizontalExtent(xmin = map.bbox[1],
+                                    xmax = map.bbox[3],
+                                    ymin = map.bbox[2],
+                                    ymax = map.bbox[4])
+    }
+    graph <- add_edges(graph,
+                       c(getNodeIndexbyName(graph, map.nodename),
+                         getNodeIndexbyName(graph, map.extent$parentnodename)),
+                       label = "go:hasMapExtent")
 
+    ## Projection --------------------------------------------------------------
 
+    proj.name <- switch(proj,
+           "Robin" = "go:Robin",
+           "Arctic" = "go:AntarcticPolarStereographic",
+           "Antarctic" = "go:ArcticPolarStereographic")
+
+    graph.proj <- metaclipcc.MapProjection(proj = proj.name)
+    graph <- my_union_graph(graph, graph.proj$graph)
+    graph <- add_edges(graph,
+                       c(getNodeIndexbyName(graph, map.nodename),
+                         getNodeIndexbyName(graph, graph.proj$parentnodename)),
+                       label = "go:hasMapProjection")
+
+    ## Heatmap raster ----------------------------------------------------------
+
+    maplayer.nodename <- paste("mapRasterLayer", randomName(), sep = ".")
+
+    descr <- if (is.null(delta)) {
+        "The ensemble mean is graphically displayed on the map as a raster heatmap layer"
+    } else {
+        "The ensemble delta change is graphically displayed on the map as a raster heatmap layer"
+    }
+    graph <- add_vertices(graph,
+                          nv = 1,
+                          name = maplayer.nodename,
+                          label = "Heatmap",
+                          className = "go:MapRaster",
+                          attr = list("dc:description" = descr))
+    graph <- add_edges(graph,
+                       c(getNodeIndexbyName(graph, withInput),
+                         getNodeIndexbyName(graph, maplayer.nodename)),
+                       label = "go:hadGraphicalRepresentation")
+    graph <- add_edges(graph,
+                       c(getNodeIndexbyName(graph, map.nodename),
+                         getNodeIndexbyName(graph, maplayer.nodename)),
+                       label = "go:hasMapLayer")
+
+    ## Coastline ---------------------------------------------------------------
+
+    maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
+    descr <- "Vector layer. Physical map of coastline boundaries"
+    graph <- add_vertices(graph,
+                          nv = 1,
+                          name = maplayer.nodename,
+                          label = "Coastline boundaries",
+                          className = "go:MapLines",
+                          attr = list("dc:description" = descr,
+                                      "go:LineColor" = "grey",
+                                      "go:LineType" = "solid"))
+    graph <- add_edges(graph,
+                       c(getNodeIndexbyName(graph, map.nodename),
+                         getNodeIndexbyName(graph, maplayer.nodename)),
+                       label = "go:hasMapLayer")
+
+    ## IPCC regions ------------------------------------------------------------
+
+    maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
+    descr <- "IPCC-AR6 World Regions"
+    refurl <- "https://github.com/SantanderMetGroup/ATLAS/tree/master/reference_regions"
+    graph <- add_vertices(graph,
+                          nv = 1,
+                          name = maplayer.nodename,
+                          label = "IPCC World Regions",
+                          className = "go:MapLines",
+                          attr = list("dc:description" = descr,
+                                      "ds:referenceURL" = refurl,
+                                      "go:LineAngle" = -45,
+                                      "go:LineColor" = "black",
+                                      "go:LineType" = "solid"))
+    graph <- add_edges(graph,
+                       c(getNodeIndexbyName(graph, map.nodename),
+                         getNodeIndexbyName(graph, maplayer.nodename)),
+                       label = "go:hasMapLayer")
+
+    # graph2json(graph, output.file = "ignore/prueba.json")
+
+    # Map hatching -------------------------------------------------------------
+
+    if (!is.null(delta)) {
+        maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
+        descr <- "Hatched areas in the map indicate a \'weak\' model agreement on the sign of the projected climate change signal (less than 80%, following Nikulin et al. 2018)"
+        refurl <- "https://doi.org/10.1088/1748-9326/aab1b1"
+        graph <- add_vertices(graph,
+                              nv = 1,
+                              name = maplayer.nodename,
+                              label = "Consensus Hatching",
+                              className = "go:Mask",
+                              attr = list("dc:description" = descr,
+                                          "ds:referenceURL" = refurl))
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, map.nodename),
+                             getNodeIndexbyName(graph, maplayer.nodename)),
+                           label = "go:hasMapLayer")
+    }
+    return(list("graph" = graph, "parentnodename" =  map.nodename))
 }
 
 # graph2json(graph = graph$graph, output.file = "./ignore/prueba.json")
