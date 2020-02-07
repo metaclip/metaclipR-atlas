@@ -1,0 +1,16 @@
+#' @title Map Projection
+#' @description Creates a sinle node graph that defines a map projection
+#' @param proj A Valid individual instance of class go:MapProjection
+#' @keywords internal
+#' @export
+#' @author J Bedia
+
+metaclipcc.MapProjection <- function(proj) {
+    stopifnot(proj %in% knownClassIndividuals(proj, classname = "MapProjection", vocabulary = "graphical_output"))
+    graph <- make_empty_graph()
+    graph <- my_add_vertices(graph,
+                             name = proj.name,
+                             label = paste(proj, "Projection"),
+                             className = "go:MapProjection")
+    return(list(graph = graph, parentnodename = proj.name))
+}
