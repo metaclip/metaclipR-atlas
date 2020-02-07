@@ -4,10 +4,19 @@
 \alias{metaclipcc.HorizontalExtent}
 \title{Set a reference SpatialExtent}
 \usage{
-metaclipcc.HorizontalExtent(region)
+metaclipcc.HorizontalExtent(region = NULL, xmin = NULL, xmax = NULL,
+  ymin = NULL, ymax = NULL)
 }
 \arguments{
 \item{region}{Character string designating a known region.}
+
+\item{xmin}{xmin}
+
+\item{xmax}{xmax}
+
+\item{ymin}{ymin}
+
+\item{ymax}{ymax}
 }
 \value{
 A metaclipR list (igraph-class structure + terminal node name)

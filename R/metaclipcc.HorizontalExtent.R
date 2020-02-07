@@ -20,6 +20,10 @@
 #' @description Creates a graph containing a SpatialExtent definition, that can be used later as spatial reference of
 #' subsetting, regridding operations etc. so all steps point to the same reference spatial extent
 #' @param region Character string designating a known region.
+#' @param xmin xmin
+#' @param xmax xmax
+#' @param ymin ymin
+#' @param ymax ymax
 #' @return A metaclipR list (igraph-class structure + terminal node name)
 #' @importFrom igraph make_empty_graph add_vertices
 #' @author J Bedia
