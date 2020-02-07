@@ -26,15 +26,33 @@
 #' @export
 
 
-metaclipcc.HorizontalExtent <- function(region) {
+metaclipcc.HorizontalExtent <- function(region = NULL,
+                                        xmin = NULL,
+                                        xmax = NULL,
+                                        ymin = NULL,
+                                        ymax = NULL) {
     # Comprueba individuos para name
     graph <- make_empty_graph()
+    if (!is.null(region)) {
     spatextent.nodename <- paste0("ds:", region)
     graph <- add_vertices(graph,
                           nv = 1,
                           name = spatextent.nodename,
                           label = paste(region, "region", sep = "_"),
                           className = "ds:HorizontalExtent")
+    } else {
+        if (anyNA(c(xmin, xmax, ymin, ymax))) stop("Required bbox coordinates are missing")
+        spatextent.nodename <- paste("SpatialExtent", randomName(), sep = ".")
+        graph <- add_vertices(graph,
+                              nv = 1,
+                              name = spatextent.nodename,
+                              label = "HorizontalExtent",
+                              className = "ds:HorizontalExtent",
+                              attr = list("ds:xmin" = xmin,
+                                          "ds:xmax" = xmax,
+                                          "ds:ymin" = ymin,
+                                          "ds:ymax" = ymax))
+    }
     return(list("graph" = graph, "parentnodename" = spatextent.nodename))
 }
 
