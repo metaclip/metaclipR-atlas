@@ -144,32 +144,37 @@ metaclipcc.Map <- function(project = "CMIP5",
     ref.project <- showIPCCdatasets(names.only = FALSE)[showIPCCdatasets(names.only = FALSE) %>% extract2("Project") %>% grep(pattern = project), ]
     ipcc.region <- ref.project$SimulationDomain %>% unique()
     cordex.region <- ref.project$region_name %>% unique()
+
     ## Reference grids ---------------------------------------------------------
     if (project == "CMIP5") {
-        descr <- "This is the reference grid used in all CMIP5 map products of 1.5 x 1.5 degree resolution covering the whole globe"
-        resX <- resY <- 1.5
+        resX <- resY <- 2
+        descr <- paste("This is the reference grid used in all CMIP5 map products of", resX, "x", resY, "degree resolution covering the whole globe")
+        gridfile.url <- "https://github.com/SantanderMetGroup/ATLAS/blob/devel/reference-grids/land_sea_mask_2degree.nc4"
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
                                                     xmin = -179.25,
                                                     xmax = 179.25,
                                                     ymin = -89.25,
                                                     ymax = 89.25,
-                                                    dc.description = descr)
+                                                    dc.description = descr,
+                                                    ref.URL = gridfile.url)
     } else if (project == "CMIP6") {
-        descr <- "This is the reference grid used in all CMIP6 map products of 1 x 1 degree resolution covering the whole globe"
         resX <- resY <- 1
+        descr <- paste("This is the reference grid used in all CMIP6 map products of", resX, "x", resY, "degree resolution covering the whole globe")
+        gridfile.url <- "https://github.com/SantanderMetGroup/ATLAS/blob/devel/reference-grids/land_sea_mask_1degree.nc4"
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
                                                     xmin = -179.5,
                                                     xmax = 179.5,
                                                     ymin = -89.5,
                                                     ymax = 89.5,
-                                                    dc.description = descr)
+                                                    dc.description = descr,
+                                                    ref.URL = gridfile.url)
     } else {
-        descr <- paste0("This is the ", project,
-                        " reference grid of 0.44 x 0.44 degree resolution, centered on ",
-                        cordex.region, ", used in all Atlas Map CORDEX products")
         resX <- resY <- 0.44
+        descr <- paste0("This is the ", project,
+                        " reference grid of ", resX," x ", resY, " degree resolution, centered on ",
+                        cordex.region, ", used in all Atlas CORDEX products")
         reference.grid <- metaclipR.RectangularGrid(resX = 0.44,
                                                     resY = 0.44,
                                                     xmin = -179.78,
@@ -559,6 +564,12 @@ metaclipcc.Map <- function(project = "CMIP5",
                                 dc.description = descr)
 
     ## Map drawing -------------------------------------------------------------
+    ## Include hatching
+    ## Colorbars
+    ## IPCC regions layer (referenceURL https://github.com/SantanderMetGroup/ATLAS/tree/master/reference_regions)
+
+
+
 
 }
 
