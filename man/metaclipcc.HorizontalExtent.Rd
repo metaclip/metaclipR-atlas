@@ -5,7 +5,7 @@
 \title{Set a reference SpatialExtent}
 \usage{
 metaclipcc.HorizontalExtent(region = NULL, xmin = NULL, xmax = NULL,
-  ymin = NULL, ymax = NULL)
+  ymin = NULL, ymax = NULL, dc.description = NULL)
 }
 \arguments{
 \item{region}{Character string designating a known region.}
@@ -17,6 +17,9 @@ metaclipcc.HorizontalExtent(region = NULL, xmin = NULL, xmax = NULL,
 \item{ymin}{ymin}
 
 \item{ymax}{ymax}
+
+\item{dc.description}{Default to \code{NULL} and unused. Otherwise, this is a character string that will be appendend as a
+"dc:description" annotation to the ds:HorizontalExtent-class node. Unused if a valid \code{region} is supplied}
 }
 \value{
 A metaclipR list (igraph-class structure + terminal node name)
