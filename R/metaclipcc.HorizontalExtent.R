@@ -24,6 +24,8 @@
 #' @param xmax xmax
 #' @param ymin ymin
 #' @param ymax ymax
+#' @param dc.description Default to \code{NULL} and unused. Otherwise, this is a character string that will be appendend as a
+#'  "dc:description" annotation to the ds:HorizontalExtent-class node. Unused if a valid \code{region} is supplied
 #' @return A metaclipR list (igraph-class structure + terminal node name)
 #' @importFrom igraph make_empty_graph add_vertices
 #' @author J Bedia
@@ -34,28 +36,33 @@ metaclipcc.HorizontalExtent <- function(region = NULL,
                                         xmin = NULL,
                                         xmax = NULL,
                                         ymin = NULL,
-                                        ymax = NULL) {
+                                        ymax = NULL,
+                                        dc.description = NULL) {
     # Comprueba individuos para name
     graph <- make_empty_graph()
     if (!is.null(region)) {
-    spatextent.nodename <- paste0("ds:", region)
-    graph <- add_vertices(graph,
-                          nv = 1,
-                          name = spatextent.nodename,
-                          label = paste(region, "region", sep = "_"),
-                          className = "ds:HorizontalExtent")
+        spatextent.nodename <- paste0("ds:", region)
+        graph <- add_vertices(graph,
+                              nv = 1,
+                              name = spatextent.nodename,
+                              label = paste(region, "region", sep = "_"),
+                              className = "ds:HorizontalExtent")
     } else {
         if (anyNA(c(xmin, xmax, ymin, ymax))) stop("Required bbox coordinates are missing")
         spatextent.nodename <- paste("SpatialExtent", randomName(), sep = ".")
+        attr.list <- list("ds:xmin" = xmin,
+                          "ds:xmax" = xmax,
+                          "ds:ymin" = ymin,
+                          "ds:ymax" = ymax)
+        if (!is.null(dc.description)) {
+            attr.list[["dc:description"]] <-  dc.description
+        }
         graph <- add_vertices(graph,
                               nv = 1,
                               name = spatextent.nodename,
                               label = "HorizontalExtent",
                               className = "ds:HorizontalExtent",
-                              attr = list("ds:xmin" = xmin,
-                                          "ds:xmax" = xmax,
-                                          "ds:ymin" = ymin,
-                                          "ds:ymax" = ymax))
+                              attr = attr.list)
     }
     return(list("graph" = graph, "parentnodename" = spatextent.nodename))
 }
