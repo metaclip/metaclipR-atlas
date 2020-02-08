@@ -2,6 +2,7 @@
 
 export(deltaMap.ECV.ipcc)
 export(metaclipcc.ClimateIndex)
+export(metaclipcc.ColorPalette)
 export(metaclipcc.Dataset)
 export(metaclipcc.DatasetSubset)
 export(metaclipcc.Delta)
