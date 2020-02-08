@@ -280,8 +280,8 @@ metaclipcc.Map <- function(project = "CMIP5",
     ### 3. modelos de los que no hay dato
 
     graph.list <- list()
-    # for (x in 1:length(hist.list)) {
-     for (x in 1:2) {
+    for (x in 1:length(hist.list)) {
+    # for (x in 1:2) {
         ref.model <- aux[grep(hist.list[x], aux$name, ignore.case = TRUE),]
         message("[", Sys.time(), "] Processing ", ref.model$GCM, " model data")
 
@@ -725,20 +725,18 @@ metaclipcc.Map <- function(project = "CMIP5",
 
 # out <- metaclipcc.Map(project = "CMIP5",
 #                       variable = NULL,
-#                       climate.index = "FD",
+#                       climate.index = "TX35",
 #                       delta = "absolute",
 #                       experiment = "rcp85",
 #                       baseline = "1995-2014",
 #                       future.period = "2",
 #                       season = 1:12,
-#                       bias.adj.method = NULL, # "EQM"
-#                       ref.obs.dataset = NULL, # "EWEMBI"
-#                       proj = "Arctic",
-#                       map.bbox = c(-180,75,180,90))
-
-
-
-# graph2json(graph = out$graph, output.file = "./ignore/prueba.json")
-
-# graph2json(graph, output.file = "ignore/prueba.json")
+#                       bias.adj.method = "EQM", # "EQM"
+#                       ref.obs.dataset = "EWEMBI", # "EWEMBI"
+#                       proj = "Robin",
+#                       map.bbox = c(-20,20,50,70))
+#
+#
+#
+# graph2json(graph = out$graph, output.file = "./ignore/TX35_EQM_delta.json")
 
