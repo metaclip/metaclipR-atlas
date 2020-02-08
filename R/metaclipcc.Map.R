@@ -61,16 +61,15 @@
 
 
 #TODO:
-## Include details on color palettes, range of values etc...
 ## Define simulation domains (ds:SpatialExtent individual instances) for CORDEX projects
 ## Deal with grid info for oceanic variables
-
+#
 # project = "CMIP5"
 # variable = "tasmax"
 # climate.index = "T21.5"
 # delta = "absolute"
 # experiment = "rcp45"
-# baseline = "1986-2005"
+# baseline = "1995-2014"
 # future.period = "2041-2060"
 # season = 1:12
 # bias.adj.method = NULL # "EQM"
@@ -282,7 +281,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     graph.list <- list()
     # for (x in 1:length(hist.list)) {
-    for (x in 1:2) {
+     for (x in 1:2) {
         ref.model <- aux[grep(hist.list[x], aux$name, ignore.case = TRUE),]
         message("[", Sys.time(), "] Processing ", ref.model$GCM, " model data")
 
@@ -305,6 +304,7 @@ metaclipcc.Map <- function(project = "CMIP5",
         }
 
         ### GCM grid -----------------------------------------------------------
+
         descr <- paste("This is the native grid of", ref.model$resX.atmos,
                        "x", ref.model$resY.atmos, "of the atmospheric variables in the",
                        ref.model$GCM, "GCM simulations")
@@ -347,12 +347,11 @@ metaclipcc.Map <- function(project = "CMIP5",
                                                    ipcc.region = ipcc.region,
                                                    season = season,
                                                    years = fill.period)
-                RCP <- substr(ref.dataset$name, start = nchar(ref.dataset$name) - 4,
-                              stop = nchar(ref.dataset$name))
+
                 descr <- paste0("The subperiod ",
                                 paste(fill.period[1], fill.period[2], sep = "-"),
                                 ", missing from the Historical experiment (1850-2005), is filled with the data from the ",
-                                RCP, " simulation of the model to complete the baseline period requested (", baseline, ")")
+                                ref.dataset$Experiment, " simulation of the model to complete the baseline period requested (", baseline, ")")
                 graph.h <- metaclipR.Binding(graph.list = list(graph.h, graph2),
                                              dim.along = "time",
                                              dc.description = descr)
@@ -432,16 +431,14 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         ## Climate Index calculation -------------------------------------------
 
-        if (!is.null(climate.index)) {
-            ## Climate Index
+        if (!is.null(climate.index)) {##CI
             graph.h <- metaclipcc.ClimateIndex(graph.list = hist.graph.list,
                                                index.code = climate.index)
             if (experiment != "historical") {
                 graph.r <- metaclipcc.ClimateIndex(graph.list = fut.graph.list,
                                                    index.code = climate.index)
             }
-        } else {
-            ## ECV
+        } else {## ECV
             graph.h <- var.graph.list[[1]][["historical"]]
             graph.r <- var.graph.list[[1]][["future"]]
         }
@@ -578,9 +575,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                                 dc.description = descr)
 
     ## MAP PRODUCT DESCRIPTION -------------------------------------------------
-    ## Include hatching
-    ## Colorbars
-    ## IPCC regions layer (referenceURL https://github.com/SantanderMetGroup/ATLAS/tree/master/reference_regions)
+    ## TODO:Colorbars
+    ## IPCC regions layer TODO: update referenceURL ESSD
 
     ## Map ---------------------------------------------------------------------
     ### Includes links to a HorizontalExtent and a Projection
@@ -595,13 +591,16 @@ metaclipcc.Map <- function(project = "CMIP5",
                           label = "Map product",
                           className = "go:Map",
                           attr = list( "dc:description" = descr))
-    map.extent <- if (is.null(map.bbox)) {
-        reference.extent
+    if (is.null(map.bbox)) {
+        map.extent <- reference.extent
     } else {
-        metaclipcc.HorizontalExtent(xmin = map.bbox[1],
-                                    xmax = map.bbox[3],
-                                    ymin = map.bbox[2],
-                                    ymax = map.bbox[4])
+        descr <- "The map horizontal extent is interactively defined by the user through the Atlas Viewer application"
+        map.extent <- metaclipcc.HorizontalExtent(xmin = map.bbox[1],
+                                                  xmax = map.bbox[3],
+                                                  ymin = map.bbox[2],
+                                                  ymax = map.bbox[4],
+                                                  dc.description = descr)
+        graph <- my_union_graph(graph, map.extent$graph)
     }
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
@@ -645,6 +644,25 @@ metaclipcc.Map <- function(project = "CMIP5",
                        c(getNodeIndexbyName(graph, map.nodename),
                          getNodeIndexbyName(graph, maplayer.nodename)),
                        label = "go:hasMapLayer")
+
+    ## Color palette -----------------------------------------------------------
+
+    input.ecv <- if (isTRUE(climate.index %in% c("Rx1day", "Rx5day",
+                                                 "DS","SPI6",
+                                                 "SPI12", "SPEI6",
+                                                 "SPEI12", "DF6",
+                                                 "DF12")) | (isTRUE(ref.vars$variable) == "pr"))  {
+        "pr"
+    } else {
+        "tas"
+    }
+    div <- ifelse(is.null(delta), FALSE, TRUE)
+    graph.pal <- metaclipcc.ColorPalette(input.ecv = input.ecv, diverging = div)
+    graph <- my_union_graph(graph, graph.pal$graph)
+    graph <- add_edges(graph,
+                       c(getNodeIndexbyName(graph, maplayer.nodename),
+                         getNodeIndexbyName(graph, graph.pal$parentnodename)),
+                       label = "go:hasColorPalette")
 
     ## Coastline ---------------------------------------------------------------
 
@@ -704,7 +722,23 @@ metaclipcc.Map <- function(project = "CMIP5",
     return(list("graph" = graph, "parentnodename" =  map.nodename))
 }
 
-# graph2json(graph = graph$graph, output.file = "./ignore/prueba.json")
+
+# out <- metaclipcc.Map(project = "CMIP5",
+#                       variable = NULL,
+#                       climate.index = "FD",
+#                       delta = "absolute",
+#                       experiment = "rcp85",
+#                       baseline = "1995-2014",
+#                       future.period = "2",
+#                       season = 1:12,
+#                       bias.adj.method = NULL, # "EQM"
+#                       ref.obs.dataset = NULL, # "EWEMBI"
+#                       proj = "Arctic",
+#                       map.bbox = c(-180,75,180,90))
+
+
+
+# graph2json(graph = out$graph, output.file = "./ignore/prueba.json")
 
 # graph2json(graph, output.file = "ignore/prueba.json")
 
