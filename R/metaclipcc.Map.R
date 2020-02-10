@@ -42,6 +42,7 @@
 #' for Robinson and WGS84 Arctic/Antarctic Polar stereographic projections.
 #' @param map.bbox Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
 #' zoomed in by the user. If missing, then the HorizontalExtent associated to the \code{project} is assumed.
+#' @param test.mode For internal use only.
 #'
 #' @details
 #'
@@ -63,7 +64,10 @@
 #TODO:
 ## Define simulation domains (ds:SpatialExtent individual instances) for CORDEX projects
 ## Deal with grid info for oceanic variables
-#
+## Legend values
+
+
+
 # project = "CMIP5"
 # variable = "tasmax"
 # climate.index = "T21.5"
@@ -88,7 +92,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                            bias.adj.method = NULL,
                            ref.obs.dataset = NULL,
                            proj,
-                           map.bbox = NULL) {
+                           map.bbox = NULL,
+                           test.mode = FALSE) {
 
     # Fixed parameters *******
     ref.period <- c(1980, 2005)
@@ -279,9 +284,13 @@ metaclipcc.Map <- function(project = "CMIP5",
     ### 2. modelos que no alcanzan el warming level especificado
     ### 3. modelos de los que no hay dato
 
+    iter <- if (isTRUE(test.mode)) {
+        1:2
+    } else {
+        1:length(hist.list)
+    }
     graph.list <- list()
-    for (x in 1:length(hist.list)) {
-    # for (x in 1:2) {
+    for (x in iter) {
         ref.model <- aux[grep(hist.list[x], aux$name, ignore.case = TRUE),]
         message("[", Sys.time(), "] Processing ", ref.model$GCM, " model data")
 
@@ -674,7 +683,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                           label = "Coastline boundaries",
                           className = "go:MapLines",
                           attr = list("dc:description" = descr,
-                                      "go:LineColor" = "grey",
+                                      "go:LineColor" = "#5492cd",
                                       "go:LineType" = "solid"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
@@ -723,20 +732,5 @@ metaclipcc.Map <- function(project = "CMIP5",
 }
 
 
-# out <- metaclipcc.Map(project = "CMIP5",
-#                       variable = NULL,
-#                       climate.index = "TX35",
-#                       delta = "absolute",
-#                       experiment = "rcp85",
-#                       baseline = "1995-2014",
-#                       future.period = "2",
-#                       season = 1:12,
-#                       bias.adj.method = "EQM", # "EQM"
-#                       ref.obs.dataset = "EWEMBI", # "EWEMBI"
-#                       proj = "Robin",
-#                       map.bbox = c(-20,20,50,70))
-#
-#
-#
-# graph2json(graph = out$graph, output.file = "./ignore/TX35_EQM_delta.json")
+
 
