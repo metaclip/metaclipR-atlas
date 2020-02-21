@@ -695,6 +695,7 @@ metaclipcc.Map <- function(project = "CMIP5",
     maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
     descr <- "IPCC-AR6 World Regions"
     refurl <- "https://github.com/SantanderMetGroup/ATLAS/tree/master/reference_regions"
+    seealso <- "http://www.ipcc-data.org/guidelines/pages/ar5_regions.html"
     graph <- add_vertices(graph,
                           nv = 1,
                           name = maplayer.nodename,
@@ -702,6 +703,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                           className = "go:MapLines",
                           attr = list("dc:description" = descr,
                                       "ds:referenceURL" = refurl,
+                                      "rdfs:seeAlso" = seealso,
                                       "go:LineAngle" = -45,
                                       "go:LineColor" = "black",
                                       "go:LineType" = "solid"))
