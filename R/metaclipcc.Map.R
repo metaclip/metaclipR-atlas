@@ -584,7 +584,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                                 dc.description = descr)
 
     ## MAP PRODUCT DESCRIPTION -------------------------------------------------
-    ## TODO:Colorbars
+    ## TODO:Colorbar bounds
     ## IPCC regions layer TODO: update referenceURL ESSD
 
     ## Map ---------------------------------------------------------------------
@@ -683,7 +683,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                           label = "Coastline boundaries",
                           className = "go:MapLines",
                           attr = list("dc:description" = descr,
-                                      "go:LineColor" = "#5492cd",
+                                      "go:LineColor" = "hex-5492cd",
                                       "go:LineType" = "solid"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
@@ -695,7 +695,6 @@ metaclipcc.Map <- function(project = "CMIP5",
     maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
     descr <- "IPCC-AR6 World Regions"
     refurl <- "https://github.com/SantanderMetGroup/ATLAS/tree/master/reference_regions"
-    seealso <- "http://www.ipcc-data.org/guidelines/pages/ar5_regions.html"
     graph <- add_vertices(graph,
                           nv = 1,
                           name = maplayer.nodename,
@@ -703,9 +702,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                           className = "go:MapLines",
                           attr = list("dc:description" = descr,
                                       "ds:referenceURL" = refurl,
-                                      "rdfs:seeAlso" = seealso,
-                                      "go:LineAngle" = -45,
-                                      "go:LineColor" = "black",
+                                      "go:LineColor" = "hex-D3D3D3",
                                       "go:LineType" = "solid"))
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, map.nodename),
@@ -715,8 +712,11 @@ metaclipcc.Map <- function(project = "CMIP5",
     # Map hatching -------------------------------------------------------------
 
     if (!is.null(delta)) {
+
+        # Model Consensus
+
         maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-        descr <- "Hatched areas in the map indicate a \'weak\' model agreement on the sign of the projected climate change signal (less than 80%, following Nikulin et al. 2018)"
+        descr <- "Hatched pattern of -45 deg. in the map indicates a \'weak\' model agreement on the sign of the projected climate change signal (less than 80%, following Nikulin et al. 2018)"
         refurl <- "https://doi.org/10.1088/1748-9326/aab1b1"
         graph <- add_vertices(graph,
                               nv = 1,
@@ -724,11 +724,33 @@ metaclipcc.Map <- function(project = "CMIP5",
                               label = "Consensus Hatching",
                               className = "go:Mask",
                               attr = list("dc:description" = descr,
-                                          "ds:referenceURL" = refurl))
+                                          "ds:referenceURL" = refurl,
+                                          "go:LineAngle" = -45,
+                                          "go:LineColor" = "hex-000000",
+                                          "go:LineType" = "solid"))
         graph <- add_edges(graph,
                            c(getNodeIndexbyName(graph, map.nodename),
                              getNodeIndexbyName(graph, maplayer.nodename)),
                            label = "go:hasMapLayer")
+
+        # SNR
+
+        maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
+        descr <- "Hatched pattern of +45 deg. in the map indicates that more than two thirds (>66%) of the models have a signal-to-noise ratio greater than one (SNR>1) over the hatched pixels."
+        graph <- add_vertices(graph,
+                              nv = 1,
+                              name = maplayer.nodename,
+                              label = "SNR>1 Hatching",
+                              className = "go:Mask",
+                              attr = list("dc:description" = descr,
+                                          "go:LineAngle" = 45,
+                                          "go:LineColor" = "hex-000000",
+                                          "go:LineType" = "solid"))
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, map.nodename),
+                             getNodeIndexbyName(graph, maplayer.nodename)),
+                           label = "go:hasMapLayer")
+
     }
     return(list("graph" = graph, "parentnodename" =  map.nodename))
 }
