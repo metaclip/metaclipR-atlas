@@ -479,7 +479,7 @@ metaclipcc.Map <- function(project = "CMIP5",
         if (ref.vars$aggr.y != "mean") {
             arg.list <- list()
             arg.list$aggr.y$FUN <- ref.vars$aggr.y
-            descr <- paste("The historical scenario data is annually aggregated using the",
+            descr <- paste("The historical data is annually aggregated using the",
                            ref.vars$aggr.y, "cell function")
             graph.h <- metaclipR.Aggregation(graph = graph.h,
                                              disable.command = TRUE,
@@ -493,27 +493,6 @@ metaclipcc.Map <- function(project = "CMIP5",
                                                  arg.list = arg.list,
                                                  dc.description = descr)
             }
-        }
-
-        ## Climatology ---------------------------------------------------------
-
-        arg.list <- list()
-        arg.list$clim.fun$FUN <- "mean"
-        descr <- paste("The", ref.vars$variable,
-                       "climatology is calculated for each grid cell, as the mean value for the whole historical period",
-                       baseline)
-        graph.h <- metaclipR.Climatology(graph = graph.h,
-                                         arg.list = arg.list,
-                                         disable.command = TRUE,
-                                         dc.description = descr)
-        if (experiment != "historical") {
-            descr <- paste("The", ref.vars$variable,
-                           "climatology is calculated for each grid cell, as the mean value for the whole future period",
-                           future.period)
-            graph.r <- metaclipR.Climatology(graph = graph.r,
-                                             arg.list = arg.list,
-                                             disable.command = TRUE,
-                                             dc.description = descr)
         }
 
         ## Interpolation to reference grid -------------------------------------
@@ -546,6 +525,32 @@ metaclipcc.Map <- function(project = "CMIP5",
                                                  InterpolationMethod = "conservative",
                                                  dc.description = descr)
             }
+        }
+
+        ########################################################################
+        ## Up to this point, the intermediate product is described.
+        ## The following steps are undertaken by the Portal.
+        ########################################################################
+
+        ## Climatology ---------------------------------------------------------
+
+        arg.list <- list()
+        arg.list$clim.fun$FUN <- "mean"
+        descr <- paste("The", ref.vars$variable,
+                       "climatology is calculated for each grid cell, as the mean value for the whole historical period",
+                       baseline)
+        graph.h <- metaclipR.Climatology(graph = graph.h,
+                                         arg.list = arg.list,
+                                         disable.command = TRUE,
+                                         dc.description = descr)
+        if (experiment != "historical") {
+            descr <- paste("The", ref.vars$variable,
+                           "climatology is calculated for each grid cell, as the mean value for the whole future period",
+                           future.period)
+            graph.r <- metaclipR.Climatology(graph = graph.r,
+                                             arg.list = arg.list,
+                                             disable.command = TRUE,
+                                             dc.description = descr)
         }
 
         ## Delta calculation ---------------------------------------------------
