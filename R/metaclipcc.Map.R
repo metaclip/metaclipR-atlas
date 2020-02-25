@@ -80,6 +80,7 @@
 # ref.obs.dataset = NULL # "EWEMBI"
 # proj = "Robin"
 # map.bbox = c(-10,20,50,60)
+# test.mode = TRUE
 
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
@@ -280,7 +281,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     ## De este lista se tiran:
     ### 1. modelos que no tienen la target variable (en histórico OR rcp)
-    #### 1.1. En el caso de índices, modelos que falta algún ECV
+    #### 1.1. En el caso de índices, modelos en los que falta algún ECV
     ### 2. modelos que no alcanzan el warming level especificado
     ### 3. modelos de los que no hay dato
 
