@@ -736,7 +736,7 @@ metaclipcc.Map <- function(project = "CMIP5",
         # SNR
 
         maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-        descr <- "Hatched pattern of +45 deg. in the map indicates that more than two thirds (>66%) of the models have a signal-to-noise ratio greater than one (SNR>1) over the hatched pixels."
+        descr <- "Hatched pattern of +45 deg. in the map indicates that more than two thirds (>66%) of the models have a signal-to-noise ratio lower than one (SNR<1) over the hatched pixels. This is an indication of a \'low\' climate change signal, that can not be distinguished from model variability"
         graph <- add_vertices(graph,
                               nv = 1,
                               name = maplayer.nodename,
