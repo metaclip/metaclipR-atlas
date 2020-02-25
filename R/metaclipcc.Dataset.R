@@ -52,7 +52,7 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid) {
                                              "dc:description" = descr,
                                              "ds:withVersionTag" = ref$SoftwareVersion))
     } else {
-        classname <- paste0(ref$vocabulary, "ds:MultiDecadalSimulation")
+        classname <- "ds:MultiDecadalSimulation"
         if (is.na(ref$RCM)) {
             descr <- paste("A dataset of the", ref$Project, "project containing simulations of the",
                            ref$GCM, "GCM for the",
