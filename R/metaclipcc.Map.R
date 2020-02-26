@@ -722,7 +722,7 @@ metaclipcc.Map <- function(project = "CMIP5",
         # Model Consensus
 
         maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-        descr <- "Hatched pattern of -45 deg. in the map indicates a \'weak\' model agreement on the sign of the projected climate change signal (less than 80%, following Nikulin et al. 2018)"
+        descr <- "Hatched pattern of -45 deg. in the map indicates a \'weak\' model agreement on the sign of the projected mean climate change signal (less than 80%, following Nikulin et al. 2018)"
         refurl <- "https://doi.org/10.1088/1748-9326/aab1b1"
         graph <- add_vertices(graph,
                               nv = 1,
@@ -742,13 +742,14 @@ metaclipcc.Map <- function(project = "CMIP5",
         # SNR
 
         maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-        descr <- "Hatched pattern of +45 deg. in the map indicates that more than two thirds (>66%) of the models have a signal-to-noise ratio lower than one (SNR<1) over the hatched pixels. This is an indication of a \'low\' climate change signal, that can not be distinguished from model variability"
+        descr <- "Hatched pattern of +45 deg. in the map indicates a low signal-to-noise ratio (SNR<1), i.e. the ensemble mean is smaller than the standard deviation across model results (following Nikulin et al. 2018)"
         graph <- add_vertices(graph,
                               nv = 1,
                               name = maplayer.nodename,
                               label = "SNR>1 Hatching",
                               className = "go:Mask",
                               attr = list("dc:description" = descr,
+                                          "ds:referenceURL" = refurl,
                                           "go:LineAngle" = 45,
                                           "go:LineColor" = "hex-000000",
                                           "go:LineType" = "solid"))
