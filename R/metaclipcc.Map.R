@@ -166,7 +166,7 @@ metaclipcc.Map <- function(project = "CMIP5",
     if (project == "CMIP5") {
         resX <- resY <- 2
         descr <- paste("This is the reference grid used in all CMIP5 map products of", resX, "x", resY, "degree resolution covering the whole globe")
-        gridfile.url <- "https://github.com/SantanderMetGroup/ATLAS/blob/devel/reference-grids/land_sea_mask_2degree.nc4"
+        gridfile.url <- "https://github.com/IPCC-WG1/Atlas/tree/master/reference-grids"
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
                                                     xmin = -179.25,
@@ -178,7 +178,7 @@ metaclipcc.Map <- function(project = "CMIP5",
     } else if (project == "CMIP6") {
         resX <- resY <- 1
         descr <- paste("This is the reference grid used in all CMIP6 map products of", resX, "x", resY, "degree resolution covering the whole globe")
-        gridfile.url <- "https://github.com/SantanderMetGroup/ATLAS/blob/devel/reference-grids/land_sea_mask_1degree.nc4"
+        gridfile.url <- "https://github.com/IPCC-WG1/Atlas/tree/master/reference-grids"
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
                                                     xmin = -179.5,
