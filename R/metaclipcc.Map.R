@@ -42,7 +42,7 @@
 #' for Robinson and WGS84 Arctic/Antarctic Polar stereographic projections.
 #' @param map.bbox Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
 #' zoomed in by the user. If missing, then the HorizontalExtent associated to the \code{project} is assumed.
-#' @param test.mode For internal use only.
+#' @param test.mode For internal use only. When the test mode is on, only the first two models are used.
 #'
 #' @details
 #'
@@ -700,7 +700,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
     descr <- "IPCC-AR6 World Regions"
-    refurl <- "https://github.com/SantanderMetGroup/ATLAS/tree/master/reference_regions"
+    refurl <- "https://github.com/IPCC-WG1/Atlas/tree/master/reference-regions"
     graph <- add_vertices(graph,
                           nv = 1,
                           name = maplayer.nodename,
