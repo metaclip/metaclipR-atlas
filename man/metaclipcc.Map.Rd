@@ -47,7 +47,7 @@ for Robinson and WGS84 Arctic/Antarctic Polar stereographic projections.}
 \item{map.bbox}{Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
 zoomed in by the user. If missing, then the HorizontalExtent associated to the \code{project} is assumed.}
 
-\item{test.mode}{For internal use only.}
+\item{test.mode}{For internal use only. When the test mode is on, only the first two models are used.}
 }
 \description{
 Build a directed metadata graph describing a Map product of the AR6 Interactive Atlas
