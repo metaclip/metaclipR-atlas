@@ -4,13 +4,10 @@ metaclipcc changelog
 ## v0.0.0 (12 April 2019)
  * First package version, used for preparing the IPCC AR6 FoD
 
-## v0.1.0 (03 Nov 2019)
+## v0.1.0 (27 Feb 2020)
  * The 'hasRun' property is moved to the Dataset domain (it was previously in GCM)
  * Set default projection in delta maps to Robin, as a proj4 string
  * Replace term 'anomaly' by 'delta' when necessary
- * Other minor changes
-
-## v0.2.0 (in devel)
  * New wrapper `metaclipcc.Map`, to encode all available map Atlas products
  * `metaclipcc.ClimateIndex` accepts grid lists as input to define multivariate indices
  * New `metaclipcc.Regridding`
