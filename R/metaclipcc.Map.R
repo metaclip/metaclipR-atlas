@@ -386,14 +386,13 @@ metaclipcc.Map <- function(project = "CMIP5",
                                 " as training data, and the ",
                                 ref.obs.dataset, " observation data as predictand")
 
-                graph.h <- metaclipR.BiasCorrection(graph = graph.h,
-                                                    TrainingGraph = graph.train,
-                                                    ReferenceGraph = obs.var.graph.list[[i]],
-                                                    disable.command = TRUE,
-                                                    ReferenceGraphSpatialExtent = reference.extent,
-                                                    ReferenceGraphRectangularGrid = reference.grid,
-                                                    BC.method = bias.adj.method,
-                                                    dc.description = descr)
+                graph.h <- metaclipcc.BiasCorrection(graph = graph.h,
+                                                     TrainingGraph = graph.train,
+                                                     ReferenceGraph = obs.var.graph.list[[i]],
+                                                     ReferenceGraphSpatialExtent = reference.extent,
+                                                     ReferenceGraphRectangularGrid = reference.grid,
+                                                     BC.method = bias.adj.method,
+                                                     dc.description = descr)
             }
 
             ## Future simulation data ------------------------------------------
