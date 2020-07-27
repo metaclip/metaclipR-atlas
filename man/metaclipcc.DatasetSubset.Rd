@@ -4,9 +4,15 @@
 \alias{metaclipcc.DatasetSubset}
 \title{Directed metadata graph construction for IPCC Atlas product data sources}
 \usage{
-metaclipcc.DatasetSubset(metaclipcc.Dataset, Dataset.name, variable,
-  time.res.orig = c("P1D", "P1M"), ipcc.region = "GlobalExtent",
-  season = 1:12, years)
+metaclipcc.DatasetSubset(
+  metaclipcc.Dataset,
+  Dataset.name,
+  variable,
+  time.res.orig = c("P1D", "P1M"),
+  ipcc.region = "GlobalExtent",
+  season = 1:12,
+  years
+)
 }
 \arguments{
 \item{metaclipcc.Dataset}{METACLIP description of the Dataset, as returned by \code{\link{metaclipcc.Dataset}}.}

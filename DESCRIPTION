@@ -8,8 +8,8 @@ Imports:
     magrittr,
     utils
 Title: METACLIP for the IPCC-AR6 Interactive Atlas
-Version: 0.1.0
-Date: 2020-02-27
+Version: 0.1.1
+Date: 2020-07-27
 Authors@R: c(
     person("Bedia", "Joaquín", email = "bediaj@unican.es", role = c("aut","cre"), comment = c(ORCID = "0000-0001-6219-4312")),
     person("Daniel", "San Martín", email = "daniel@predictia.es", role = "aut"),
@@ -20,4 +20,4 @@ Description: Extend the METACLIP Provenance Framework for the products to be del
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1

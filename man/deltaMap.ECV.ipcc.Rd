@@ -4,11 +4,18 @@
 \alias{deltaMap.ECV.ipcc}
 \title{Launch ECV delta map description}
 \usage{
-deltaMap.ECV.ipcc(project = "CMIP5", experiment = "rcp85",
-  future.period = "mid", baseline = c(1986, 2005), variable, season,
+deltaMap.ECV.ipcc(
+  project = "CMIP5",
+  experiment = "rcp85",
+  future.period = "mid",
+  baseline = c(1986, 2005),
+  variable,
+  season,
   time.res.orig = "P1M",
-  proj = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-  delta.type = "absolute")
+ 
+    proj = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+  delta.type = "absolute"
+)
 }
 \arguments{
 \item{project}{Currently unused. CMIP5 by default.}

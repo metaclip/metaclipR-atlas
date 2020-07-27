@@ -14,3 +14,7 @@ metaclipcc changelog
  * Several modifications to include the new class ds:RectangularGrid
  * Updates in variables and datasets lookup tables
  * Other minor changes
+
+## v0.1.1 (27 Jul 2020)
+ * New metaclipcc.BiasCorrection function replacing metaclipR.BiasCorrection, accepting only predefined methods (avoids time-consuming remote ontology checks)
+ * Other minor changes

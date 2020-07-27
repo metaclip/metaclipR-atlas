@@ -24,8 +24,9 @@ An integer vector of length two, formed by start and end year of the future time
 Get a future period time slice ready to be used by \code{metaclipR} functions
 }
 \seealso{
-Other lookup-tables: \code{\link{showIPCCdatasets}},
-  \code{\link{showIPCCvars}}
+Other lookup-tables: 
+\code{\link{showIPCCdatasets}()},
+\code{\link{showIPCCvars}()}
 }
 \concept{lookup-tables}
 \keyword{internal}

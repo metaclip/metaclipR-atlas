@@ -4,8 +4,12 @@
 \alias{metaclipcc.Delta}
 \title{Directed metadata graph construction for Climate Change Signal calculation}
 \usage{
-metaclipcc.Delta(graph, referenceGraph, delta.type = c("absolute",
-  "relative"), dc.description = NULL)
+metaclipcc.Delta(
+  graph,
+  referenceGraph,
+  delta.type = c("absolute", "relative"),
+  dc.description = NULL
+)
 }
 \arguments{
 \item{graph}{metaclip object containing the future time slice}

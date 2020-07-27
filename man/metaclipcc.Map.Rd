@@ -4,10 +4,21 @@
 \alias{metaclipcc.Map}
 \title{Directed metadata graph construction for AR6 Atlas Map products}
 \usage{
-metaclipcc.Map(project = "CMIP5", variable = NULL,
-  climate.index = NULL, delta = NULL, experiment, baseline,
-  future.period = NULL, season, bias.adj.method = NULL,
-  ref.obs.dataset = NULL, proj, map.bbox = NULL, test.mode = FALSE)
+metaclipcc.Map(
+  project = "CMIP5",
+  variable = NULL,
+  climate.index = NULL,
+  delta = NULL,
+  experiment,
+  baseline,
+  future.period = NULL,
+  season,
+  bias.adj.method = NULL,
+  ref.obs.dataset = NULL,
+  proj,
+  map.bbox = NULL,
+  test.mode = FALSE
+)
 }
 \arguments{
 \item{project}{Project. Unused so far. Default to \code{"CMIP5"}.}

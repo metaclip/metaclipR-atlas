@@ -4,9 +4,13 @@
 \alias{metaclipcc.Regridding}
 \title{Directed metadata graph construction for Regridding Transformations}
 \usage{
-metaclipcc.Regridding(graph, RefSpatialExtent = NULL,
-  RefRectangularGrid = NULL, InterpolationMethod,
-  dc.description = NULL)
+metaclipcc.Regridding(
+  graph,
+  RefSpatialExtent = NULL,
+  RefRectangularGrid = NULL,
+  InterpolationMethod,
+  dc.description = NULL
+)
 }
 \arguments{
 \item{graph}{Input metaclip graph structure}

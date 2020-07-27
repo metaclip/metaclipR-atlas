@@ -4,8 +4,14 @@
 \alias{metaclipcc.HorizontalExtent}
 \title{Set a reference SpatialExtent}
 \usage{
-metaclipcc.HorizontalExtent(region = NULL, xmin = NULL, xmax = NULL,
-  ymin = NULL, ymax = NULL, dc.description = NULL)
+metaclipcc.HorizontalExtent(
+  region = NULL,
+  xmin = NULL,
+  xmax = NULL,
+  ymin = NULL,
+  ymax = NULL,
+  dc.description = NULL
+)
 }
 \arguments{
 \item{region}{Character string designating a known region.}
