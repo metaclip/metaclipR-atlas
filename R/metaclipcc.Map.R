@@ -152,7 +152,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     if (!is.null(bias.adj.method)) {
         if (is.null(ref.obs.dataset)) stop("A reference observational dataset is required for bias correction", call. = FALSE)
-        bias.adj.method <- match.arg(bias.adj.method, choices = "EQM")
+        bias.adj.method <- match.arg(bias.adj.method, choices = c("ISIMIP3", "EQM"))
         ref.obs.dataset <- match.arg(ref.obs.dataset, choices = "EWEMBI")
     }
 
