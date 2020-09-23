@@ -52,7 +52,9 @@ metaclipcc.BiasCorrection <- function(graph,
                                       dc.description = "Bias adjustment of the input data")
 {
     BC.method <- match.arg(BC.method, choices = c("EQM", "ISIMIP3"))
-    BC.class <- "cal:NonParametricBiasCorrection"
+    BC.class <- switch(BC.method,
+                       "EQM" = "cal:NonParametricBiasCorrection",
+                       "ISIMIP3" = "cal:ParametricBiasCorrection")
     if (class(graph$graph) != "igraph") stop("Invalid input graph (not an 'igraph-class' object)")
     if (class(TrainingGraph$graph) != "igraph") stop("Invalid input TrainingGraph (not an 'igraph-class' object)")
     if (class(ReferenceGraph$graph) != "igraph") stop("Invalid input ReferenceGraph (not an 'igraph-class' object)")
