@@ -116,6 +116,7 @@ CMIP5_NCC-NORESM1-M_rcp26,ipcc,http://dx.doi.org/10.1594/WDCC/CMIP5.NCCNMr2,NCC-
 CMIP5_NCC-NORESM1-M_rcp45,ipcc,http://dx.doi.org/10.1594/WDCC/CMIP5.NCCNMr4,NCC-/-NMI,CMIP5,RCP45,NORESM1-M,,,r1i1p1,2.5,1.8947,,GlobalExtent,,-178.75,178.75,-89.05265,89.05265,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CMIP5_NCC-NORESM1-M_rcp85,ipcc,http://dx.doi.org/10.1594/WDCC/CMIP5.NCCNMr8,NCC-/-NMI,CMIP5,RCP85,NORESM1-M,,,r1i1p1,2.5,1.8947,,GlobalExtent,,-178.75,178.75,-89.05265,89.05265,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 EWEMBI,ds,http://doi.org/10.5880/pik.2019.004,PIK,ISIMIP,,,,ObservationalDataset,,0.5,0.5,v1.1,GlobalExtent,,-179.75,179.75,-89.75,89.75,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+W5E5,ds,https://doi.org/10.5880/pik.2019.023,PIK,ISIMIP,,,,ObservationalDataset,,0.5,0.5,V1.0,GlobalExtent,,-179.75,179.75,-89.75,89.75,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 EUROCORDEX11_ICHEC-EC-EARTH_r12i1p1_RCA4_v1_historical,ipcc,,ICHEC,EURO-CORDEX,Historical,EC-EARTH,RCA4,,r12i1p1,,,v1,EUR-011,Europe,,,,,,,,,,,,,,,,,,,,,,,,,,
 EUROCORDEX11_ICHEC-EC-EARTH_r12i1p1_RCA4_v1_rcp45,ipcc,,ICHEC,EURO-CORDEX,RCP45,EC-EARTH,RCA4,,r12i1p1,,,v1,EUR-011,Europe,,,,,,,,,,,,,,,,,,,,,,,,,,
 EUROCORDEX11_ICHEC-EC-EARTH_r12i1p1_RCA4_v1_rcp85,ipcc,,ICHEC,EURO-CORDEX,RCP85,EC-EARTH,RCA4,,r12i1p1,,,v1,EUR-011,Europe,,,,,,,,,,,,,,,,,,,,,,,,,,
