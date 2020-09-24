@@ -24,3 +24,6 @@ metaclipcc changelog
 
 ## v0.1.3 (25 Sep 2020)
  * Add W5E5 observational reference
+
+## v0.1.4 (25 Sep 2020)
+ * Update internal lookup table
