@@ -50,7 +50,8 @@ for the standard VALUE empirical quantile mapping method.}
 
 \item{ref.obs.dataset}{Default to \code{NULL}, and unused unless a \code{bias.adj.method} has been specified.
 This is the reference observational dataset to perform the correction. This is an individual that must be defined in the datasource vocabulary,
- belonging to either classes \code{ds:ObservationalDataset} or \code{ds:Reanalysis}. Currently accepted values are \code{"EWEMBI"}.}
+ belonging to either classes \code{ds:ObservationalDataset} or \code{ds:Reanalysis}. Currently accepted values are \code{"W5E5"} and \code{"EWEMBI"}.
+ Note that the individual instances of the observational reference are assumed to be described in the datasource vocabulary.}
 
 \item{proj}{Map projection string. Accepted values are \code{"Robin"}, \code{"Arctic"} and \code{"Antarctic"},
 for Robinson and WGS84 Arctic/Antarctic Polar stereographic projections.}
