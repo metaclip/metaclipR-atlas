@@ -22,6 +22,9 @@
 #' @param Dataset.name Name (label) of the Dataset. This dataset must be included in the internal
 #'  lookup table, that can be accessed via \code{\link{showIPCCdatasets}}.
 #' @param RectangularGrid a metaclipR object containing a ds:Rectangular Grid definition
+#' @param DataProvider DataProvider-class individual designation (without the vocabulary prefix, assumed to be \code{ds:}).
+#'  Default to \code{"ESGF"}, that applies for all GCMs. Might need to be changed for observational
+#'  references (e.g., \code{"CDS"} for the W5E5 dataset)
 #' @importFrom igraph make_empty_graph add_edges
 #' @importFrom magrittr %>%
 #' @importFrom metaclipR my_add_vertices getNodeIndexbyName
@@ -32,10 +35,13 @@
 # plot(graph$graph)
 # graph2json(graph = graph$graph, output.file = "/tmp/cnrm.json")
 
-metaclipcc.Dataset <- function(Dataset.name, RectangularGrid) {
+metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ESGF") {
     ref <- showIPCCdatasets(names.only = FALSE)
     if (!Dataset.name %in% ref$name) stop("Invalid Dataset.name value. Use \'showIPCCdatasets()\' to check dataset availability and spelling")
     if (class(RectangularGrid$graph) != "igraph") stop("Invalid RectangularGrid graph (not an 'igraph-class' object)")
+
+    DataProvider <- match.arg(DataProvider, choices = c("ESGF", "CDS", "UDG"))
+
     # Identify the dataset and initialize a new empty graph
     ref <- ref[grep(Dataset.name, ref$name),]
     graph <- make_empty_graph(directed = TRUE)
@@ -72,13 +78,14 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid) {
                                              "ds:hasRun" = ref$Run))
     }
     # DataProvider
+    dp.nodename <- paste0("ds:", DataProvider)
     graph <- my_add_vertices(graph,
-                             name = "ipcc:ESGF",
-                             label = "ESGF",
+                             name = dp.nodename,
+                             label = DataProvider,
                              className = "ds:DataProvider")
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, Dataset.name),
-                         getNodeIndexbyName(graph, "ipcc:ESGF")),
+                         getNodeIndexbyName(graph, dp.nodename)),
                        label = "ds:hadDataProvider")
     # ModellingCenter
     ModellingCenter <- ref$ModellingCenter %>% strsplit(split = "-/-", fixed = TRUE) %>% unlist()
