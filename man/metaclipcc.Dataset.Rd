@@ -4,13 +4,17 @@
 \alias{metaclipcc.Dataset}
 \title{Directed metadata graph construction for IPCC Atlas product data sources}
 \usage{
-metaclipcc.Dataset(Dataset.name, RectangularGrid)
+metaclipcc.Dataset(Dataset.name, RectangularGrid, DataProvider = "ESGF")
 }
 \arguments{
 \item{Dataset.name}{Name (label) of the Dataset. This dataset must be included in the internal
 lookup table, that can be accessed via \code{\link{showIPCCdatasets}}.}
 
 \item{RectangularGrid}{a metaclipR object containing a ds:Rectangular Grid definition}
+
+\item{DataProvider}{DataProvider-class individual designation (without the vocabulary prefix, assumed to be \code{ds:}).
+Default to \code{"ESGF"}, that applies for all GCMs. Might need to be changed for observational
+references (e.g., \code{"CDS"} for the W5E5 dataset)}
 }
 \description{
 Build a directed metadata graph describing a data source. This is usually the initial
