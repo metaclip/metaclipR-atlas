@@ -37,7 +37,8 @@
 #' for the standard VALUE empirical quantile mapping method.
 #' @param ref.obs.dataset Default to \code{NULL}, and unused unless a \code{bias.adj.method} has been specified.
 #'  This is the reference observational dataset to perform the correction. This is an individual that must be defined in the datasource vocabulary,
-#'   belonging to either classes \code{ds:ObservationalDataset} or \code{ds:Reanalysis}. Currently accepted values are \code{"EWEMBI"}.
+#'   belonging to either classes \code{ds:ObservationalDataset} or \code{ds:Reanalysis}. Currently accepted values are \code{"W5E5"} and \code{"EWEMBI"}.
+#'   Note that the individual instances of the observational reference are assumed to be described in the datasource vocabulary.
 #' @param proj Map projection string. Accepted values are \code{"Robin"}, \code{"Arctic"} and \code{"Antarctic"},
 #' for Robinson and WGS84 Arctic/Antarctic Polar stereographic projections.
 #' @param map.bbox Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
@@ -67,20 +68,21 @@
 ## Legend values
 
 
-
+# ## Test area
 # project = "CMIP5"
 # variable = "tasmax"
-# climate.index = "T21.5"
+# climate.index = "TXx"
 # delta = "absolute"
-# experiment = "rcp45"
-# baseline = "1995-2014"
-# future.period = "2041-2060"
+# experiment = "rcp26"
+# baseline = "1980-2010"
+# future.period = "2021-2040"
 # season = 1:12
-# bias.adj.method = NULL # "EQM"
-# ref.obs.dataset = NULL # "EWEMBI"
+# bias.adj.method = "ISIMIP3" # "EQM"
+# ref.obs.dataset = "W5E5" # "EWEMBI"
 # proj = "Robin"
-# map.bbox = c(-10,20,50,60)
-# test.mode = TRUE
+# map.bbox = NULL
+# test.mode = FALSE
+# ## End test area
 
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
@@ -228,7 +230,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                                               ymax = obs.meta$ymax.atmos,
                                               dc.description = descr)
 
-        graph.o <- metaclipcc.Dataset(ref.obs.dataset, RectangularGrid = obs.grid)
+        graph.o <- metaclipcc.Dataset(ref.obs.dataset, RectangularGrid = obs.grid, DataProvider = "CDS")
     }
 
     ## Historical scenarios ----------------------------------------------------
@@ -236,12 +238,15 @@ metaclipcc.Map <- function(project = "CMIP5",
     ls <- showIPCCdatasets(names.only = TRUE)
     hist.list <- ls[which(grepl(paste0("^", project, ".*historical"), ls))]
     if (experiment != "historical") {
-        rcp.list <- gsub("historical", experiment, hist.list)
+
+        ## Need to filter models, because not all models have all experiments available (e.g. RCP 2.6 is lacking in some models)
+        rcp.list <- ls[which(grepl(paste0("^", project, ".*", experiment), ls))]
+        hist.list <- gsub(experiment, "historical", rcp.list)
         if (!identical(length(rcp.list), length(hist.list))) {
             stop("historical and future dataset numbers differ")
         }
     }
-    rcp85.list <- gsub("historical", "rcp85", hist.list) # For filling historical gap
+    rcp85.list <- gsub("historical", "rcp85", hist.list) # For filling historical gap # All models have rcp85 available
     aux <- showIPCCdatasets(names.only = FALSE)
 
     ## ECV filtering -----------------------------------------------------------
