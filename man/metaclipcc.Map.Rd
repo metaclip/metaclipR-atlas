@@ -36,7 +36,7 @@ but an original magnitude.}
 \item{experiment}{Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"}}
 
 \item{baseline}{Character string indicating the \code{"start-end"} years of the baseline (historical) period. Accepted values are:
-\code{"1980-2010"} (WMO standard period), \code{"1986-2005"} (AR5 period) or \code{"1995-2014"} (AR6 period). Internally, there is a tricky part here, see Details.}
+\code{"1981-2010"} (WMO standard period), \code{"1986-2005"} (AR5 period) or \code{"1995-2014"} (AR6 period). Internally, there is a tricky part here, see Details.}
 
 \item{future.period}{future period. Default to \code{NULL}, for historical maps (i.e., period defined by the \code{baseline} argument). Otherwise, a character string
 indicating either the \code{"start-end"} years of the future period or a (GCM-specific) warming level. Current options include the standard AR5 future time slices
