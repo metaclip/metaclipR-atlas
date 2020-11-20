@@ -27,7 +27,7 @@
 #'  but an original magnitude.
 #' @param experiment Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"}
 #' @param baseline Character string indicating the \code{"start-end"} years of the baseline (historical) period. Accepted values are:
-#' \code{"1980-2010"} (WMO standard period), \code{"1986-2005"} (AR5 period) or \code{"1995-2014"} (AR6 period). Internally, there is a tricky part here, see Details.
+#' \code{"1981-2010"} (WMO standard period), \code{"1986-2005"} (AR5 period) or \code{"1995-2014"} (AR6 period). Internally, there is a tricky part here, see Details.
 #' @param future.period future period. Default to \code{NULL}, for historical maps (i.e., period defined by the \code{baseline} argument). Otherwise, a character string
 #'  indicating either the \code{"start-end"} years of the future period or a (GCM-specific) warming level. Current options include the standard AR5 future time slices
 #'  for near term, \code{"2021-2040"}, medium term \code{"2041-2060"} and long term \code{"2081-2100"}, and the global
@@ -135,9 +135,9 @@ metaclipcc.Map <- function(project = "CMIP5",
             message("NOTE: \'delta\' argument ignored for the \'experiment=\"historical\"\' setting")
         }
     }
-    baseline <- match.arg(baseline, choices = c("1980-2010", "1986-2005", "1995-2014"))
+    baseline <- match.arg(baseline, choices = c("1981-2010", "1986-2005", "1995-2014"))
     hist.period <- switch(baseline,
-                          "1980-2010" = c(1980, 2005),
+                          "1981-2010" = c(1981, 2005),
                           "1986-2005" = c(1986, 2005),
                           "1995-2014" = c(1995, 2005))
     fill.period <- switch(baseline,
