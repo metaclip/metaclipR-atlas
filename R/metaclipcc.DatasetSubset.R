@@ -68,13 +68,16 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
 
     # Variable  ---------------------
     var.nodename <- paste0("ds:", variable)
+    attr.list <- list("ds:withUnits" = ref$units,
+                      "ds:hasShortName" = ref$shortname,
+                      "ds:hasVerticalLevel" = ref$vertical)
+    var.version <- getVariableVersion(Dataset.name, variable)
+    if (length(var.version) > 0) attr.list[["ds:withVersionTag"]] <- var.version
     graph <- my_add_vertices(graph,
                              name = var.nodename,
                              label = ref$shortname,
                              className = "ds:Variable",
-                             attr = list("ds:withUnits" = ref$units,
-                                         "ds:hasShortName" = ref$shortname,
-                                         "ds:hasVerticalLevel" = ref$vertical))
+                             attr = attr.list)
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, DatasetSubset.nodename),
                          getNodeIndexbyName(graph, var.nodename)),
