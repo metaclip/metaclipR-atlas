@@ -28,7 +28,8 @@
 #' @param experiment Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"},
 #' for CORDEX and CMIP5 products, and \code{"historical", "ssp126", "ssp245", "ssp370", "ssp460" and "ssp585"} for CMIP6 products.
 #' @param baseline Character string indicating the \code{"start-end"} years of the baseline (historical) period. Accepted values are:
-#' \code{"1981-2010"} (WMO standard period), \code{"1986-2005"} (AR5 period) or \code{"1995-2014"} (AR6 period). Internally, there is a tricky part here, see Details.
+#' \code{"1981-2010"} and \code{"1961-1990"} (WMO standard periods), \code{"1986-2005"} (AR5 period), \code{"1995-2014"} (AR6 period) and \code{"1850-1900"}
+#'  (Preindustrial). Internally, there is a tricky part here in some cases, see Details.
 #' @param future.period future period. Default to \code{NULL}, for historical maps (i.e., period defined by the \code{baseline} argument). Otherwise, a character string
 #'  indicating either the \code{"start-end"} years of the future period or a (GCM-specific) warming level. Current options include the standard AR5 future time slices
 #'  for near term, \code{"2021-2040"}, medium term \code{"2041-2060"} and long term \code{"2081-2100"}, and the global
@@ -69,7 +70,7 @@
 ## Legend values
 
 
-# ## Test area
+# # ## Test area
 # project = "CMIP6"
 # variable = "tasmax"
 # climate.index = "TXx"
@@ -82,7 +83,7 @@
 # ref.obs.dataset = "W5E5" # "EWEMBI"
 # proj = "Pacific"
 # map.bbox = NULL
-# test.mode = TRUE
+# test.mode = FALSE
 #
 # a <- metaclipcc.Map(project = project,
 #                     variable = variable,
@@ -97,8 +98,7 @@
 #                     proj = proj,
 #                     map.bbox = map.bbox,
 #                     test.mode = test.mode)
-
-## End test area
+# # ## End test area
 
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
@@ -157,7 +157,11 @@ metaclipcc.Map <- function(project = "CMIP5",
         }
     }
 
-    baseline <- match.arg(baseline, choices = c("1981-2010", "1986-2005", "1995-2014"))
+    baseline <- match.arg(baseline, choices = c("1981-2010",
+                                                "1961-1990",
+                                                "1986-2005",
+                                                "1995-2014",
+                                                "1850-1900"))
 
     if (project == "CMIP6") {
 
@@ -168,12 +172,17 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         hist.period <- switch(baseline,
                               "1981-2010" = c(1981, 2005),
+                              "1961-1990" = c(1961, 1990),
                               "1986-2005" = c(1986, 2005),
-                              "1995-2014" = c(1995, 2005))
+                              "1995-2014" = c(1995, 2005),
+                              "1850-1900" = c(1850, 1900))
+
         fill.period <- switch(baseline,
                               "1980-2010" = c(2006, 2010),
+                              "1961-1990" = NULL,
                               "1986-2005" = NULL,
-                              "1995-2014" = c(2006, 2014))
+                              "1995-2014" = c(2006, 2014),
+                              "1850-1900" = NULL)
     }
 
     if (experiment != "historical" & is.null(future.period)) stop("future.period argument is missing, with no default for ", experiment, " experiment")
@@ -379,6 +388,7 @@ metaclipcc.Map <- function(project = "CMIP5",
             ## Historical simulation data --------------------------------------
 
             graph.hist <- metaclipcc.Dataset(hist.list[x], RectangularGrid = gcm.grid)
+
             graph.h <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.hist,
                                                 Dataset.name = hist.list[x],
                                                 time.res.orig = time.res.orig,
@@ -744,7 +754,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
     descr <- "IPCC-AR6 World Regions"
-    refurl <- "https://github.com/IPCC-WG1/Atlas/tree/master/reference-regions"
+    refurl <- "https://doi.org/10.5194/essd-12-2959-2020"
     graph <- add_vertices(graph,
                           nv = 1,
                           name = maplayer.nodename,
