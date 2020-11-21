@@ -77,4 +77,16 @@ metaclipcc.getFuturePeriod <- function(project, model, future.period, rcp) {
 }
 
 
+#' @title Internal for retrieving a Variable version from the dataset master table
+#' @description Obtain the \code{ds:withVersionTag} data property associated with a CMIP6 \code{ds:Variable}
+#' @return The variable version for the specified dataset, as a character string
+#' @keywords internal
+#' @family lookup-tables
+
+getVariableVersion <- function(Dataset.name, variable) {
+    aux <- showIPCCdatasets(names.only = FALSE)
+    ind.row <- grep(Dataset.name, aux$name)
+    ind.col <- grep(paste(variable, "version", sep = "_"), names(aux))
+    return(aux[ind.row, ind.col])
+}
 
