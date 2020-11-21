@@ -25,7 +25,8 @@
 #' \code{"TXx", "TNn", "Rx1day", "Rx5day", "DS", "SPI6", "SPI12", "SPEI6", "SPEI12", "DF6", "DF12", "LFFP", "GDD","T21.5", "TX35", "TX40", "HDD", "FD"}
 #' @param delta Type of delta map displayed. This can be either \code{"absolute"} or \code{"relative"}. Default to \code{NULL} meaning that the map is not a delta
 #'  but an original magnitude.
-#' @param experiment Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"}
+#' @param experiment Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"},
+#' for CORDEX and CMIP5 products, and \code{"historical", "SSP126", "SSP245", "SSP370", "SSP460" and "SSP585"} for CMIP6 products.
 #' @param baseline Character string indicating the \code{"start-end"} years of the baseline (historical) period. Accepted values are:
 #' \code{"1981-2010"} (WMO standard period), \code{"1986-2005"} (AR5 period) or \code{"1995-2014"} (AR6 period). Internally, there is a tricky part here, see Details.
 #' @param future.period future period. Default to \code{NULL}, for historical maps (i.e., period defined by the \code{baseline} argument). Otherwise, a character string
@@ -39,8 +40,8 @@
 #'  This is the reference observational dataset to perform the correction. This is an individual that must be defined in the datasource vocabulary,
 #'   belonging to either classes \code{ds:ObservationalDataset} or \code{ds:Reanalysis}. Currently accepted values are \code{"W5E5"} and \code{"EWEMBI"}.
 #'   Note that the individual instances of the observational reference are assumed to be described in the datasource vocabulary.
-#' @param proj Map projection string. Accepted values are \code{"Robin"}, \code{"Arctic"} and \code{"Antarctic"},
-#' for Robinson and WGS84 Arctic/Antarctic Polar stereographic projections.
+#' @param proj Map projection string. Accepted values are \code{"Robin"}, \code{"Arctic"}, \code{"Antarctic"} and \code{"Pacific"}
+#' for Robinson and WGS84 Arctic/Antarctic Polar stereographic, and Pacific-centric projections respectively.
 #' @param map.bbox Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
 #' zoomed in by the user. If missing, then the HorizontalExtent associated to the \code{project} is assumed.
 #' @param test.mode For internal use only. When the test mode is on, only the first two models are used.
@@ -128,7 +129,12 @@ metaclipcc.Map <- function(project = "CMIP5",
     if (!is.null(delta)) {
         delta <- match.arg(delta, choices = c("absolute", "relative"))
     }
-    experiment <- match.arg(experiment, choices = c("historical", "rcp26", "rcp45", "rcp85"))
+    experiment <- if (project == "CMIP6") {
+        match.arg(experiment, choices = c("historical", "SSP126", "SSP245", "SSP370", "SSP460", "SSP585"))
+    } else {
+        match.arg(experiment, choices = c("historical", "rcp26", "rcp45", "rcp85"))
+    }
+
     if (experiment == "historical") {
         if (!is.null(delta)) {
             delta <- NULL
@@ -150,7 +156,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                                                               "1.5", "2", "3"))
     }
 
-    proj <- match.arg(proj, choices = c("Robin", "Arctic", "Antarctic"))
+    proj <- match.arg(proj, choices = c("Robin", "Arctic", "Antarctic", "Pacific"))
 
     if (!is.null(bias.adj.method)) {
         if (is.null(ref.obs.dataset)) stop("A reference observational dataset is required for bias correction", call. = FALSE)
@@ -630,7 +636,8 @@ metaclipcc.Map <- function(project = "CMIP5",
     proj.name <- switch(proj,
            "Robin" = "go:Robin",
            "Arctic" = "go:AntarcticPolarStereographic",
-           "Antarctic" = "go:ArcticPolarStereographic")
+           "Antarctic" = "go:ArcticPolarStereographic",
+           "Pacific" = "go:WGS84-Pacific")
 
     graph.proj <- metaclipcc.MapProjection(proj = proj.name)
     graph <- my_union_graph(graph, graph.proj$graph)
