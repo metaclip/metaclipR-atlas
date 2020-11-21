@@ -25,6 +25,7 @@ Get a future period time slice ready to be used by \code{metaclipR} functions
 }
 \seealso{
 Other lookup-tables: 
+\code{\link{getVariableVersion}()},
 \code{\link{showIPCCdatasets}()},
 \code{\link{showIPCCvars}()}
 }

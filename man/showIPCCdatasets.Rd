@@ -20,6 +20,7 @@ showIPCCdatasets()
 }
 \seealso{
 Other lookup-tables: 
+\code{\link{getVariableVersion}()},
 \code{\link{metaclipcc.getFuturePeriod}()},
 \code{\link{showIPCCvars}()}
 }

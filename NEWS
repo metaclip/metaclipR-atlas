@@ -26,7 +26,10 @@ metaclipcc changelog
  * Add W5E5 observational reference
 
 ## v0.2.0 (in devel)
- * Update internal lookup table. Add CMIP6 datasets.
+ * Update internal lookup tables. Add CMIP6 datasets and CMIP6 GWLs.
  * Add optional data provider argument to `metaclipcc.Dataset`
- * Filter models by RCP availability
+ * Update baseline periods
+ * Bug fix in variables master table
+ * Add new Robin-Pacific projection
+ * Filter models by RCP/SSP availability
 
