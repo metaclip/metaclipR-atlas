@@ -37,7 +37,8 @@ but an original magnitude.}
 for CORDEX and CMIP5 products, and \code{"historical", "ssp126", "ssp245", "ssp370", "ssp460" and "ssp585"} for CMIP6 products.}
 
 \item{baseline}{Character string indicating the \code{"start-end"} years of the baseline (historical) period. Accepted values are:
-\code{"1981-2010"} (WMO standard period), \code{"1986-2005"} (AR5 period) or \code{"1995-2014"} (AR6 period). Internally, there is a tricky part here, see Details.}
+\code{"1981-2010"} and \code{"1961-1990"} (WMO standard periods), \code{"1986-2005"} (AR5 period), \code{"1995-2014"} (AR6 period) and \code{"1850-1900"}
+ (Preindustrial). Internally, there is a tricky part here in some cases, see Details.}
 
 \item{future.period}{future period. Default to \code{NULL}, for historical maps (i.e., period defined by the \code{baseline} argument). Otherwise, a character string
 indicating either the \code{"start-end"} years of the future period or a (GCM-specific) warming level. Current options include the standard AR5 future time slices
