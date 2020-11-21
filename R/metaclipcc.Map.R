@@ -20,13 +20,13 @@
 #' @param project Project. Unused so far. Default to \code{"CMIP5"}.
 #' @param variable Code of the input ECV (it can be omitted if \code{climate.index} is indicated).
 #'  Current accepted values are restricted to \code{"tas", "pr", "tasmax", "tasmin"}.
-#' @param climate.index If the map is for a climate index, name of the index Otherwise NULL (the default). Currently accepted values are restricted to
+#' @param climate.index If the map is for a climate index, name of the index. Otherwise NULL (the default). Currently accepted values are restricted to
 #' the set of indices to be included in the Atlas, namely:
 #' \code{"TXx", "TNn", "Rx1day", "Rx5day", "DS", "SPI6", "SPI12", "SPEI6", "SPEI12", "DF6", "DF12", "LFFP", "GDD","T21.5", "TX35", "TX40", "HDD", "FD"}
 #' @param delta Type of delta map displayed. This can be either \code{"absolute"} or \code{"relative"}. Default to \code{NULL} meaning that the map is not a delta
 #'  but an original magnitude.
 #' @param experiment Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"},
-#' for CORDEX and CMIP5 products, and \code{"historical", "SSP126", "SSP245", "SSP370", "SSP460" and "SSP585"} for CMIP6 products.
+#' for CORDEX and CMIP5 products, and \code{"historical", "ssp126", "ssp245", "ssp370", "ssp460" and "ssp585"} for CMIP6 products.
 #' @param baseline Character string indicating the \code{"start-end"} years of the baseline (historical) period. Accepted values are:
 #' \code{"1981-2010"} (WMO standard period), \code{"1986-2005"} (AR5 period) or \code{"1995-2014"} (AR6 period). Internally, there is a tricky part here, see Details.
 #' @param future.period future period. Default to \code{NULL}, for historical maps (i.e., period defined by the \code{baseline} argument). Otherwise, a character string
@@ -70,20 +70,35 @@
 
 
 # ## Test area
-# project = "CMIP5"
+# project = "CMIP6"
 # variable = "tasmax"
 # climate.index = "TXx"
 # delta = "absolute"
-# experiment = "rcp26"
-# baseline = "1980-2010"
-# future.period = "2021-2040"
+# experiment = "ssp585"
+# baseline = "1981-2010"
+# future.period = "1.5"
 # season = 1:12
 # bias.adj.method = "ISIMIP3" # "EQM"
 # ref.obs.dataset = "W5E5" # "EWEMBI"
-# proj = "Robin"
+# proj = "Pacific"
 # map.bbox = NULL
-# test.mode = FALSE
-# ## End test area
+# test.mode = TRUE
+#
+# a <- metaclipcc.Map(project = project,
+#                     variable = variable,
+#                     climate.index = climate.index,
+#                     delta,
+#                     experiment,
+#                     baseline,
+#                     future.period,
+#                     season,
+#                     bias.adj.method = bias.adj.method,
+#                     ref.obs.dataset = ref.obs.dataset,
+#                     proj = proj,
+#                     map.bbox = map.bbox,
+#                     test.mode = test.mode)
+
+## End test area
 
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
@@ -100,7 +115,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                            test.mode = FALSE) {
 
     # Fixed parameters *******
-    ref.period <- c(1980, 2005)
+    ref.period <- c(1980, 2005) # Used as training period for bias correction
     time.res.orig <- "P1D"
     # ***********************
 
@@ -130,7 +145,7 @@ metaclipcc.Map <- function(project = "CMIP5",
         delta <- match.arg(delta, choices = c("absolute", "relative"))
     }
     experiment <- if (project == "CMIP6") {
-        match.arg(experiment, choices = c("historical", "SSP126", "SSP245", "SSP370", "SSP460", "SSP585"))
+        match.arg(experiment, choices = c("historical", "ssp126", "ssp245", "ssp370", "ssp460", "ssp585"))
     } else {
         match.arg(experiment, choices = c("historical", "rcp26", "rcp45", "rcp85"))
     }
@@ -141,15 +156,26 @@ metaclipcc.Map <- function(project = "CMIP5",
             message("NOTE: \'delta\' argument ignored for the \'experiment=\"historical\"\' setting")
         }
     }
+
     baseline <- match.arg(baseline, choices = c("1981-2010", "1986-2005", "1995-2014"))
-    hist.period <- switch(baseline,
-                          "1981-2010" = c(1981, 2005),
-                          "1986-2005" = c(1986, 2005),
-                          "1995-2014" = c(1995, 2005))
-    fill.period <- switch(baseline,
-                          "1980-2010" = c(2006, 2010),
-                          "1986-2005" = NULL,
-                          "1995-2014" = c(2006, 2014))
+
+    if (project == "CMIP6") {
+
+        hist.period <- strsplit(baseline, "-") %>% unlist() %>% as.integer()
+        fill.period <- NULL
+
+    } else {
+
+        hist.period <- switch(baseline,
+                              "1981-2010" = c(1981, 2005),
+                              "1986-2005" = c(1986, 2005),
+                              "1995-2014" = c(1995, 2005))
+        fill.period <- switch(baseline,
+                              "1980-2010" = c(2006, 2010),
+                              "1986-2005" = NULL,
+                              "1995-2014" = c(2006, 2014))
+    }
+
     if (experiment != "historical" & is.null(future.period)) stop("future.period argument is missing, with no default for ", experiment, " experiment")
     if (!is.null(future.period)) {
         future.period <- match.arg(future.period, choices = c("2021-2040", "2041-2060", "2081-2100",
@@ -243,6 +269,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     ls <- showIPCCdatasets(names.only = TRUE)
     hist.list <- ls[which(grepl(paste0("^", project, ".*historical"), ls))]
+
     if (experiment != "historical") {
 
         ## Need to filter models, because not all models have all experiments available (e.g. RCP 2.6 is lacking in some models)
@@ -252,7 +279,14 @@ metaclipcc.Map <- function(project = "CMIP5",
             stop("historical and future dataset numbers differ")
         }
     }
-    rcp85.list <- gsub("historical", "rcp85", hist.list) # For filling historical gap # All models have rcp85 available
+
+    pat <- if (project == "CMIP6") {
+        "ssp585"
+    } else {
+        "rcp85"
+    }
+
+    rcp85.list <- gsub("historical", pat, hist.list) # For filling historical gap # All models have rcp85 available
     aux <- showIPCCdatasets(names.only = FALSE)
 
     ## ECV filtering -----------------------------------------------------------
@@ -637,7 +671,7 @@ metaclipcc.Map <- function(project = "CMIP5",
            "Robin" = "go:Robin",
            "Arctic" = "go:AntarcticPolarStereographic",
            "Antarctic" = "go:ArcticPolarStereographic",
-           "Pacific" = "go:WGS84-Pacific")
+           "Pacific" = "go:Robin-Pacific")
 
     graph.proj <- metaclipcc.MapProjection(proj = proj.name)
     graph <- my_union_graph(graph, graph.proj$graph)
