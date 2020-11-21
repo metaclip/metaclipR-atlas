@@ -64,7 +64,7 @@ metaclipcc.getFuturePeriod <- function(project, model, future.period, rcp) {
                            "CMIP5" = "gwl_CMIP5.csv",
                            "CMIP6" = "gwl_CMIP6.csv")
         out <- read.csv(file.path(find.package("metaclipcc"), filename),
-                        stringsAsFactors = FALSE, na.strings = "")
+                        stringsAsFactors = FALSE, na.strings = "NA")
         ind.row <- grep(paste0(model, "_"), out$GCM, ignore.case = TRUE)
         ind.col <- grep(paste0(future.period,"_", rcp), names(out), ignore.case = TRUE)
         yr <- out[ind.row, ind.col]
