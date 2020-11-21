@@ -1,6 +1,6 @@
 variable,is_index,inputECV,vocabulary,description,scale,units,shortname,vertical,time_step,cellfun,realm,aggr.m,aggr.y
 tas,0,,,mean near-surface air temperature,,degC,tas,near-surface,P1D,mean,atmos,mean,mean
-tasmax,0,,,maximum near-surface air temperature,,degC,tasmin,near-surface,P1D,max,atmos,mean,mean
+tasmax,0,,,maximum near-surface air temperature,,degC,tasmax,near-surface,P1D,max,atmos,mean,mean
 tasmin,0,,,minimum near-surface air temperature,,degC,tasmin,near-surface,P1D,min,atmos,mean,mean
 sst,0,,,sea-surface temperature,,degC,ssl,surface,P1D,mean,ocean,mean,mean
 pr,0,,,total precipitation amount,,mm,tp,surface,P1D,sum,atmos,sum,sum
