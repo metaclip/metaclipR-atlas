@@ -56,11 +56,21 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     ref <- ref[grep(pattern = paste0("^", variable, "$"), x = ref$variable),]
     DatasetSubset.nodename <- paste0("DatasetSubset.", randomName())
     descr <- paste("This step entails extracting a spatio-temporal domain that is a logical subset of the antecedent Dataset for", ref$description)
+    attr.list <- list("dc:description" = descr)
+
+    ## NOTE: Variable version is appended here in the datsetSubset node as object property, since each model has a different version
+    ## and variable is defined as an individual (thus variable is a unique node for all models)
+
+    var.version <- getVariableVersion(Dataset.name, variable)
+    if (length(var.version) > 0) {
+        attr.list[["ds:withVersionTag"]] <- var.version
+        attr.list[["rdfs:comment"]] <- paste0("The variable \'", variable, "\' version of this dataset is ", var.version)
+    }
     graph <- my_add_vertices(graph,
                              name = DatasetSubset.nodename,
                              label = "DatasetSubset",
                              className = "ds:DatasetSubset",
-                             attr = list("dc:description" = descr))
+                             attr = attr.list)
     graph <- add_edges(graph,
                        c(getNodeIndexbyName(graph, parent.node),
                          getNodeIndexbyName(graph, DatasetSubset.nodename)),
@@ -71,8 +81,6 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     attr.list <- list("ds:withUnits" = ref$units,
                       "ds:hasShortName" = ref$shortname,
                       "ds:hasVerticalLevel" = ref$vertical)
-    var.version <- getVariableVersion(Dataset.name, variable)
-    if (length(var.version) > 0) attr.list[["ds:withVersionTag"]] <- var.version
     graph <- my_add_vertices(graph,
                              name = var.nodename,
                              label = ref$shortname,
@@ -124,7 +132,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     #     # TODO: Find ocean model resolutions and include in reference table!
     #     attr.list <- list()
     # }
-    prefix <- ifelse(ref1$SimulationDomain == "GlobalExtent", "ds:", "ipcc:")
+    # prefix <- ifelse(ref1$SimulationDomain == "GlobalExtent", "ds:", "ipcc:")
     graph <- my_add_vertices(graph,
                              name = ref1$SimulationDomain,
                              label = ref1$SimulationDomain,
