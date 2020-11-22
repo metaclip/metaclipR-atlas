@@ -33,3 +33,8 @@ metaclipcc changelog
  * Add new Robin-Pacific projection
  * Filter models by RCP/SSP availability
 
+## v0.2.1 (22 Nov 2020)
+ * Handle exception when no model reaches the specified GWL
+ * Include withVersionTag data property in DatasetSubset node for variable versioning
+
+
