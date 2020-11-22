@@ -72,18 +72,19 @@
 
 # # ## Test area
 # project = "CMIP6"
-# variable = "tasmax"
-# climate.index = "TXx"
+# variable = "tas"
+# climate.index = "NULL"
 # delta = "absolute"
-# experiment = "ssp585"
+# experiment = "ssp126"
 # baseline = "1981-2010"
-# future.period = "1.5"
+# future.period = "4"
 # season = 1:12
-# bias.adj.method = "ISIMIP3" # "EQM"
-# ref.obs.dataset = "W5E5" # "EWEMBI"
-# proj = "Pacific"
+# bias.adj.method = NULL #"ISIMIP3" # "EQM"
+# ref.obs.dataset = NULL #"W5E5" # "EWEMBI"
+# proj = "Robin"
 # map.bbox = NULL
 # test.mode = FALSE
+# #
 #
 # a <- metaclipcc.Map(project = project,
 #                     variable = variable,
@@ -98,7 +99,7 @@
 #                     proj = proj,
 #                     map.bbox = map.bbox,
 #                     test.mode = test.mode)
-# # ## End test area
+# ## End test area
 
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
@@ -397,7 +398,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                                                 season = season,
                                                 years = hist.period)
 
-           ## Filling the gap in historical period with RCP --------------------
+            ## Filling the gap in historical period with RCP --------------------
 
             if (!is.null(fill.period)) {
                 ref.dataset <- if (experiment == "historical") {
@@ -632,188 +633,195 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     ## Filter missing models ---------------------------------------------------
 
-    rm.ind <- which(sapply(graph.list, "is.null") == TRUE)
-    if (length(rm.ind) > 0) graph.list <- graph.list[-rm.ind]
+    if (length(graph.list) == 0) {
 
-    ## Ensemble building -------------------------------------------------------
+        message("No model reached the +", future.period, " degC global warming level in ", experiment, ": No provenance output was created.")
 
-    descr <- "The multi-model ensemble is built by joining each individual model climatology along the new dimension \'member\'"
-    graph <- metaclipR.Ensemble(graph.list = graph.list,
-                                disable.command = TRUE,
-                                dc.description = descr)
-
-    ## MAP PRODUCT DESCRIPTION -------------------------------------------------
-    ## TODO:Colorbar bounds
-    ## IPCC regions layer TODO: update referenceURL ESSD
-
-    ## Map ---------------------------------------------------------------------
-    ### Includes links to a HorizontalExtent and a Projection
-
-    withInput <- graph$parentnodename
-    graph <- graph$graph
-    map.nodename <- paste("Map", randomName(), sep = ".")
-    descr <- "Final map product, consisting of different superposed layers and other graphical elements (legend, title etc.)"
-    graph <- add_vertices(graph,
-                          nv = 1,
-                          name = map.nodename,
-                          label = "Map product",
-                          className = "go:Map",
-                          attr = list( "dc:description" = descr))
-    if (is.null(map.bbox)) {
-        map.extent <- reference.extent
     } else {
-        descr <- "The map horizontal extent is interactively defined by the user through the Atlas Viewer application"
-        map.extent <- metaclipcc.HorizontalExtent(xmin = map.bbox[1],
-                                                  xmax = map.bbox[3],
-                                                  ymin = map.bbox[2],
-                                                  ymax = map.bbox[4],
-                                                  dc.description = descr)
-        graph <- my_union_graph(graph, map.extent$graph)
-    }
-    graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, map.nodename),
-                         getNodeIndexbyName(graph, map.extent$parentnodename)),
-                       label = "go:hasMapExtent")
 
-    ## Projection --------------------------------------------------------------
+        rm.ind <- which(sapply(graph.list, "is.null") == TRUE)
+        if (length(rm.ind) > 0) graph.list <- graph.list[-rm.ind]
 
-    proj.name <- switch(proj,
-           "Robin" = "go:Robin",
-           "Arctic" = "go:AntarcticPolarStereographic",
-           "Antarctic" = "go:ArcticPolarStereographic",
-           "Pacific" = "go:Robin-Pacific")
+        ## Ensemble building -------------------------------------------------------
 
-    graph.proj <- metaclipcc.MapProjection(proj = proj.name)
-    graph <- my_union_graph(graph, graph.proj$graph)
-    graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, map.nodename),
-                         getNodeIndexbyName(graph, graph.proj$parentnodename)),
-                       label = "go:hasMapProjection")
+        descr <- "The multi-model ensemble is built by joining each individual model climatology along the new dimension \'member\'"
+        graph <- metaclipR.Ensemble(graph.list = graph.list,
+                                    disable.command = TRUE,
+                                    dc.description = descr)
 
-    ## Heatmap raster ----------------------------------------------------------
+        ## MAP PRODUCT DESCRIPTION -------------------------------------------------
+        ## TODO:Colorbar bounds
+        ## IPCC regions layer TODO: update referenceURL ESSD
 
-    maplayer.nodename <- paste("mapRasterLayer", randomName(), sep = ".")
+        ## Map ---------------------------------------------------------------------
+        ### Includes links to a HorizontalExtent and a Projection
 
-    descr <- if (is.null(delta)) {
-        "The ensemble mean is graphically displayed on the map as a raster heatmap layer"
-    } else {
-        "The ensemble delta change is graphically displayed on the map as a raster heatmap layer"
-    }
-    graph <- add_vertices(graph,
-                          nv = 1,
-                          name = maplayer.nodename,
-                          label = "Heatmap",
-                          className = "go:MapRaster",
-                          attr = list("dc:description" = descr))
-    graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, withInput),
-                         getNodeIndexbyName(graph, maplayer.nodename)),
-                       label = "go:hadGraphicalRepresentation")
-    graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, map.nodename),
-                         getNodeIndexbyName(graph, maplayer.nodename)),
-                       label = "go:hasMapLayer")
+        withInput <- graph$parentnodename
+        graph <- graph$graph
+        map.nodename <- paste("Map", randomName(), sep = ".")
+        descr <- "Final map product, consisting of different superposed layers and other graphical elements (legend, title etc.)"
+        graph <- add_vertices(graph,
+                              nv = 1,
+                              name = map.nodename,
+                              label = "Map product",
+                              className = "go:Map",
+                              attr = list( "dc:description" = descr))
+        if (is.null(map.bbox)) {
+            map.extent <- reference.extent
+        } else {
+            descr <- "The map horizontal extent is interactively defined by the user through the Atlas Viewer application"
+            map.extent <- metaclipcc.HorizontalExtent(xmin = map.bbox[1],
+                                                      xmax = map.bbox[3],
+                                                      ymin = map.bbox[2],
+                                                      ymax = map.bbox[4],
+                                                      dc.description = descr)
+            graph <- my_union_graph(graph, map.extent$graph)
+        }
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, map.nodename),
+                             getNodeIndexbyName(graph, map.extent$parentnodename)),
+                           label = "go:hasMapExtent")
 
-    ## Color palette -----------------------------------------------------------
+        ## Projection --------------------------------------------------------------
 
-    input.ecv <- if (isTRUE(climate.index %in% c("Rx1day", "Rx5day",
-                                                 "DS","SPI6",
-                                                 "SPI12", "SPEI6",
-                                                 "SPEI12", "DF6",
-                                                 "DF12")) | (isTRUE(ref.vars$variable) == "pr"))  {
-        "pr"
-    } else {
-        "tas"
-    }
-    div <- ifelse(is.null(delta), FALSE, TRUE)
-    graph.pal <- metaclipcc.ColorPalette(input.ecv = input.ecv, diverging = div)
-    graph <- my_union_graph(graph, graph.pal$graph)
-    graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, maplayer.nodename),
-                         getNodeIndexbyName(graph, graph.pal$parentnodename)),
-                       label = "go:hasColorPalette")
+        proj.name <- switch(proj,
+                            "Robin" = "go:Robin",
+                            "Arctic" = "go:AntarcticPolarStereographic",
+                            "Antarctic" = "go:ArcticPolarStereographic",
+                            "Pacific" = "go:Robin-Pacific")
 
-    ## Coastline ---------------------------------------------------------------
+        graph.proj <- metaclipcc.MapProjection(proj = proj.name)
+        graph <- my_union_graph(graph, graph.proj$graph)
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, map.nodename),
+                             getNodeIndexbyName(graph, graph.proj$parentnodename)),
+                           label = "go:hasMapProjection")
 
-    maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
-    descr <- "Vector layer. Physical map of coastline boundaries"
-    graph <- add_vertices(graph,
-                          nv = 1,
-                          name = maplayer.nodename,
-                          label = "Coastline boundaries",
-                          className = "go:MapLines",
-                          attr = list("dc:description" = descr,
-                                      "go:LineColor" = "hex-5492cd",
-                                      "go:LineType" = "solid"))
-    graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, map.nodename),
-                         getNodeIndexbyName(graph, maplayer.nodename)),
-                       label = "go:hasMapLayer")
+        ## Heatmap raster ----------------------------------------------------------
 
-    ## IPCC regions ------------------------------------------------------------
+        maplayer.nodename <- paste("mapRasterLayer", randomName(), sep = ".")
 
-    maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
-    descr <- "IPCC-AR6 World Regions"
-    refurl <- "https://doi.org/10.5194/essd-12-2959-2020"
-    graph <- add_vertices(graph,
-                          nv = 1,
-                          name = maplayer.nodename,
-                          label = "IPCC World Regions",
-                          className = "go:MapLines",
-                          attr = list("dc:description" = descr,
-                                      "ds:referenceURL" = refurl,
-                                      "go:LineColor" = "hex-D3D3D3",
-                                      "go:LineType" = "solid"))
-    graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, map.nodename),
-                         getNodeIndexbyName(graph, maplayer.nodename)),
-                       label = "go:hasMapLayer")
-
-    # Map hatching -------------------------------------------------------------
-
-    if (!is.null(delta)) {
-
-        # Model Consensus
-
-        maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-        descr <- "Hatched pattern of -45 deg. in the map indicates a \'weak\' model agreement on the sign of the projected mean climate change signal (less than 80%, following Nikulin et al. 2018)"
-        refurl <- "https://doi.org/10.1088/1748-9326/aab1b1"
+        descr <- if (is.null(delta)) {
+            "The ensemble mean is graphically displayed on the map as a raster heatmap layer"
+        } else {
+            "The ensemble delta change is graphically displayed on the map as a raster heatmap layer"
+        }
         graph <- add_vertices(graph,
                               nv = 1,
                               name = maplayer.nodename,
-                              label = "Consensus Hatching",
-                              className = "go:Mask",
+                              label = "Heatmap",
+                              className = "go:MapRaster",
+                              attr = list("dc:description" = descr))
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, withInput),
+                             getNodeIndexbyName(graph, maplayer.nodename)),
+                           label = "go:hadGraphicalRepresentation")
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, map.nodename),
+                             getNodeIndexbyName(graph, maplayer.nodename)),
+                           label = "go:hasMapLayer")
+
+        ## Color palette -----------------------------------------------------------
+
+        input.ecv <- if (isTRUE(climate.index %in% c("Rx1day", "Rx5day",
+                                                     "DS","SPI6",
+                                                     "SPI12", "SPEI6",
+                                                     "SPEI12", "DF6",
+                                                     "DF12")) | (isTRUE(ref.vars$variable) == "pr"))  {
+            "pr"
+        } else {
+            "tas"
+        }
+        div <- ifelse(is.null(delta), FALSE, TRUE)
+        graph.pal <- metaclipcc.ColorPalette(input.ecv = input.ecv, diverging = div)
+        graph <- my_union_graph(graph, graph.pal$graph)
+        graph <- add_edges(graph,
+                           c(getNodeIndexbyName(graph, maplayer.nodename),
+                             getNodeIndexbyName(graph, graph.pal$parentnodename)),
+                           label = "go:hasColorPalette")
+
+        ## Coastline ---------------------------------------------------------------
+
+        maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
+        descr <- "Vector layer. Physical map of coastline boundaries"
+        graph <- add_vertices(graph,
+                              nv = 1,
+                              name = maplayer.nodename,
+                              label = "Coastline boundaries",
+                              className = "go:MapLines",
                               attr = list("dc:description" = descr,
-                                          "ds:referenceURL" = refurl,
-                                          "go:LineAngle" = -45,
-                                          "go:LineColor" = "hex-000000",
+                                          "go:LineColor" = "hex-5492cd",
                                           "go:LineType" = "solid"))
         graph <- add_edges(graph,
                            c(getNodeIndexbyName(graph, map.nodename),
                              getNodeIndexbyName(graph, maplayer.nodename)),
                            label = "go:hasMapLayer")
 
-        # SNR
+        ## IPCC regions ------------------------------------------------------------
 
-        maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-        descr <- "Hatched pattern of +45 deg. in the map indicates a low signal-to-noise ratio (SNR<1), i.e. the ensemble mean is smaller than the standard deviation across model results (following Nikulin et al. 2018)"
+        maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
+        descr <- "IPCC-AR6 World Regions"
+        refurl <- "https://doi.org/10.5194/essd-12-2959-2020"
         graph <- add_vertices(graph,
                               nv = 1,
                               name = maplayer.nodename,
-                              label = "SNR>1 Hatching",
-                              className = "go:Mask",
+                              label = "IPCC World Regions",
+                              className = "go:MapLines",
                               attr = list("dc:description" = descr,
                                           "ds:referenceURL" = refurl,
-                                          "go:LineAngle" = 45,
-                                          "go:LineColor" = "hex-000000",
+                                          "go:LineColor" = "hex-D3D3D3",
                                           "go:LineType" = "solid"))
         graph <- add_edges(graph,
                            c(getNodeIndexbyName(graph, map.nodename),
                              getNodeIndexbyName(graph, maplayer.nodename)),
                            label = "go:hasMapLayer")
 
+        # Map hatching -------------------------------------------------------------
+
+        if (!is.null(delta)) {
+
+            # Model Consensus
+
+            maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
+            descr <- "Hatched pattern of -45 deg. in the map indicates a \'weak\' model agreement on the sign of the projected mean climate change signal (less than 80%, following Nikulin et al. 2018)"
+            refurl <- "https://doi.org/10.1088/1748-9326/aab1b1"
+            graph <- add_vertices(graph,
+                                  nv = 1,
+                                  name = maplayer.nodename,
+                                  label = "Consensus Hatching",
+                                  className = "go:Mask",
+                                  attr = list("dc:description" = descr,
+                                              "ds:referenceURL" = refurl,
+                                              "go:LineAngle" = -45,
+                                              "go:LineColor" = "hex-000000",
+                                              "go:LineType" = "solid"))
+            graph <- add_edges(graph,
+                               c(getNodeIndexbyName(graph, map.nodename),
+                                 getNodeIndexbyName(graph, maplayer.nodename)),
+                               label = "go:hasMapLayer")
+
+            # SNR
+
+            maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
+            descr <- "Hatched pattern of +45 deg. in the map indicates a low signal-to-noise ratio (SNR<1), i.e. the ensemble mean is smaller than the standard deviation across model results (following Nikulin et al. 2018)"
+            graph <- add_vertices(graph,
+                                  nv = 1,
+                                  name = maplayer.nodename,
+                                  label = "SNR>1 Hatching",
+                                  className = "go:Mask",
+                                  attr = list("dc:description" = descr,
+                                              "ds:referenceURL" = refurl,
+                                              "go:LineAngle" = 45,
+                                              "go:LineColor" = "hex-000000",
+                                              "go:LineType" = "solid"))
+            graph <- add_edges(graph,
+                               c(getNodeIndexbyName(graph, map.nodename),
+                                 getNodeIndexbyName(graph, maplayer.nodename)),
+                               label = "go:hasMapLayer")
+
+        }
+        return(list("graph" = graph, "parentnodename" =  map.nodename))
     }
-    return(list("graph" = graph, "parentnodename" =  map.nodename))
 }
 
 
