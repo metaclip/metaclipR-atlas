@@ -70,36 +70,36 @@
 ## Legend values
 
 
-# # ## Test area
-# project = "CMIP6"
-# variable = "tas"
-# climate.index = "NULL"
-# delta = "absolute"
-# experiment = "ssp126"
-# baseline = "1981-2010"
-# future.period = "4"
-# season = 1:12
-# bias.adj.method = NULL #"ISIMIP3" # "EQM"
-# ref.obs.dataset = NULL #"W5E5" # "EWEMBI"
-# proj = "Robin"
-# map.bbox = NULL
-# test.mode = FALSE
-# #
+# ## Test area
+project = "CMIP6"
+variable = "tas"
+climate.index = NULL
+delta = "absolute"
+experiment = "ssp126"
+baseline = "1981-2010"
+future.period = "3"
+season = 1:12
+bias.adj.method = NULL #"ISIMIP3" # "EQM"
+ref.obs.dataset = NULL #"W5E5" # "EWEMBI"
+proj = "Robin"
+map.bbox = NULL
+test.mode = FALSE
 #
-# a <- metaclipcc.Map(project = project,
-#                     variable = variable,
-#                     climate.index = climate.index,
-#                     delta,
-#                     experiment,
-#                     baseline,
-#                     future.period,
-#                     season,
-#                     bias.adj.method = bias.adj.method,
-#                     ref.obs.dataset = ref.obs.dataset,
-#                     proj = proj,
-#                     map.bbox = map.bbox,
-#                     test.mode = test.mode)
-# ## End test area
+
+a <- metaclipcc.Map(project = project,
+                    variable = variable,
+                    climate.index = climate.index,
+                    delta,
+                    experiment,
+                    baseline,
+                    future.period,
+                    season,
+                    bias.adj.method = bias.adj.method,
+                    ref.obs.dataset = ref.obs.dataset,
+                    proj = proj,
+                    map.bbox = map.bbox,
+                    test.mode = test.mode)
+## End test area
 
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
@@ -636,7 +636,8 @@ metaclipcc.Map <- function(project = "CMIP5",
     if (length(graph.list) == 0) {
 
         message("No model reached the +", future.period, " degC global warming level in ", experiment, ": No provenance output was created.")
-        return(NULL)
+        graph <- NULL
+        map.nodename <- NULL
 
     } else {
 
@@ -821,8 +822,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                                label = "go:hasMapLayer")
 
         }
-        return(list("graph" = graph, "parentnodename" =  map.nodename))
     }
+    return(list("graph" = graph, "parentnodename" =  map.nodename))
 }
 
 
