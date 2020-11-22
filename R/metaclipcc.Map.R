@@ -636,6 +636,7 @@ metaclipcc.Map <- function(project = "CMIP5",
     if (length(graph.list) == 0) {
 
         message("No model reached the +", future.period, " degC global warming level in ", experiment, ": No provenance output was created.")
+        return(NULL)
 
     } else {
 
