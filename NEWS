@@ -37,4 +37,7 @@ metaclipcc changelog
  * Handle exception when no model reaches the specified GWL
  * Include withVersionTag data property in DatasetSubset node for variable versioning
 
+## v0.2.2 (in devel)
+ * Fix typo in "ds:ObservationalDataset"" (":" was missing)
+ * Exclude variable version in metadata description when it is NA
 
