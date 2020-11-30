@@ -62,7 +62,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     ## and variable is defined as an individual (thus variable is a unique node for all models)
 
     var.version <- getVariableVersion(Dataset.name, variable)
-    if (length(var.version) > 0) {
+    if (!is.na(var.version)) {
         attr.list[["ds:withVersionTag"]] <- var.version
         attr.list[["rdfs:comment"]] <- paste0("The variable \'", variable, "\' version of this dataset is ", var.version)
     }
