@@ -49,7 +49,7 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
     if (!is.na(ref$classObs)) {
         descr <- paste("A dataset of the", ref$Project, "project containing observed reference records of the",
                        ref$classObs, "class")
-        classname <- paste0(ref$vocabulary, ref$classObs)
+        classname <- paste(ref$vocabulary, ref$classObs, sep = ":")
         graph <- my_add_vertices(graph,
                                  name = Dataset.name,
                                  label = Dataset.name,
