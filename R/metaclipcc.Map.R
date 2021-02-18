@@ -1,6 +1,6 @@
 ##     metaclipcc.map METACLIP description of an Atlas map product
 ##
-##     Copyright (C) 2020 Santander Meteorology Group (http://www.meteo.unican.es)
+##     Copyright (C) 2021 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
 ##     This program is free software: you can redistribute it and/or modify
 ##     it under the terms of the GNU General Public License as published by
@@ -71,19 +71,19 @@
 
 
 # ## Test area
-# project = "CMIP6"
+# project = "CMIP5"
 # variable = "tas"
 # climate.index = NULL
 # delta = "absolute"
-# experiment = "ssp126"
-# baseline = "1981-2010"
-# future.period = "3"
+# experiment = "rcp45" #"ssp126"
+# baseline = "1995-2014"
+# future.period = "1.5"
 # season = 1:12
 # bias.adj.method = NULL #"ISIMIP3" # "EQM"
 # ref.obs.dataset = NULL #"W5E5" # "EWEMBI"
 # proj = "Robin"
 # map.bbox = NULL
-# test.mode = FALSE
+# test.mode = TRUE
 # #
 #
 # a <- metaclipcc.Map(project = project,
@@ -99,7 +99,11 @@
 #                     proj = proj,
 #                     map.bbox = map.bbox,
 #                     test.mode = test.mode)
-## End test area
+# a
+#
+# graph2json(a$graph, output.file = "ignore/prueba2.json")
+
+# End test area
 
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
@@ -179,7 +183,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                               "1850-1900" = c(1850, 1900))
 
         fill.period <- switch(baseline,
-                              "1980-2010" = c(2006, 2010),
+                              "1981-2010" = c(2006, 2010),
                               "1961-1990" = NULL,
                               "1986-2005" = NULL,
                               "1995-2014" = c(2006, 2014),
@@ -618,10 +622,15 @@ metaclipcc.Map <- function(project = "CMIP5",
                 paste("The climate change signal is computed, for each grid cell, as the ratio (in %) between the",
                       ref.vars$variable, "climatologies of the", experiment, "and the historical scenarios")
             }
+
+            ### 'my_union_graph' unable to label edges for "filled" historical datasets in future experiments (NAs produced in output json)
+
             graph <- metaclipcc.Delta(graph = graph.r,
                                       referenceGraph = graph.h,
-                                      delta.type = delta, dc.description = descr)
+                                      delta.type = delta,
+                                      dc.description = descr)
         } else {
+
             if (experiment == "historical") {
                 graph <- graph.h
             } else {
