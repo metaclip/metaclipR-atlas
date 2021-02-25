@@ -31,7 +31,7 @@
 #' @export
 #' @author J. Bedia
 
-# graph <- metaclipcc.Dataset(Dataset.name = "CMIP5_CNRM-CERFACS-CNRM-CM5_historical")
+# graph <- metaclipcc.Dataset(Dataset.name = "CMIP5_ACCESS1.0_historical")
 # plot(graph$graph)
 # graph2json(graph = graph$graph, output.file = "/tmp/cnrm.json")
 
@@ -50,15 +50,17 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
         descr <- paste("A dataset of the", ref$Project, "project containing observed reference records of the",
                        ref$classObs, "class")
         classname <- paste(ref$vocabulary, ref$classObs, sep = ":")
+        nodename <- paste0(Dataset.name, ".", randomName())
         graph <- my_add_vertices(graph,
-                                 name = Dataset.name,
+                                 name = nodename,
                                  label = Dataset.name,
                                  className = classname,
                                  attr = list("ds:referenceURL" = ref$doi,
                                              "dc:description" = descr,
                                              "ds:withVersionTag" = ref$SoftwareVersion))
     } else {
-        classname <- "ds:MultiDecadalSimulation"
+        # classname <- "ds:MultiDecadalSimulation"
+        dname <- paste("ipcc", Dataset.name, sep = ":")
         if (is.na(ref$RCM)) {
             descr <- paste("A dataset of the", ref$Project, "project containing simulations of the",
                            ref$GCM, "GCM for the",
@@ -70,9 +72,9 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
                            ref$Experiment, "experiment")
         }
         graph <- my_add_vertices(graph,
-                                 name = Dataset.name,
+                                 name = dname,
                                  label = Dataset.name,
-                                 className = classname,
+                                 className = "ds:MultiDecadalSimulation",
                                  attr = list("ds:referenceURL" = ref$doi,
                                              "dc:description" = descr,
                                              "ds:hasRun" = ref$Run))
@@ -84,7 +86,7 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
                              label = DataProvider,
                              className = "ds:DataProvider")
     graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, Dataset.name),
+                       c(getNodeIndexbyName(graph, dname),
                          getNodeIndexbyName(graph, dp.nodename)),
                        label = "ds:hadDataProvider")
     # ModellingCenter
@@ -96,7 +98,7 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
                                  label = ModellingCenter[i],
                                  className = "ds:ModellingCenter")
         graph <- add_edges(graph,
-                           c(getNodeIndexbyName(graph, Dataset.name),
+                           c(getNodeIndexbyName(graph, dname),
                              getNodeIndexbyName(graph, mc.nodename)),
                            label = "ds:hadModellingCenter")
     }
@@ -108,7 +110,7 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
                              label = Project,
                              className = "ds:Project")
     graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, Dataset.name),
+                       c(getNodeIndexbyName(graph, dname),
                          getNodeIndexbyName(graph, project.nodename)),
                        label = "ds:hadProject")
     # Experiment
@@ -120,7 +122,7 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
                                  label = Experiment,
                                  className = "ds:Experiment")
         graph <- add_edges(graph,
-                           c(getNodeIndexbyName(graph, Dataset.name),
+                           c(getNodeIndexbyName(graph, dname),
                              getNodeIndexbyName(graph, exp.nodename)),
                            label = "ds:hadExperiment")
     }
@@ -135,7 +137,7 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
                                  className = "ds:GCM")
         if (is.na(RCM)) {
             graph <- add_edges(graph,
-                               c(getNodeIndexbyName(graph, Dataset.name),
+                               c(getNodeIndexbyName(graph, dname),
                                  getNodeIndexbyName(graph, gcm.nodename)),
                                label = "ds:hadSimulationModel")
         } else {## RCM simulations
@@ -147,7 +149,7 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
                                      attr = list("ds:withSimulationDomain" = ref$SimulationDomain,
                                                  "ds:withVersionTag" = ref$SoftwareVersion))
             graph <- add_edges(graph,
-                               c(getNodeIndexbyName(graph, Dataset.name),
+                               c(getNodeIndexbyName(graph, dname),
                                  getNodeIndexbyName(graph, rcm.nodename)),
                                label = "ds:hadSimulationModel")
             # Driving GCM
@@ -160,8 +162,8 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
     ## Model Grid
     graph <- my_union_graph(graph, RectangularGrid[["graph"]])
     graph <- add_edges(graph,
-                       c(getNodeIndexbyName(graph, Dataset.name),
+                       c(getNodeIndexbyName(graph, dname),
                          getNodeIndexbyName(graph, RectangularGrid[["parentnodename"]])),
                        label = "ds:hasRectangularGrid")
-    return(list("graph" = graph, "parentnodename" = Dataset.name))
+    return(list("graph" = graph, "parentnodename" = dname))
 }
