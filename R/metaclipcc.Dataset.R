@@ -50,9 +50,9 @@ metaclipcc.Dataset <- function(Dataset.name, RectangularGrid, DataProvider = "ES
         descr <- paste("A dataset of the", ref$Project, "project containing observed reference records of the",
                        ref$classObs, "class")
         classname <- paste(ref$vocabulary, ref$classObs, sep = ":")
-        nodename <- paste0(Dataset.name, ".", randomName())
+        dname <- paste0(Dataset.name, ".", randomName())
         graph <- my_add_vertices(graph,
-                                 name = nodename,
+                                 name = dname,
                                  label = Dataset.name,
                                  className = classname,
                                  attr = list("ds:referenceURL" = ref$doi,
