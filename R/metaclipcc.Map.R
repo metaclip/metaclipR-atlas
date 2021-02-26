@@ -60,6 +60,7 @@
 #'
 #' @import metaclipR
 #' @importFrom magrittr %>% extract2
+#' @importFrom igraph V
 #'
 #' @export
 
@@ -68,6 +69,7 @@
 ## Define simulation domains (ds:SpatialExtent individual instances) for CORDEX projects
 ## Deal with grid info for oceanic variables
 ## Legend values
+## Review hatching criteria
 
 
 # ## Test area
@@ -410,8 +412,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                 } else {
                     aux[grep(rcp.list[x], aux$name),]
                 }
-                graph2 <- metaclipcc.Dataset(ref.dataset$name, RectangularGrid = gcm.grid)
-                graph2 <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph2,
+                graph.rcp <- metaclipcc.Dataset(ref.dataset$name, RectangularGrid = gcm.grid)
+                graph2 <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.rcp,
                                                    Dataset.name = ref.dataset$name,
                                                    variable = vars[i],
                                                    ipcc.region = ipcc.region,
@@ -457,10 +459,17 @@ metaclipcc.Map <- function(project = "CMIP5",
 
             ## Future simulation data ------------------------------------------
 
+            # Check if the future dataset node already exists
+            # (It is TRUE when it has been previously defined for filling the historical gap period)
+            rcp.nodename <- paste("ipcc", rcp.list[x], sep = ":")
+            is.rcp.already.used <- any(igraph::V(graph.h$graph)$name == rcp.nodename)
             graph.r <- NULL
             if (experiment != "historical") {
-                graph.r <- metaclipcc.Dataset(rcp.list[x], RectangularGrid = gcm.grid)
-                graph.r <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.r,
+                if (!is.rcp.already.used) {
+                    graph.rcp <- metaclipcc.Dataset(rcp.list[x], RectangularGrid = gcm.grid)
+
+                }
+                graph.r <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.rcp,
                                                     Dataset.name = rcp.list[x],
                                                     time.res.orig = time.res.orig,
                                                     ipcc.region = ipcc.region,
@@ -472,8 +481,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
                 if (!is.null(bias.adj.method)) {
                     descr <- paste0("In this step the future time slice is bias-adjusted, using the historical experiment simulation as training data, and the ",
-                                    ref.obs.dataset,
-                                    " observation data as predictand")
+                                    ref.obs.dataset, " observation data as predictand")
 
                     graph.r <- metaclipcc.BiasCorrection(graph = graph.r,
                                                          ReferenceGraphSpatialExtent = reference.extent,
@@ -622,9 +630,6 @@ metaclipcc.Map <- function(project = "CMIP5",
                 paste("The climate change signal is computed, for each grid cell, as the ratio (in %) between the",
                       ref.vars$variable, "climatologies of the", experiment, "and the historical scenarios")
             }
-
-            ### 'my_union_graph' unable to label edges for "filled" historical datasets in future experiments (NAs produced in output json)
-
             graph <- metaclipcc.Delta(graph = graph.r,
                                       referenceGraph = graph.h,
                                       delta.type = delta,
