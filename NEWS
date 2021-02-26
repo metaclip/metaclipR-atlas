@@ -40,4 +40,6 @@ metaclipcc changelog
 ## v0.2.2 (in devel)
  * Fix typo in "ds:ObservationalDataset"" (":" was missing)
  * Exclude variable version in metadata description when it is NA
+ * Remove run labels from dataset names in dataset lookup table
+ * Handle already existing dataset nodes
 
