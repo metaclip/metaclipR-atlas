@@ -461,10 +461,10 @@ metaclipcc.Map <- function(project = "CMIP5",
 
             # Check if the future dataset node already exists
             # (It is TRUE when it has been previously defined for filling the historical gap period)
-            rcp.nodename <- paste("ipcc", rcp.list[x], sep = ":")
-            is.rcp.already.used <- any(igraph::V(graph.h$graph)$name == rcp.nodename)
             graph.r <- NULL
             if (experiment != "historical") {
+                rcp.nodename <- paste("ipcc", rcp.list[x], sep = ":")
+                is.rcp.already.used <- any(igraph::V(graph.h$graph)$name == rcp.nodename)
                 if (!is.rcp.already.used) {
                     graph.rcp <- metaclipcc.Dataset(rcp.list[x], RectangularGrid = gcm.grid)
 
