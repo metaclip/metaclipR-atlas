@@ -43,4 +43,6 @@ metaclipcc changelog
  * Exclude variable version in metadata description when it is NA
  * Remove run labels from dataset names in dataset lookup table
  * Handle already existing dataset nodes
+ * Update CMIP6 Atlas dataset list
+ * Include CORDEX map products
 
