@@ -126,11 +126,10 @@ metaclipcc.Map <- function(project = "CMIP5",
     time.res.orig <- "P1D"
     # ***********************
 
-    project <- match.arg(project, choices = c("CMIP5", "CMIP6", "AFRCORDEX", "ANTCORDEX",
-                                              "ARCCORDEX", "AUSCORDEX", "CAMCORDEX",
-                                              "CASCORDEX", "EASCORDEX", "EUROCORDEX",
-                                              "MEDCORDEX", "MENACORDEX", "NAMCORDEX",
-                                              "SAMCORDEX", "SEACORDEX", "WASCORDEX"))
+    project <- match.arg(project, choices = c("CMIP5", "CMIP6",
+                                              "CORDEX-AFR", "CORDEX-ARC", "CORDEX-AUS",
+                                              "CORDEX-CAM", "CORDEX-EAS", "CORDEX-NAM",
+                                              "CORDEX-SAM", "CORDEX-SEA", "CORDEX-WAS"))
     if (!is.null(variable)) {
         variable <- match.arg(variable, choices = c("tas", "pr", "tasmax", "tasmin"))
         if (!is.null(climate.index)) {
@@ -209,8 +208,8 @@ metaclipcc.Map <- function(project = "CMIP5",
     if (!is.null(map.bbox)) stopifnot(length(map.bbox) == 4L)
 
     ref.project <- showIPCCdatasets(names.only = FALSE)[showIPCCdatasets(names.only = FALSE) %>% extract2("Project") %>% grep(pattern = project), ]
-    ipcc.region <- ref.project$SimulationDomain %>% unique()
-    cordex.region <- ref.project$region_name %>% unique()
+    ipcc.region <- ref.project$SimulationDomain %>% unique() ## overwrite later if CORDEX
+    # cordex.region <- ref.project$region_name %>% unique()
 
     ## Reference grids ---------------------------------------------------------
     if (project == "CMIP5") {
@@ -238,22 +237,33 @@ metaclipcc.Map <- function(project = "CMIP5",
                                                     dc.description = descr,
                                                     ref.URL = gridfile.url)
     } else {
-        resX <- resY <- 0.44
+        resX <- resY <- 0.5
         descr <- paste0("This is the ", project,
-                        " reference grid of ", resX," x ", resY, " degree resolution, centered on ",
-                        cordex.region, ", used in all Atlas CORDEX products")
-        reference.grid <- metaclipR.RectangularGrid(resX = 0.44,
-                                                    resY = 0.44,
-                                                    xmin = -179.78,
-                                                    xmax = 179.78,
-                                                    ymin = -89.78,
-                                                    ymax = -89.78,
+                        " reference grid of ", resX," x ", resY,
+                        " degree resolution used in all Atlas CORDEX products")
+        reference.grid <- metaclipR.RectangularGrid(resX = resX,
+                                                    resY = resY,
+                                                    xmin = -179.75,
+                                                    xmax = 179.75,
+                                                    ymin = -89.75,
+                                                    ymax = -89.75,
                                                     dc.description = descr)
     }
 
     ## Reference spatial extents -----------------------------------------------
 
-    reference.extent <- metaclipcc.HorizontalExtent(region = unique(ref.project$SimulationDomain))
+    reference.extent <- if (grepl("^CORDEX-", project)) {
+        metaclipcc.HorizontalExtent(region = NULL,
+                                    xmin = ref.project$xmin.atmos,
+                                    xmax = ref.project$xmax.atmos,
+                                    ymin = ref.project$ymin.atmos,
+                                    ymax = ref.project$ymax.atmos,
+                                    dc.description = paste("Spatial Extent of the",
+                                                           project,
+                                                           "simulation domain"))
+    } else {
+        metaclipcc.HorizontalExtent(region = unique(ref.project$SimulationDomain))
+    }
 
     ## Observational dataset ---------------------------------------------------
     # The observational dataset has a native resolution (obs.spextent)
@@ -354,7 +364,15 @@ metaclipcc.Map <- function(project = "CMIP5",
     graph.list <- list()
     for (x in iter) {
         ref.model <- aux[grep(hist.list[x], aux$name, ignore.case = TRUE),]
-        message("[", Sys.time(), "] Processing ", ref.model$GCM, " model data")
+        model.name <- ifelse(grepl("CORDEX-", project), ref.model$RCM, ref.model$GCM)
+        if (grepl("^CORDEX-", project)) {
+            message("[", Sys.time(), "] Processing ", ref.model$GCM, "-", ref.model$RCM, " model data")
+        } else {
+            message("[", Sys.time(), "] Processing ", model.name, " model data")
+        }
+
+        # Domains of 44 and 22 are mixed in the CORDEX ensemble maps
+        if (grepl("CORDEX-", project)) ipcc.region <- ref.model$SimulationDomain
 
         ### Filter missing ECV / Climate Index ---------------------------------------
 
@@ -367,7 +385,9 @@ metaclipcc.Map <- function(project = "CMIP5",
         ### Filter missing RCPs OR not reached GWLs ----------------------------
 
         if (experiment != "historical") {
-            years <- metaclipcc.getFuturePeriod(project = project,
+            pr <- project
+            if (grepl("^CORDEX-", project)) pr <- "CMIP5"
+            years <- metaclipcc.getFuturePeriod(project = pr,
                                                 model = ref.model$GCM,
                                                 future.period = future.period,
                                                 rcp = experiment)
@@ -378,7 +398,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         descr <- paste("This is the native grid of", ref.model$resX.atmos,
                        "x", ref.model$resY.atmos, "of the atmospheric variables in the",
-                       ref.model$GCM, "GCM simulations")
+                       model.name, "simulations")
 
         gcm.grid <- metaclipR.RectangularGrid(resX = ref.model$resX.atmos,
                                               resY = ref.model$resY.atmos,
@@ -569,7 +589,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         if (is.null(bias.adj.method)) {
             descr <- paste0("The historical ", ref.vars$variable," climatology of the ",
-                            ref.model$GCM, " model (" ,
+                            model.name, " model (" ,
                             ref.model$resX.atmos , " x ",
                             ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
                             project, " grid of ", resX, " x ", resY,
@@ -581,7 +601,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                                              dc.description = descr)
             if (experiment != "historical") {
                 descr <- paste0("The ", experiment, " ", ref.vars$variable, " climatology of the ",
-                                ref.model$GCM, " model (" ,
+                                model.name, " model (" ,
                                 ref.model$resX.atmos , " x ",
                                 ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
                                 project, " grid of ", resX, " x ", resY,
