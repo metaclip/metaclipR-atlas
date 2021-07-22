@@ -131,7 +131,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                                               "CORDEX-CAM", "CORDEX-EAS", "CORDEX-NAM",
                                               "CORDEX-SAM", "CORDEX-SEA", "CORDEX-WAS"))
     if (!is.null(variable)) {
-        variable <- match.arg(variable, choices = c("tas", "pr", "tasmax", "tasmin"))
+        variable <- match.arg(variable, choices = c("tas", "pr", "tasmax", "tasmin", "snowfall", "wss"))
         if (!is.null(climate.index)) {
             climate.index <- NULL
             warning("Variable ", variable, " was first indicated. The \'climate.index\' argument was set to NULL")

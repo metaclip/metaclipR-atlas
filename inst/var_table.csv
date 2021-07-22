@@ -4,6 +4,8 @@ tasmax,0,,,maximum near-surface air temperature,,degC,tasmax,near-surface,P1D,ma
 tasmin,0,,,minimum near-surface air temperature,,degC,tasmin,near-surface,P1D,min,atmos,mean,mean
 sst,0,,,sea-surface temperature,,degC,ssl,surface,P1D,mean,ocean,mean,mean
 pr,0,,,total precipitation amount,,mm,tp,surface,P1D,sum,atmos,sum,sum
+snowfall,0,,,total snow precipitation amount,,mm,tpsn,surface,P1D,sum,atmos,sum,sum
+wss,0,,,near-surface surface wind speed,,m/s,wss,near-surface,P1D,mean,atmos,mean,mean
 O2,0,,,dissolved oxygen in sea water,,mol/m3,,near-surface,P1D,mean,ocean,mean,mean
 pH,0,,,pH,,,,near-surface,P1D,mean,ocean,mean,mean
 TXx,1,tasmax,ds:TXx,Monthly maximum value of daily maximum temperature,,,,,P1M,,,none,mean
