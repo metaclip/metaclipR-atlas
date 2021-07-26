@@ -655,7 +655,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                       ref.vars$variable, "climatologies of the", experiment, "and the historical scenarios")
             } else {
                 paste("The climate change signal is computed, for each grid cell, as the ratio (in %) between the",
-                      ref.vars$variable, "climatologies of the", experiment, "and the historical scenarios")
+                      ref.vars$variable, "ensemble mean climatologies of the", experiment, "and the historical scenarios")
             }
             graph <- metaclipcc.Delta(graph = graph.r,
                                       referenceGraph = graph.h,
