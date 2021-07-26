@@ -775,22 +775,22 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         ## Color palette -----------------------------------------------------------
 
-        input.ecv <- if (isTRUE(climate.index %in% c("Rx1day", "Rx5day",
-                                                     "DS","SPI6",
-                                                     "SPI12", "SPEI6",
-                                                     "SPEI12", "DF6",
-                                                     "DF12")) | (isTRUE(ref.vars$variable) == "pr"))  {
-            "pr"
-        } else {
-            "tas"
-        }
-        div <- ifelse(is.null(delta), FALSE, TRUE)
-        graph.pal <- metaclipcc.ColorPalette(input.ecv = input.ecv, diverging = div)
-        graph <- my_union_graph(graph, graph.pal$graph)
-        graph <- add_edges(graph,
-                           c(getNodeIndexbyName(graph, maplayer.nodename),
-                             getNodeIndexbyName(graph, graph.pal$parentnodename)),
-                           label = "go:hasColorPalette")
+        # input.ecv <- if (isTRUE(climate.index %in% c("Rx1day", "Rx5day",
+        #                                              "DS","SPI6",
+        #                                              "SPI12", "SPEI6",
+        #                                              "SPEI12", "DF6",
+        #                                              "DF12")) | (isTRUE(ref.vars$variable) == "pr"))  {
+        #     "pr"
+        # } else {
+        #     "tas"
+        # }
+        # div <- ifelse(is.null(delta), FALSE, TRUE)
+        # graph.pal <- metaclipcc.ColorPalette(input.ecv = input.ecv, diverging = div)
+        # graph <- my_union_graph(graph, graph.pal$graph)
+        # graph <- add_edges(graph,
+        #                    c(getNodeIndexbyName(graph, maplayer.nodename),
+        #                      getNodeIndexbyName(graph, graph.pal$parentnodename)),
+        #                    label = "go:hasColorPalette")
 
         ## Coastline ---------------------------------------------------------------
 
