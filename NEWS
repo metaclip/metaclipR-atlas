@@ -37,12 +37,18 @@ metaclipcc changelog
  * Handle exception when no model reaches the specified GWL
  * Include withVersionTag data property in DatasetSubset node for variable versioning
 
-## v0.2.2 (in devel)
- * Fix typo in "ds:ObservationalDataset"" (":" was missing)
+## v0.3.0 (in devel)
+ * Fix typo in "ds:ObservationalDataset" (":" was missing)
  * Bug fix in historical period-filled maps
  * Exclude variable version in metadata description when it is NA
  * Remove run labels from dataset names in dataset lookup table
  * Handle already existing dataset nodes
  * Update CMIP6 Atlas dataset list
- * Include CORDEX map products
+ * Update variable list (wss and snowfall)
+ * Rename "go:Robin"" MapProjection to "go:Robinson" ('go' vocabulary version >=0.8)
+ * New argument uncertainty in `metaclipcc.Map`
+ * Update Map Uncertainty and IPCC region Layer metadata
+ * Include CORDEX map products (preliminary)
+ * Other minor documentation changes
+
 

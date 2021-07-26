@@ -10,7 +10,7 @@ metaclipcc.MapProjection(proj)
 \item{proj}{A Valid individual instance of class go:MapProjection}
 }
 \description{
-Creates a sinle node graph that defines a map projection
+Creates a single node graph that defines a map projection
 }
 \author{
 J Bedia
