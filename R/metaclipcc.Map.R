@@ -721,10 +721,10 @@ metaclipcc.Map <- function(project = "CMIP5",
         ## Projection --------------------------------------------------------------
 
         proj.name <- switch(proj,
-                            "Robin" = "go:Robin",
+                            "Robin" = "go:Robinson",
                             "Arctic" = "go:AntarcticPolarStereographic",
                             "Antarctic" = "go:ArcticPolarStereographic",
-                            "Pacific" = "go:Robin-Pacific")
+                            "Pacific" = "go:Robinson-Pacific")
 
         graph.proj <- metaclipcc.MapProjection(proj = proj.name)
         graph <- my_union_graph(graph, graph.proj$graph)

@@ -1,5 +1,5 @@
 #' @title Map Projection
-#' @description Creates a sinle node graph that defines a map projection
+#' @description Creates a single node graph that defines a map projection
 #' @param proj A Valid individual instance of class go:MapProjection
 #' @keywords internal
 #' @export
