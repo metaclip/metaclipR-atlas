@@ -803,12 +803,12 @@ metaclipcc.Map <- function(project = "CMIP5",
         ## IPCC regions ------------------------------------------------------------
 
         maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
-        descr <- "IPCC-AR6 World Regions"
-        refurl <- "https://doi.org/10.5194/essd-12-2959-2020"
+        descr <- "IPCC-AR6 Regions"
+        refurl <- "https://doi.org/10.5281/zenodo.3691646"
         graph <- add_vertices(graph,
                               nv = 1,
                               name = maplayer.nodename,
-                              label = "IPCC World Regions",
+                              label = "IPCC Regions",
                               className = "go:MapLines",
                               attr = list("dc:description" = descr,
                                           "ds:referenceURL" = refurl,
