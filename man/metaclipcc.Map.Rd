@@ -17,6 +17,7 @@ metaclipcc.Map(
   ref.obs.dataset = NULL,
   proj,
   map.bbox = NULL,
+  uncertainty = NULL,
   test.mode = FALSE
 )
 }
@@ -56,10 +57,14 @@ This is the reference observational dataset to perform the correction. This is a
  Note that the individual instances of the observational reference are assumed to be described in the datasource vocabulary.}
 
 \item{proj}{Map projection string. Accepted values are \code{"Robin"}, \code{"Arctic"}, \code{"Antarctic"} and \code{"Pacific"}
-for Robinson and WGS84 Arctic/Antarctic Polar stereographic, and Pacific-centric projections respectively.}
+for Robinson and WGS84 Arctic/Antarctic Polar stereographic, and Robinson Pacific-centric projections respectively.}
 
 \item{map.bbox}{Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
 zoomed in by the user. If missing, then the HorizontalExtent associated to the \code{project} is assumed.}
+
+\item{uncertainty}{Uncertainty layer characteristics. Describes different hatched patterns
+of the output graphical product, depending of the user's choice of visualization. Possible values are \code{NULL}
+(default), indicating no hatching at all, or \code{"simple"} or \code{"advanced"}.}
 
 \item{test.mode}{For internal use only. When the test mode is on, only the first two models are used.}
 }
@@ -72,7 +77,7 @@ Build a directed metadata graph describing a Map product of the AR6 Interactive 
 Two of the baseline periods considered (WMO, 1981-2010 and AR6, 1995-2014) go beyond the temporal extent of the historical experiment simulations in AR5, ending in 2005.
 In this case, the strategy followed in the different IPCC reports is to fill the missing period between 2006 and the end of the baseline with the years of the future
 simulation used in each case. For example, to compute a RCP 8.5 delta using the WMO baseline, the baseline data for the period 2006-2010 will be extracted from the RCP85
-simulation, and then binded to the 1981-2005 period of the historical simulation in order to complete the baseline period.
+simulation, and then concatenated with the 1981-2005 period of the historical simulation in order to complete the baseline period.
 }
 \author{
 J. Bedia
