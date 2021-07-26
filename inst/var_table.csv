@@ -4,15 +4,15 @@ tasmax,0,,,maximum near-surface air temperature,,degC,tasmax,near-surface,P1D,ma
 tasmin,0,,,minimum near-surface air temperature,,degC,tasmin,near-surface,P1D,min,atmos,mean,mean
 sst,0,,,sea-surface temperature,,degC,ssl,surface,P1D,mean,ocean,mean,mean
 pr,0,,,total precipitation amount,,mm,tp,surface,P1D,sum,atmos,sum,sum
-snowfall,0,,,total snow precipitation amount,,mm,tpsn,surface,P1D,sum,atmos,sum,sum
-wss,0,,,near-surface surface wind speed,,m/s,wss,near-surface,P1D,mean,atmos,mean,mean
+snowfall,0,,,total snow precipitation amount,,mm,tpsn,surface,P1M,sum,atmos,sum,sum
+wss,0,,,near-surface surface wind speed,,m/s,wss,near-surface,P1M,mean,atmos,mean,mean
 O2,0,,,dissolved oxygen in sea water,,mol/m3,,near-surface,P1D,mean,ocean,mean,mean
 pH,0,,,pH,,,,near-surface,P1D,mean,ocean,mean,mean
 TXx,1,tasmax,ds:TXx,Monthly maximum value of daily maximum temperature,,,,,P1M,,,none,mean
 TNn,1,tasmin,ds:TNn,Monthly minimum value of daily minimum temperature,,,,,P1M,,,none,mean
 Rx1day,1,pr,ds:Rx1day,Monthly maximum 1-day precipitation,,,,,P1M,,,none,mean
 Rx5day,1,pr,ds:Rx5day,Monthly maximum 5-day precipitation,,,,,P1M,,,none,mean
-DS,1,pr,ipcc:DS,Dry spell (consecutive dry days),,,,,P1D,,,max,max
+CDD,1,pr,ipcc:DS,Dry spell (consecutive dry days),,,,,P1D,,,max,max
 SPI6,1,pr,ds:SPI,Standardized precipitation index,6,,,,P1M,,,none,mean
 SPI12,1,pr,ds:SPI,Standardized precipitation index,12,,,,P1M,,,none,mean
 SPEI6,1,"pr,tas",ds:SPEI,Standardized precipitation-evapotranspiration index,6,,,,P1M,,,none,mean
@@ -24,6 +24,6 @@ GDD,1,tas,ds:GD,Growing degree days,,,,,P1D,,,sum,sum
 T21.5,1,tas,ds:T21.5,Number of days with mean temperature above 21.5 degC,,,,,P1D,,,sum,sum
 TX35,1,tasmax,ds:TX35,Number of days with maximum temperature above 35 degC,,,,,P1D,,,sum,sum
 TX40,1,tasmax,ds:TX40,Number of days with maximum temperature above 40 degC,,,,,P1D,,,sum,sum
-HDD,1,"tas,tasmin,tasmax",ds:HD,Heating Degree Days,,,,,P1D,,,sum,sum
+HD,1,"tas,tasmin,tasmax",ds:HD,Heating Degree Days,,,,,P1D,,,sum,sum
 FD,1,tasmin,ds:FD,Frost days,,,,,P1D,,,sum,sum
-CDD,1,tas,ds:CD,Cooling Degree Days,,,,,P1D,,,sum,sum
+CD,1,tas,ds:CD,Cooling Degree Days,,,,,P1D,,,sum,sum
