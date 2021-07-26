@@ -594,10 +594,17 @@ metaclipcc.Map <- function(project = "CMIP5",
                             ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
                             project, " grid of ", resX, " x ", resY,
                             " degrees using a conservative method")
+
+            ## A generic conservative remapping is used in CMIPx products (ds:ConservativeRemapping)
+            ## In CORDEX, the EURO-CORDEX method is instantiated instead (ds:EUROCordexConservativeRemapping)
+
+            interp.method <- ifelse(grepl("^CORDEX-", project),
+                                    "conservative_CORDEX", "conservative")
+
             graph.h <- metaclipcc.Regridding(graph = graph.h,
                                              RefSpatialExtent = reference.extent,
                                              RefRectangularGrid = reference.grid,
-                                             InterpolationMethod = "conservative",
+                                             InterpolationMethod = interp.method,
                                              dc.description = descr)
             if (experiment != "historical") {
                 descr <- paste0("The ", experiment, " ", ref.vars$variable, " climatology of the ",
@@ -609,7 +616,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                 graph.r <- metaclipcc.Regridding(graph = graph.r,
                                                  RefSpatialExtent = reference.extent,
                                                  RefRectangularGrid = reference.grid,
-                                                 InterpolationMethod = "conservative",
+                                                 InterpolationMethod = interp.method,
                                                  dc.description = descr)
             }
         }

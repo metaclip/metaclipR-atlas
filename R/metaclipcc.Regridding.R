@@ -36,7 +36,9 @@ metaclipcc.Regridding <- function(graph,
                                   dc.description = NULL) {
     if (class(graph$graph) != "igraph") stop("Invalid input graph (not an 'igraph-class' object)")
     interp.method <- match.arg(InterpolationMethod,
-                               choices = c("nearest", "bilinear", "bicubic", "IDW", "spline", "conservative"))
+                               choices = c("nearest", "bilinear", "bicubic",
+                                           "IDW", "spline",
+                                           "conservative", "conservative_CORDEX"))
     interp.method.class <- switch(interp.method,
                                   "nearest" = "ds:NearestNeighbor",
                                   "bilinear" = "ds:BilinearInterpolation",
@@ -65,7 +67,7 @@ metaclipcc.Regridding <- function(graph,
                        c(getNodeIndexbyName(graph, orig.node),
                          getNodeIndexbyName(graph, regnodename)),
                        label = "ds:hadInterpolation")
-    regmethod.nodename <- if (interp.method == "conservative") {
+    regmethod.nodename <- if (interp.method == "conservative_CORDEX") {
         "ds:EUROCordexConservativeRemapping"
     } else {
         paste("InterpolationMethod", randomName(), sep = ".")
