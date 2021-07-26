@@ -42,9 +42,12 @@
 #'   belonging to either classes \code{ds:ObservationalDataset} or \code{ds:Reanalysis}. Currently accepted values are \code{"W5E5"} and \code{"EWEMBI"}.
 #'   Note that the individual instances of the observational reference are assumed to be described in the datasource vocabulary.
 #' @param proj Map projection string. Accepted values are \code{"Robin"}, \code{"Arctic"}, \code{"Antarctic"} and \code{"Pacific"}
-#' for Robinson and WGS84 Arctic/Antarctic Polar stereographic, and Pacific-centric projections respectively.
+#' for Robinson and WGS84 Arctic/Antarctic Polar stereographic, and Robinson Pacific-centric projections respectively.
 #' @param map.bbox Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
 #' zoomed in by the user. If missing, then the HorizontalExtent associated to the \code{project} is assumed.
+#' @param uncertainty Uncertainty layer characteristics. Describes different hatched patterns
+#' of the output graphical product, depending of the user's choice of visualization. Possible values are \code{NULL}
+#' (default), indicating no hatching at all, or \code{"simple"} or \code{"advanced"}.
 #' @param test.mode For internal use only. When the test mode is on, only the first two models are used.
 #'
 #' @details
@@ -54,7 +57,7 @@
 #' Two of the baseline periods considered (WMO, 1981-2010 and AR6, 1995-2014) go beyond the temporal extent of the historical experiment simulations in AR5, ending in 2005.
 #' In this case, the strategy followed in the different IPCC reports is to fill the missing period between 2006 and the end of the baseline with the years of the future
 #' simulation used in each case. For example, to compute a RCP 8.5 delta using the WMO baseline, the baseline data for the period 2006-2010 will be extracted from the RCP85
-#' simulation, and then binded to the 1981-2005 period of the historical simulation in order to complete the baseline period.
+#' simulation, and then concatenated with the 1981-2005 period of the historical simulation in order to complete the baseline period.
 #'
 #' @author J. Bedia
 #'
@@ -119,6 +122,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                            ref.obs.dataset = NULL,
                            proj,
                            map.bbox = NULL,
+                           uncertainty = NULL,
                            test.mode = FALSE) {
 
     # Fixed parameters *******
@@ -206,6 +210,11 @@ metaclipcc.Map <- function(project = "CMIP5",
     }
 
     if (!is.null(map.bbox)) stopifnot(length(map.bbox) == 4L)
+
+    if (is.null(delta)) uncertainty <- NULL
+    if (!is.null(uncertainty)) {
+        uncertainty <- match.arg(uncertainty, choices = c("simple", "advanced"))
+    }
 
     ref.project <- showIPCCdatasets(names.only = FALSE)[showIPCCdatasets(names.only = FALSE) %>% extract2("Project") %>% grep(pattern = project), ]
     ipcc.region <- ref.project$SimulationDomain %>% unique() ## overwrite later if CORDEX
@@ -801,14 +810,16 @@ metaclipcc.Map <- function(project = "CMIP5",
                            label = "go:hasMapLayer")
 
         ## IPCC regions ------------------------------------------------------------
+        # The Region Set is kept generic, since different choices are available through the IA Menu
+        # (namely: WGI Reference regions, WGII continental, Monsoons, River Basins and Small Islands )
 
         maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
-        descr <- "IPCC-AR6 Regions"
+        descr <- "IPCC-AR6 Vector Layer Region Set"
         refurl <- "https://doi.org/10.5281/zenodo.3691646"
         graph <- add_vertices(graph,
                               nv = 1,
                               name = maplayer.nodename,
-                              label = "IPCC Regions",
+                              label = "IPCC Region Set",
                               className = "go:MapLines",
                               attr = list("dc:description" = descr,
                                           "ds:referenceURL" = refurl,
@@ -821,21 +832,27 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         # Map hatching -------------------------------------------------------------
 
-        if (!is.null(delta)) {
+        if (!is.null(uncertainty)) {
+
+            descr <- if (uncertainty == "simple") {
+                "Model agreement is represented with two categories: No overlay indicates high model agreement, where at least 80% of models agree on sign of change; diagonal lines (/) indicate low model agreement, where fewer than 80% of models agree on sign of change. For more information on the simple approach, please refer to the AR6 WGI Cross-Chapter Box Atlas 1. NOTE: Model agreement is computed at a gridbox level and is not representative of regionally aggregated results over larger regions"
+            } else if (uncertainty == "advanced") {
+                "Model agreement is represented using the advanced approach (significant change and agreement) with three categories: No overlay indicates that the change is robust and likely emerges from internal variability (at least 66% of the models show a change greater than the internal-variability threshold and at least 80% of the models agree on the sign of change); diagonal lines (\) indicate no change or no robust change (fewer than 66% of the models show change greater than the internal-variability threshold); crossed lines (X) indicate conflicting signals where at least 66% of the models show change greater than the internal-variability threshold but fewer than 80% of all models agree on the sign of change. For more information on the advanced approach, please refer to the AR6 WGI Cross-Chapter Box Atlas 1. NOTE: Robustness and model agreement are computed at a gridbox level and are not representative of regionally aggregated results over larger regions."
+            }
 
             # Model Consensus
 
             maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-            descr <- "Hatched pattern of -45 deg. in the map indicates a \'weak\' model agreement on the sign of the projected mean climate change signal (less than 80%, following Nikulin et al. 2018)"
-            refurl <- "https://doi.org/10.1088/1748-9326/aab1b1"
+            descr <- descr
+            # refurl <- "https://doi.org/10.1088/1748-9326/aab1b1"
             graph <- add_vertices(graph,
                                   nv = 1,
                                   name = maplayer.nodename,
-                                  label = "Consensus Hatching",
+                                  label = "Model Agreement Layer",
                                   className = "go:Mask",
                                   attr = list("dc:description" = descr,
-                                              "ds:referenceURL" = refurl,
-                                              "go:LineAngle" = -45,
+                                              # "ds:referenceURL" = refurl,
+                                              # "go:LineAngle" = -45,
                                               "go:LineColor" = "hex-000000",
                                               "go:LineType" = "solid"))
             graph <- add_edges(graph,
@@ -843,24 +860,24 @@ metaclipcc.Map <- function(project = "CMIP5",
                                  getNodeIndexbyName(graph, maplayer.nodename)),
                                label = "go:hasMapLayer")
 
-            # SNR
-
-            maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-            descr <- "Hatched pattern of +45 deg. in the map indicates a low signal-to-noise ratio (SNR<1), i.e. the ensemble mean is smaller than the standard deviation across model results (following Nikulin et al. 2018)"
-            graph <- add_vertices(graph,
-                                  nv = 1,
-                                  name = maplayer.nodename,
-                                  label = "SNR>1 Hatching",
-                                  className = "go:Mask",
-                                  attr = list("dc:description" = descr,
-                                              "ds:referenceURL" = refurl,
-                                              "go:LineAngle" = 45,
-                                              "go:LineColor" = "hex-000000",
-                                              "go:LineType" = "solid"))
-            graph <- add_edges(graph,
-                               c(getNodeIndexbyName(graph, map.nodename),
-                                 getNodeIndexbyName(graph, maplayer.nodename)),
-                               label = "go:hasMapLayer")
+            # # SNR
+            #
+            # maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
+            # descr <- "Hatched pattern of +45 deg. in the map indicates a low signal-to-noise ratio (SNR<1), i.e. the ensemble mean is smaller than the standard deviation across model results (following Nikulin et al. 2018)"
+            # graph <- add_vertices(graph,
+            #                       nv = 1,
+            #                       name = maplayer.nodename,
+            #                       label = "SNR>1 Hatching",
+            #                       className = "go:Mask",
+            #                       attr = list("dc:description" = descr,
+            #                                   "ds:referenceURL" = refurl,
+            #                                   "go:LineAngle" = 45,
+            #                                   "go:LineColor" = "hex-000000",
+            #                                   "go:LineType" = "solid"))
+            # graph <- add_edges(graph,
+            #                    c(getNodeIndexbyName(graph, map.nodename),
+            #                      getNodeIndexbyName(graph, maplayer.nodename)),
+            #                    label = "go:hasMapLayer")
 
         }
     }
