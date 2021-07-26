@@ -19,10 +19,11 @@
 #' @description Build a directed metadata graph describing a Map product of the AR6 Interactive Atlas
 #' @param project Project. Unused so far. Default to \code{"CMIP5"}.
 #' @param variable Code of the input ECV (it can be omitted if \code{climate.index} is indicated).
-#'  Current accepted values are restricted to \code{"tas", "pr", "tasmax", "tasmin"}.
+#'  Current accepted values are restricted to \code{"tas", "pr", "tasmax", "tasmin", "snowfall", "wss"}.
 #' @param climate.index If the map is for a climate index, name of the index. Otherwise NULL (the default). Currently accepted values are restricted to
 #' the set of indices to be included in the Atlas, namely:
-#' \code{"TXx", "TNn", "Rx1day", "Rx5day", "DS", "SPI6", "SPI12", "SPEI6", "SPEI12", "DF6", "DF12", "LFFP", "GDD","T21.5", "TX35", "TX40", "HDD", "FD"}
+#' \code{"TXx", "TNn", "Rx1day", "Rx5day", "SPI6", "CDD", "TX35", "TX40", "CD", "HD", "FD"}, as well as the
+#' bias adjusted versions of \code{"TX35-BA", "TX40-BA", "FD-BA"}.
 #' @param delta Type of delta map displayed. This can be either \code{"absolute"} or \code{"relative"}. Default to \code{NULL} meaning that the map is not a delta
 #'  but an original magnitude.
 #' @param experiment Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"},
@@ -145,11 +146,16 @@ metaclipcc.Map <- function(project = "CMIP5",
     }
     if (!is.null(climate.index)) {
         climate.index <- match.arg(climate.index, choices = c("TXx", "TNn",
-                                                              "Rx1day", "Rx5day", "DS",
-                                                              "SPI6", "SPI12", "SPEI6", "SPEI12",
-                                                              "DF6", "DF12", "LFFP", "GDD",
-                                                              "T21.5", "TX35", "TX40",
-                                                              "HDD", "FD"))
+                                                              "Rx1day", "Rx5day",
+                                                              "SPI6", "CDD",
+                                                              "TX35", "TX40",
+                                                              "TX35-BA", "TX40-BA",
+                                                              "CD", "HD",
+                                                              "FD", "FD-BA"))
+        if (grepl("-BA$", climate.index)) {
+            bias.adj.method <- "ISIMIP3"
+            ref.obs.dataset <- "W5E5"
+        }
     }
     if (!is.null(delta)) {
         delta <- match.arg(delta, choices = c("absolute", "relative"))
@@ -203,11 +209,11 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     proj <- match.arg(proj, choices = c("Robin", "Arctic", "Antarctic", "Pacific"))
 
-    if (!is.null(bias.adj.method)) {
-        if (is.null(ref.obs.dataset)) stop("A reference observational dataset is required for bias correction", call. = FALSE)
-        bias.adj.method <- match.arg(bias.adj.method, choices = c("ISIMIP3", "EQM"))
-        ref.obs.dataset <- match.arg(ref.obs.dataset, choices = c("W5E5", "EWEMBI"))
-    }
+    # if (!is.null(bias.adj.method)) {
+    #     if (is.null(ref.obs.dataset)) stop("A reference observational dataset is required for bias correction", call. = FALSE)
+    #     bias.adj.method <- match.arg(bias.adj.method, choices = c("ISIMIP3", "EQM"))
+    #     ref.obs.dataset <- match.arg(ref.obs.dataset, choices = c("W5E5", "EWEMBI"))
+    # }
 
     if (!is.null(map.bbox)) stopifnot(length(map.bbox) == 4L)
 
