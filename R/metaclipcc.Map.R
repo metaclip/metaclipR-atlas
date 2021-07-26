@@ -19,11 +19,11 @@
 #' @description Build a directed metadata graph describing a Map product of the AR6 Interactive Atlas
 #' @param project Project. Unused so far. Default to \code{"CMIP5"}.
 #' @param variable Code of the input ECV (it can be omitted if \code{climate.index} is indicated).
-#'  Current accepted values are restricted to \code{"tas", "pr", "tasmax", "tasmin", "snowfall", "wss"}.
+#'  Current accepted values are restricted to \code{"tas", "meanpr", "TX", "TN", "prsn", "wind"}.
 #' @param climate.index If the map is for a climate index, name of the index. Otherwise NULL (the default). Currently accepted values are restricted to
 #' the set of indices to be included in the Atlas, namely:
-#' \code{"TXx", "TNn", "Rx1day", "Rx5day", "SPI6", "CDD", "TX35", "TX40", "CD", "HD", "FD"}, as well as the
-#' bias adjusted versions of \code{"TX35-BA", "TX40-BA", "FD-BA"}.
+#' \code{"TXx", "TNn", "Rx1day", "Rx5day", "spi6", "CDD", "tx35", "tx40", "cd", "hdd", "fd"}, as well as the
+#' bias adjusted versions of \code{"tx35isimip", "tx40isimip", "fdisimip"}.
 #' @param delta Type of delta map displayed. This can be either \code{"absolute"} or \code{"relative"}. Default to \code{NULL} meaning that the map is not a delta
 #'  but an original magnitude.
 #' @param experiment Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"},
@@ -136,7 +136,7 @@ metaclipcc.Map <- function(project = "CMIP5",
                                               "CORDEX-CAM", "CORDEX-EAS", "CORDEX-NAM",
                                               "CORDEX-SAM", "CORDEX-SEA", "CORDEX-WAS"))
     if (!is.null(variable)) {
-        variable <- match.arg(variable, choices = c("tas", "pr", "tasmax", "tasmin", "snowfall", "wss"))
+        variable <- match.arg(variable, choices = c("tas", "meanpr", "TX", "TN", "prsn", "wind"))
         if (!is.null(climate.index)) {
             climate.index <- NULL
             warning("Variable ", variable, " was first indicated. The \'climate.index\' argument was set to NULL")
@@ -147,12 +147,12 @@ metaclipcc.Map <- function(project = "CMIP5",
     if (!is.null(climate.index)) {
         climate.index <- match.arg(climate.index, choices = c("TXx", "TNn",
                                                               "Rx1day", "Rx5day",
-                                                              "SPI6", "CDD",
-                                                              "TX35", "TX40",
-                                                              "TX35-BA", "TX40-BA",
-                                                              "CD", "HD",
-                                                              "FD", "FD-BA"))
-        if (grepl("-BA$", climate.index)) {
+                                                              "spi6", "CDD",
+                                                              "tx35", "tx40",
+                                                              "tx35isimip", "tx40isimip",
+                                                              "cd", "hdd",
+                                                              "fd", "fdisimip"))
+        if (grepl("isimip$", climate.index)) {
             bias.adj.method <- "ISIMIP3"
             ref.obs.dataset <- "W5E5"
         }
