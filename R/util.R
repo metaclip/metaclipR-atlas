@@ -35,12 +35,17 @@
 #' @keywords internal
 #' @author J. Bedia
 
-update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"), out.file = "/tmp/dataset_table.csv") {
+update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"),
+                                 out.file = "/tmp/dataset_table.csv") {
 
     projects <- match.arg(projects, choices = c("CMIP5", "CMIP6"), several.ok = TRUE)
 
     # Import master lookup table
     master.table <- showIPCCdatasets(names.only = FALSE)
+
+    # Import Master JSON
+    json <- system.file("total_members_curated.json",
+                        package = "metaclipcc") %>% fromJSON(flatten = TRUE)
 
     for (k in 1:length(projects)) {
         project <- projects[k]
@@ -77,10 +82,6 @@ update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"), out.file = "/t
         ind <- which(master.table$Project == project)
         master.aux <- master.table[ind, ]
 
-        # Import Master JSON
-        json <- system.file("total_members_curated.json",
-                            package = "metaclipcc") %>% fromJSON(flatten = TRUE)
-
         # Loop over variables/scenarios
         for (i in 1:length(vars)) {
 
@@ -102,9 +103,13 @@ update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"), out.file = "/t
                 curated.models <- json.aux[[var]][[scen]]
                 ind1 <- grep(scen, master.aux$Experiment, ignore.case = TRUE)
                 master.models <- paste(master.aux[ind1, "GCM"], master.aux[ind1, "Run"], sep = "_")
-                avail <- sapply(1:length(master.models), function(x) {
-                    grepl(master.models[x], curated.models, ignore.case = TRUE) %>% any() %>% as.integer()
-                })
+                if (length(curated.models) == 0) { # Empty scenario
+                    avail <- rep(0L, length(master.models))
+                } else {
+                    avail <- vapply(1:length(master.models), FUN.VALUE = integer(1L), function(x) {
+                        grepl(master.models[x], curated.models, ignore.case = TRUE) %>% any() %>% as.integer()
+                    })
+                }
                 master.aux[ind1,var] <- avail
             }
         }
@@ -115,7 +120,7 @@ update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"), out.file = "/t
             " have been updated and stored at:\n",
             out.file,
             "\n*******************************************************************")
-    write.table(master.table, file = out.file, sep = ",")
+    write.table(master.table, file = out.file,  row.names = FALSE, sep = ",")
 }
 
 #
