@@ -37,11 +37,14 @@
 #'  warming levels of +1.5 degC \code{"1.5"}, +2 \code{"2"} and +3 \code{"3"}.
 #' @param season season. Integer vector of correlative months, in ascending order, encompassing the target season.
 #' @param bias.adj.method Default to \code{NULL} and unused. If the map displays a bias-corrected product, a character string idetifying the method. Current accepted values a re \code{"EQM"},
-#' for the standard VALUE empirical quantile mapping method.
+#' for the standard VALUE empirical quantile mapping method. NOTE: since metaclipcc v0.3.0 the parameter is
+#' set to "ISIMIP3" when needed as a function of the index name.
 #' @param ref.obs.dataset Default to \code{NULL}, and unused unless a \code{bias.adj.method} has been specified.
 #'  This is the reference observational dataset to perform the correction. This is an individual that must be defined in the datasource vocabulary,
 #'   belonging to either classes \code{ds:ObservationalDataset} or \code{ds:Reanalysis}. Currently accepted values are \code{"W5E5"} and \code{"EWEMBI"}.
 #'   Note that the individual instances of the observational reference are assumed to be described in the datasource vocabulary.
+#'   NOTE: since metaclipcc v0.3.0 the parameter is
+#' set to "W5E5" when needed as a function of the index name.
 #' @param proj Map projection string. Accepted values are \code{"Robin"}, \code{"Arctic"}, \code{"Antarctic"} and \code{"Pacific"}
 #' for Robinson and WGS84 Arctic/Antarctic Polar stereographic, and Robinson Pacific-centric projections respectively.
 #' @param map.bbox Optional. numeric vector of length 4, containing, in this order the \code{c(xmin, ymin, xmax, ymax)} coordinates of the target area
