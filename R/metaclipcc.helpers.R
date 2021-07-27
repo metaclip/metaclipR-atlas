@@ -12,7 +12,7 @@
 
 showIPCCdatasets <- function(names.only = TRUE) {
     out <- read.csv(file.path(find.package("metaclipcc"), "dataset_table.csv"),
-             stringsAsFactors = FALSE, na.strings = "")
+             stringsAsFactors = FALSE, na.strings = "NA")
     if (isTRUE(names.only)) out <- out$name
     return(out)
 }
