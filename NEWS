@@ -49,6 +49,7 @@ metaclipcc changelog
  * New argument uncertainty in `metaclipcc.Map`
  * Update Map Uncertainty and IPCC region Layer metadata
  * Include CORDEX map products (preliminary)
+ * Automatic update of ensemble members from reference JSON via `update_dataset_table`
  * Other minor documentation changes
 
 

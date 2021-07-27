@@ -25,12 +25,12 @@ metaclipcc.Map(
 \item{project}{Project. Unused so far. Default to \code{"CMIP5"}.}
 
 \item{variable}{Code of the input ECV (it can be omitted if \code{climate.index} is indicated).
-Current accepted values are restricted to \code{"tas", "pr", "tasmax", "tasmin", "snowfall", "wss"}.}
+Current accepted values are restricted to \code{"tas", "meanpr", "TX", "TN", "prsn", "wind"}.}
 
 \item{climate.index}{If the map is for a climate index, name of the index. Otherwise NULL (the default). Currently accepted values are restricted to
 the set of indices to be included in the Atlas, namely:
-\code{"TXx", "TNn", "Rx1day", "Rx5day", "SPI6", "CDD", "TX35", "TX40", "CD", "HD", "FD"}, as well as the
-bias adjusted versions of \code{"TX35-BA", "TX40-BA", "FD-BA"}.}
+\code{"TXx", "TNn", "Rx1day", "Rx5day", "spi6", "CDD", "tx35", "tx40", "cd", "hdd", "fd"}, as well as the
+bias adjusted versions of \code{"tx35isimip", "tx40isimip", "fdisimip"}.}
 
 \item{delta}{Type of delta map displayed. This can be either \code{"absolute"} or \code{"relative"}. Default to \code{NULL} meaning that the map is not a delta
 but an original magnitude.}
