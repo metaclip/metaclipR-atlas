@@ -51,8 +51,8 @@ update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"),
         project <- projects[k]
         # Names in dataset master table (inst/dataset_table.csv)
         if (project == "CMIP6") {
-            vars <- c("meanpr","tas", "TN","TX","wind","prsn",
-                      "TXx", "TNn","Rx1day","Rx5day","CDD", "spi6",
+            vars <- c("meanpr","tas", "TN", "TX", "wind", "prsn",
+                      "TXx", "TNn", "Rx1day", "Rx5day","CDD", "spi6",
                       "tx35", "tx35isimip", "tx40", "tx40isimip",
                       "hdd", "fd", "fdisimip", "cd") # The last one is cdd in JSON
 
@@ -69,8 +69,8 @@ update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"),
                                                                            "CMIP6Omon", .)
 
         } else if (project == "CMIP5") {
-            vars <- c("meanpr","tas", "TN","TX",
-                      "TXx", "TNn","Rx1day","Rx5day","CDD",
+            vars <- c("meanpr", "tas", "TN", "TX",
+                      "TXx", "TNn", "Rx1day", "Rx5day", "CDD",
                       "tx35", "tx35isimip", "tx40", "tx40isimip",
                       "hdd", "fd", "fdisimip", "cd") # The last one is cdd in JSON
 
@@ -102,12 +102,16 @@ update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"),
                 # Curated members
                 curated.models <- json.aux[[var]][[scen]]
                 ind1 <- grep(scen, master.aux$Experiment, ignore.case = TRUE)
-                master.models <- paste(master.aux[ind1, "GCM"], master.aux[ind1, "Run"], sep = "_")
+                master.models <- paste(master.aux[ind1, "GCM"],
+                                       master.aux[ind1, "Run"], sep = "_")
                 if (length(curated.models) == 0) { # Empty scenario
                     avail <- rep(0L, length(master.models))
                 } else {
-                    avail <- vapply(1:length(master.models), FUN.VALUE = integer(1L), function(x) {
-                        grepl(master.models[x], curated.models, ignore.case = TRUE) %>% any() %>% as.integer()
+                    avail <- vapply(1:length(master.models),
+                                    FUN.VALUE = integer(1L), function(x) {
+                        grepl(master.models[x],
+                              curated.models,
+                              ignore.case = TRUE) %>% any() %>% as.integer()
                     })
                 }
                 master.aux[ind1,var] <- avail
@@ -116,14 +120,13 @@ update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"),
         master.table[ind, ] <- master.aux
     }
     message("*******************************************************************\nThe master table records for ",
-            paste(projects, collapse = ", "),
-            " have been updated and stored at:\n",
+            paste(projects, collapse = ", "), " have been updated and stored at:\n",
             out.file,
             "\n*******************************************************************")
     write.table(master.table, file = out.file,  row.names = FALSE, sep = ",")
 }
 
-#
+
 # update_dataset_table()
 # update_dataset_table(project = "CMIP6")
 
