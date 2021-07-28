@@ -8,22 +8,22 @@ prsn,0,,,total snow precipitation amount,,mm,tpsn,surface,P1M,sum,Amon,sum,sum
 wind,0,,,near-surface surface wind speed,,m/s,wss,near-surface,P1M,mean,Amon,mean,mean
 O2,0,,,dissolved oxygen in sea water,,mol/m3,,near-surface,P1M,mean,Omon,mean,mean
 pH,0,,,pH,,,,near-surface,P1M,mean,Omon,mean,mean
-TXx,1,tasmax,ds:TXx,Monthly maximum value of daily maximum temperature,,,,,P1M,,,none,mean
-TNn,1,tasmin,ds:TNn,Monthly minimum value of daily minimum temperature,,,,,P1M,,,none,mean
-Rx1day,1,pr,ds:Rx1day,Monthly maximum 1-day precipitation,,,,,P1M,,,none,mean
-Rx5day,1,pr,ds:Rx5day,Monthly maximum 5-day precipitation,,,,,P1M,,,none,mean
-CDD,1,pr,ipcc:DS,Dry spell (consecutive dry days),,,,,P1D,,,max,max
-spi6,1,pr,ds:SPI,Standardized precipitation index,6,,,,P1M,,,none,mean
-SPI12,1,pr,ds:SPI,Standardized precipitation index,12,,,,P1M,,,none,mean
-SPEI6,1,"pr,tas",ds:SPEI,Standardized precipitation-evapotranspiration index,6,,,,P1M,,,none,mean
-SPEI12,1,"pr,tas",ds:SPEI,Standardized precipitation-evapotranspiration index,12,,,,P1M,,,none,mean
-DF6,1,pr,ds:DF,Drought Frequency,6,,,,P1M,,,none,sum
-DF12,1,pr,ds:DF,Drought Frequency,12,,,,P1M,,,none,sum
-LFFP,1,tasmin,ds:LFFP,Length of the frost-free period,,,,,P1D,,,sum,sum
+TXx,1,TX,ds:TXx,Monthly maximum value of daily maximum temperature,,,,,P1M,,,none,mean
+TNn,1,TN,ds:TNn,Monthly minimum value of daily minimum temperature,,,,,P1M,,,none,mean
+Rx1day,1,meanpr,ds:Rx1day,Monthly maximum 1-day precipitation,,,,,P1M,,,none,mean
+Rx5day,1,meanpr,ds:Rx5day,Monthly maximum 5-day precipitation,,,,,P1M,,,none,mean
+CDD,1,meanpr,ipcc:DS,Dry spell (consecutive dry days),,,,,P1D,,,max,max
+spi6,1,meanpr,ds:SPI,Standardized precipitation index,6,,,,P1M,,,none,mean
+SPI12,1,meanpr,ds:SPI,Standardized precipitation index,12,,,,P1M,,,none,mean
+SPEI6,1,"meanpr,tas",ds:SPEI,Standardized precipitation-evapotranspiration index,6,,,,P1M,,,none,mean
+SPEI12,1,"meanpr,tas",ds:SPEI,Standardized precipitation-evapotranspiration index,12,,,,P1M,,,none,mean
+DF6,1,meanpr,ds:DF,Drought Frequency,6,,,,P1M,,,none,sum
+DF12,1,meanpr,ds:DF,Drought Frequency,12,,,,P1M,,,none,sum
+LFFP,1,TN,ds:LFFP,Length of the frost-free period,,,,,P1D,,,sum,sum
 GDD,1,tas,ds:GD,Growing degree days,,,,,P1D,,,sum,sum
 T21.5,1,tas,ds:T21.5,Number of days with mean temperature above 21.5 degC,,,,,P1D,,,sum,sum
-tx35,1,tasmax,ds:TX35,Number of days with maximum temperature above 35 degC,,,,,P1D,,,sum,sum
-tx40,1,tasmax,ds:TX40,Number of days with maximum temperature above 40 degC,,,,,P1D,,,sum,sum
-hdd,1,"tas,tasmin,tasmax",ds:HD,Heating Degree Days,,,,,P1D,,,sum,sum
-fd,1,tasmin,ds:FD,Frost days,,,,,P1D,,,sum,sum
+tx35,1,TX,ds:TX35,Number of days with maximum temperature above 35 degC,,,,,P1D,,,sum,sum
+tx40,1,TX,ds:TX40,Number of days with maximum temperature above 40 degC,,,,,P1D,,,sum,sum
+hdd,1,"tas,TN,TX",ds:HD,Heating Degree Days,,,,,P1D,,,sum,sum
+fd,1,TN,ds:FD,Frost days,,,,,P1D,,,sum,sum
 cd,1,tas,ds:CD,Cooling Degree Days,,,,,P1D,,,sum,sum
