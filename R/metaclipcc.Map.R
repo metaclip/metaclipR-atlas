@@ -25,7 +25,7 @@
 #' \code{"TXx", "TNn", "Rx1day", "Rx5day", "spi6", "CDD", "tx35", "tx40", "cd", "hdd", "fd"}, as well as the
 #' bias adjusted versions of \code{"tx35isimip", "tx40isimip", "fdisimip"}.
 #' @param delta Logical. Is it a delta map?. The type of delta displayed can be either \code{"absolute"} or \code{"relative"}.
-#  Since metaclipcc v0.3.0 this parameter is internally adjusted as a function of the input variable/index.
+#  Since metaclipcc v1.0.0 this parameter is internally adjusted as a function of the input variable/index.
 #' @param experiment Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"},
 #' for CORDEX and CMIP5 products, and \code{"historical", "ssp126", "ssp245", "ssp370", "ssp460" and "ssp585"} for CMIP6 products.
 #' @param baseline Character string indicating the \code{"start-end"} years of the baseline (historical) period. Accepted values are:
@@ -37,7 +37,7 @@
 #'  warming levels of +1.5 degC \code{"1.5"}, +2 \code{"2"}, +3 \code{"3"} and +4 \code{"4"}.
 #' @param season season. Integer vector of correlative months, in ascending order, encompassing the target season.
 #' @param bias.adj.method Default to \code{NULL} and unused. If the map displays a bias-corrected product, a character string idetifying the method. Current accepted values a re \code{"EQM"},
-#' for the standard VALUE empirical quantile mapping method. NOTE: since metaclipcc v0.3.0 the parameter is
+#' for the standard VALUE empirical quantile mapping method. NOTE: since metaclipcc v1.0.0 the parameter is automatically
 #' set to "ISIMIP3" when needed as a function of the index name.
 #' @param ref.obs.dataset Default to \code{NULL}, and unused unless a \code{bias.adj.method} has been specified.
 #'  This is the reference observational dataset to perform the correction. This is an individual that must be defined in the datasource vocabulary,

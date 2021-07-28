@@ -8,7 +8,7 @@ metaclipcc.Map(
   project = "CMIP5",
   variable = NULL,
   climate.index = NULL,
-  delta = NULL,
+  delta = FALSE,
   experiment,
   baseline,
   future.period = NULL,
@@ -32,8 +32,7 @@ the set of indices to be included in the Atlas, namely:
 \code{"TXx", "TNn", "Rx1day", "Rx5day", "spi6", "CDD", "tx35", "tx40", "cd", "hdd", "fd"}, as well as the
 bias adjusted versions of \code{"tx35isimip", "tx40isimip", "fdisimip"}.}
 
-\item{delta}{Type of delta map displayed. This can be either \code{"absolute"} or \code{"relative"}. Default to \code{NULL} meaning that the map is not a delta
-but an original magnitude.}
+\item{delta}{Logical. Is it a delta map?. The type of delta displayed can be either \code{"absolute"} or \code{"relative"}.}
 
 \item{experiment}{Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"},
 for CORDEX and CMIP5 products, and \code{"historical", "ssp126", "ssp245", "ssp370", "ssp460" and "ssp585"} for CMIP6 products.}
@@ -45,12 +44,12 @@ for CORDEX and CMIP5 products, and \code{"historical", "ssp126", "ssp245", "ssp3
 \item{future.period}{future period. Default to \code{NULL}, for historical maps (i.e., period defined by the \code{baseline} argument). Otherwise, a character string
 indicating either the \code{"start-end"} years of the future period or a (GCM-specific) warming level. Current options include the standard AR5 future time slices
 for near term, \code{"2021-2040"}, medium term \code{"2041-2060"} and long term \code{"2081-2100"}, and the global
-warming levels of +1.5 degC \code{"1.5"}, +2 \code{"2"} and +3 \code{"3"}.}
+warming levels of +1.5 degC \code{"1.5"}, +2 \code{"2"}, +3 \code{"3"} and +4 \code{"4"}.}
 
 \item{season}{season. Integer vector of correlative months, in ascending order, encompassing the target season.}
 
 \item{bias.adj.method}{Default to \code{NULL} and unused. If the map displays a bias-corrected product, a character string idetifying the method. Current accepted values a re \code{"EQM"},
-for the standard VALUE empirical quantile mapping method. NOTE: since metaclipcc v0.3.0 the parameter is
+for the standard VALUE empirical quantile mapping method. NOTE: since metaclipcc v1.0.0 the parameter is automatically
 set to "ISIMIP3" when needed as a function of the index name.}
 
 \item{ref.obs.dataset}{Default to \code{NULL}, and unused unless a \code{bias.adj.method} has been specified.
