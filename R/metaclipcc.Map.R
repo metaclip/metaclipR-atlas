@@ -24,8 +24,8 @@
 #' the set of indices to be included in the Atlas, namely:
 #' \code{"TXx", "TNn", "Rx1day", "Rx5day", "spi6", "CDD", "tx35", "tx40", "cd", "hdd", "fd"}, as well as the
 #' bias adjusted versions of \code{"tx35isimip", "tx40isimip", "fdisimip"}.
-#' @param delta Type of delta map displayed. This can be either \code{"absolute"} or \code{"relative"}. Default to \code{NULL} meaning that the map is not a delta
-#'  but an original magnitude.
+#' @param delta Logical. Is it a delta map?. The type of delta displayed can be either \code{"absolute"} or \code{"relative"}.
+#  Since metaclipcc v0.3.0 this parameter is internally adjusted as a function of the input variable/index.
 #' @param experiment Experiment results displayed in the map. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp85"},
 #' for CORDEX and CMIP5 products, and \code{"historical", "ssp126", "ssp245", "ssp370", "ssp460" and "ssp585"} for CMIP6 products.
 #' @param baseline Character string indicating the \code{"start-end"} years of the baseline (historical) period. Accepted values are:
@@ -117,7 +117,7 @@
 metaclipcc.Map <- function(project = "CMIP5",
                            variable = NULL,
                            climate.index = NULL,
-                           delta = NULL,
+                           delta = FALSE,
                            experiment,
                            baseline,
                            future.period = NULL,
@@ -160,9 +160,9 @@ metaclipcc.Map <- function(project = "CMIP5",
             ref.obs.dataset <- "W5E5"
         }
     }
-    if (!is.null(delta)) {
-        delta <- match.arg(delta, choices = c("absolute", "relative"))
-    }
+
+    stopifnot(is.logical(delta))
+
     experiment <- if (project == "CMIP6") {
         match.arg(experiment, choices = c("historical", "ssp126", "ssp245", "ssp370", "ssp460", "ssp585"))
     } else {
@@ -170,8 +170,8 @@ metaclipcc.Map <- function(project = "CMIP5",
     }
 
     if (experiment == "historical") {
-        if (!is.null(delta)) {
-            delta <- NULL
+        if (isTRUE(delta)) {
+            delta <- FALSE
             message("NOTE: \'delta\' argument ignored for the \'experiment=\"historical\"\' setting")
         }
     }
@@ -212,15 +212,9 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     proj <- match.arg(proj, choices = c("Robin", "Arctic", "Antarctic", "Pacific"))
 
-    # if (!is.null(bias.adj.method)) {
-    #     if (is.null(ref.obs.dataset)) stop("A reference observational dataset is required for bias correction", call. = FALSE)
-    #     bias.adj.method <- match.arg(bias.adj.method, choices = c("ISIMIP3", "EQM"))
-    #     ref.obs.dataset <- match.arg(ref.obs.dataset, choices = c("W5E5", "EWEMBI"))
-    # }
-
     if (!is.null(map.bbox)) stopifnot(length(map.bbox) == 4L)
 
-    if (is.null(delta)) uncertainty <- NULL
+    if (!delta) uncertainty <- NULL
     if (!is.null(uncertainty)) {
         uncertainty <- match.arg(uncertainty, choices = c("simple", "advanced"))
     }
@@ -674,8 +668,9 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         ## Delta calculation ---------------------------------------------------
 
-        if (!is.null(delta)) {
-            descr <- if (delta == "absolute") {
+        if (isTRUE(delta)) {
+            delta.type <- ref.vars$delta_change
+            descr <- if (delta.type == "absolute") {
                 paste0("The climate change signal is computed, for each grid cell, as the arithmetic difference between the \'",
                       ref.vars$variable, "\' climatologies of the ", experiment, " and the historical scenarios")
             } else {
@@ -684,7 +679,7 @@ metaclipcc.Map <- function(project = "CMIP5",
             }
             graph <- metaclipcc.Delta(graph = graph.r,
                                       referenceGraph = graph.h,
-                                      delta.type = delta,
+                                      delta.type = delta.type,
                                       dc.description = descr)
         } else {
 
@@ -769,7 +764,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         maplayer.nodename <- paste("mapRasterLayer", randomName(), sep = ".")
 
-        descr <- if (is.null(delta)) {
+        descr <- if (!delta) {
             "The ensemble mean is graphically displayed on the map as a raster heatmap layer"
         } else {
             "The ensemble delta change is graphically displayed on the map as a raster heatmap layer"
@@ -850,16 +845,15 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         if (!is.null(uncertainty)) {
 
-            descr <- if (uncertainty == "simple") {
-                "Model agreement is represented with two categories: No overlay indicates high model agreement, where at least 80% of models agree on sign of change; diagonal lines (/) indicate low model agreement, where fewer than 80% of models agree on sign of change. For more information on the simple approach, please refer to the AR6 WGI Cross-Chapter Box Atlas 1. NOTE: Model agreement is computed at a gridbox level and is not representative of regionally aggregated results over larger regions"
+            if (uncertainty == "simple") {
+                descr <- "Model agreement is represented with two categories: No overlay indicates high model agreement, where at least 80% of models agree on sign of change; diagonal lines (/) indicate low model agreement, where fewer than 80% of models agree on sign of change. For more information on the simple approach, please refer to the AR6 WGI Cross-Chapter Box Atlas 1. NOTE: Model agreement is computed at a gridbox level and is not representative of regionally aggregated results over larger regions"
             } else if (uncertainty == "advanced") {
-                "Model agreement is represented using the advanced approach (significant change and agreement) with three categories: No overlay indicates that the change is robust and likely emerges from internal variability (at least 66% of the models show a change greater than the internal-variability threshold and at least 80% of the models agree on the sign of change); diagonal lines (\\) indicate no change or no robust change (fewer than 66% of the models show change greater than the internal-variability threshold); crossed lines (X) indicate conflicting signals where at least 66% of the models show change greater than the internal-variability threshold but fewer than 80% of all models agree on the sign of change. For more information on the advanced approach, please refer to the AR6 WGI Cross-Chapter Box Atlas 1. NOTE: Robustness and model agreement are computed at a gridbox level and are not representative of regionally aggregated results over larger regions."
+                descr <- "Model agreement is represented using the advanced approach (significant change and agreement) with three categories: No overlay indicates that the change is robust and likely emerges from internal variability (at least 66% of the models show a change greater than the internal-variability threshold and at least 80% of the models agree on the sign of change); diagonal lines (\\) indicate no change or no robust change (fewer than 66% of the models show change greater than the internal-variability threshold); crossed lines (X) indicate conflicting signals where at least 66% of the models show change greater than the internal-variability threshold but fewer than 80% of all models agree on the sign of change. For more information on the advanced approach, please refer to the AR6 WGI Cross-Chapter Box Atlas 1. NOTE: Robustness and model agreement are computed at a gridbox level and are not representative of regionally aggregated results over larger regions."
             }
 
             # Model Consensus
 
             maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-            descr <- descr
             # refurl <- "https://doi.org/10.1088/1748-9326/aab1b1"
             graph <- add_vertices(graph,
                                   nv = 1,
@@ -875,26 +869,6 @@ metaclipcc.Map <- function(project = "CMIP5",
                                c(getNodeIndexbyName(graph, map.nodename),
                                  getNodeIndexbyName(graph, maplayer.nodename)),
                                label = "go:hasMapLayer")
-
-            # # SNR
-            #
-            # maplayer.nodename <- paste("mapHatchingLayer", randomName(), sep = ".")
-            # descr <- "Hatched pattern of +45 deg. in the map indicates a low signal-to-noise ratio (SNR<1), i.e. the ensemble mean is smaller than the standard deviation across model results (following Nikulin et al. 2018)"
-            # graph <- add_vertices(graph,
-            #                       nv = 1,
-            #                       name = maplayer.nodename,
-            #                       label = "SNR>1 Hatching",
-            #                       className = "go:Mask",
-            #                       attr = list("dc:description" = descr,
-            #                                   "ds:referenceURL" = refurl,
-            #                                   "go:LineAngle" = 45,
-            #                                   "go:LineColor" = "hex-000000",
-            #                                   "go:LineType" = "solid"))
-            # graph <- add_edges(graph,
-            #                    c(getNodeIndexbyName(graph, map.nodename),
-            #                      getNodeIndexbyName(graph, maplayer.nodename)),
-            #                    label = "go:hasMapLayer")
-
         }
     }
     return(list("graph" = graph, "parentnodename" =  map.nodename))
