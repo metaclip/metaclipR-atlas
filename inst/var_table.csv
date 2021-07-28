@@ -23,7 +23,10 @@ LFFP,1,TN,ds:LFFP,Length of the frost-free period,,,,,P1D,,,sum,sum
 GDD,1,tas,ds:GD,Growing degree days,,,,,P1D,,,sum,sum
 T21.5,1,tas,ds:T21.5,Number of days with mean temperature above 21.5 degC,,,,,P1D,,,sum,sum
 tx35,1,TX,ds:TX35,Number of days with maximum temperature above 35 degC,,,,,P1D,,,sum,sum
+tx35isimip,1,TX,ds:TX35,Number of days with maximum temperature above 35 degC (bias-adjusted),,,,,P1D,,,sum,sum
 tx40,1,TX,ds:TX40,Number of days with maximum temperature above 40 degC,,,,,P1D,,,sum,sum
+tx40isimip,1,TX,ds:TX40,Number of days with maximum temperature above 40 degC (bias-adjusted),,,,,P1D,,,sum,sum
 hdd,1,"tas,TN,TX",ds:HD,Heating Degree Days,,,,,P1D,,,sum,sum
 fd,1,TN,ds:FD,Frost days,,,,,P1D,,,sum,sum
+fdisimip,1,TN,ds:FD,Frost days (bias-adjusted),,,,,P1D,,,sum,sum
 cd,1,tas,ds:CD,Cooling Degree Days,,,,,P1D,,,sum,sum
