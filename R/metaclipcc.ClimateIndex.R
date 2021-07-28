@@ -32,10 +32,10 @@ metaclipcc.ClimateIndex <- function(graph.list, index.code) {
                            label = "ds:hadClimateIndexCalculation")
     }
     # Climate index node -------------------------------------------------------
-    descr <- paste("The climate index", ref$description, "is calculated")
+    descr <- paste0("The climate index \'", ref$description, "\' is calculated")
 
     if (!is.na(ref$scale)) {
-        paste0(descr, paste(", considering a scale of", ref$scale, "months"))
+        paste0(descr, paste(", considering a scale of ", ref$scale, " months"))
     }
     ci.nodename <- ref$vocabulary
     cn <- "ds:ClimateIndex"
