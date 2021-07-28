@@ -13,13 +13,15 @@
 metaclipcc.ClimateIndex <- function(graph.list, index.code) {
 
     ref <- showIPCCvars(names.only = FALSE)[grep(index.code, showIPCCvars()),]
+    descr <- paste0("Calculation of \'", index.code,
+                    "\' Climate Index (", ref$description, ")")
     nodename <- paste0("ClimateIndexCalculation.", randomName())
     graph <- graph.list[[1]]$graph
     graph <- my_add_vertices(graph,
                              name = nodename,
                              label = "Climate Index Calculation",
                              className = "ds:ClimateIndexCalculation",
-                             attr = list("dc:description" = paste("Calculation of ", index.code, "Climate Index")))
+                             attr = list("dc:description" = descr))
 
     for (i in 1:length(graph.list)) {
         if (class(graph.list[[i]]$graph) != "igraph") stop("Invalid input graph (not an 'igraph-class' object)")
