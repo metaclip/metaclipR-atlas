@@ -34,7 +34,7 @@
 #' @param future.period future period. Default to \code{NULL}, for historical maps (i.e., period defined by the \code{baseline} argument). Otherwise, a character string
 #'  indicating either the \code{"start-end"} years of the future period or a (GCM-specific) warming level. Current options include the standard AR5 future time slices
 #'  for near term, \code{"2021-2040"}, medium term \code{"2041-2060"} and long term \code{"2081-2100"}, and the global
-#'  warming levels of +1.5 degC \code{"1.5"}, +2 \code{"2"} and +3 \code{"3"}.
+#'  warming levels of +1.5 degC \code{"1.5"}, +2 \code{"2"}, +3 \code{"3"} and +4 \code{"4"}.
 #' @param season season. Integer vector of correlative months, in ascending order, encompassing the target season.
 #' @param bias.adj.method Default to \code{NULL} and unused. If the map displays a bias-corrected product, a character string idetifying the method. Current accepted values a re \code{"EQM"},
 #' for the standard VALUE empirical quantile mapping method. NOTE: since metaclipcc v0.3.0 the parameter is
@@ -207,7 +207,7 @@ metaclipcc.Map <- function(project = "CMIP5",
     if (experiment != "historical" & is.null(future.period)) stop("future.period argument is missing, with no default for ", experiment, " experiment")
     if (!is.null(future.period)) {
         future.period <- match.arg(future.period, choices = c("2021-2040", "2041-2060", "2081-2100",
-                                                              "1.5", "2", "3"))
+                                                              "1.5", "2", "3", "4"))
     }
 
     proj <- match.arg(proj, choices = c("Robin", "Arctic", "Antarctic", "Pacific"))
@@ -232,7 +232,8 @@ metaclipcc.Map <- function(project = "CMIP5",
     ## Reference grids ---------------------------------------------------------
     if (project == "CMIP5") {
         resX <- resY <- 2
-        descr <- paste("This is the reference grid used in all CMIP5 map products of", resX, "x", resY, "degree resolution covering the whole globe")
+        descr <- paste("This is the reference grid used in all CMIP5 map products of",
+                       resX, "x", resY, "degree resolution covering the whole globe")
         gridfile.url <- "https://github.com/IPCC-WG1/Atlas/tree/master/reference-grids"
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
@@ -244,7 +245,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                                                     ref.URL = gridfile.url)
     } else if (project == "CMIP6") {
         resX <- resY <- 1
-        descr <- paste("This is the reference grid used in all CMIP6 map products of", resX, "x", resY, "degree resolution covering the whole globe")
+        descr <- paste("This is the reference grid used in all CMIP6 map products of",
+                       resX, "x", resY, "degree resolution covering the whole globe")
         gridfile.url <- "https://github.com/IPCC-WG1/Atlas/tree/master/reference-grids"
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
@@ -656,9 +658,14 @@ metaclipcc.Map <- function(project = "CMIP5",
                                          disable.command = TRUE,
                                          dc.description = descr)
         if (experiment != "historical") {
-            descr <- paste("The", ref.vars$variable,
-                           "climatology is calculated for each grid cell, as the mean value for the whole future period",
-                           future.period)
+            if (future.period == "1.5" | future.period == "2" | future.period == "3" | future.period == "4") {
+                fp <- paste0("of +", future.period, " degC Global Warming Level")
+            } else {
+                fp <- future.period
+            }
+            descr <- paste0("The \'", ref.vars$variable,
+                           "\' climatology is calculated for each grid cell, as the mean value for the whole future period ",
+                           fp)
             graph.r <- metaclipR.Climatology(graph = graph.r,
                                              arg.list = arg.list,
                                              disable.command = TRUE,
@@ -669,11 +676,11 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         if (!is.null(delta)) {
             descr <- if (delta == "absolute") {
-                paste("The climate change signal is computed, for each grid cell, as the arithmetic difference between the",
-                      ref.vars$variable, "climatologies of the", experiment, "and the historical scenarios")
+                paste0("The climate change signal is computed, for each grid cell, as the arithmetic difference between the \'",
+                      ref.vars$variable, "\' climatologies of the ", experiment, " and the historical scenarios")
             } else {
-                paste("The climate change signal is computed, for each grid cell, as the ratio (in %) between the",
-                      ref.vars$variable, "ensemble mean climatologies of the", experiment, "and the historical scenarios")
+                paste0("The climate change signal is computed, for each grid cell, as the ratio (in %) between the \'",
+                      ref.vars$variable, "\' ensemble mean climatologies of the ", experiment, " and the historical scenarios")
             }
             graph <- metaclipcc.Delta(graph = graph.r,
                                       referenceGraph = graph.h,
