@@ -54,4 +54,7 @@ metaclipcc changelog
  * Automatic update of ensemble members from reference JSON via `update_dataset_table`
  * Other minor improvements and documentation changes
 
+## v1.0.1 (29 Jul 2021)
+ * Bug fix: exact matching in grep pattern definition for climate indices
+ * Bug fix: skip ensemble building for one-member maps (CMIP6 +4deg GWL in SSP245)
 
