@@ -9,7 +9,7 @@ Imports:
     magrittr,
     utils
 Title: METACLIP for the IPCC-AR6 Interactive Atlas
-Version: 1.0.1
+Version: 1.0.2
 Date: 2021-07-29
 Authors@R: c(
     person("Bedia", "Joaquín", email = "bediaj@unican.es", role = c("aut","cre"), comment = c(ORCID = "0000-0001-6219-4312")),

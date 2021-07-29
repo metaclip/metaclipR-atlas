@@ -47,7 +47,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                                      season = 1:12,
                                      years) {
     time.res.orig <- match.arg(time.res.orig, choices = c("P1D", "P1M"), several.ok = FALSE)
-    variable <- match.arg(variable, choices = c("tas", "TX", "TN", "snow",
+    variable <- match.arg(variable, choices = c("tas", "TX", "TN", "prsn",
                                                 "wind", "tos", "meanpr", "O2", "pH"), several.ok = FALSE)
     if (length(years) != 2) stop("Argument \'years\' must be of length two")
     graph <- metaclipcc.Dataset$graph
