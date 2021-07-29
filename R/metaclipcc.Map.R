@@ -711,10 +711,15 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         ## Ensemble building -------------------------------------------------------
 
-        descr <- "The multi-model ensemble is built by joining each individual model climatology along the new dimension \'member\'"
-        graph <- metaclipR.Ensemble(graph.list = graph.list,
-                                    disable.command = TRUE,
-                                    dc.description = descr)
+        if (length(graph.list) > 1L) {
+            descr <- "The multi-model ensemble is built by joining each individual model climatology along the new dimension \'member\'"
+            graph <- metaclipR.Ensemble(graph.list = graph.list,
+                                        disable.command = TRUE,
+                                        dc.description = descr)
+        } else {## It can happen that one single model remains (e.g. CMIP6 SSP245 +4degC GWL)
+            graph <- graph.list[[1]]
+            message("One single model. No multi-member ensemble was built")
+        }
 
         ## MAP PRODUCT DESCRIPTION -------------------------------------------------
         ## TODO:Colorbar bounds
