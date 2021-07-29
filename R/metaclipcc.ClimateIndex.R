@@ -12,7 +12,7 @@
 
 metaclipcc.ClimateIndex <- function(graph.list, index.code) {
 
-    ref <- showIPCCvars(names.only = FALSE)[grep(index.code, showIPCCvars()),]
+    ref <- showIPCCvars(names.only = FALSE)[grep(paste0("^", index.code, "$"), showIPCCvars()),]
     descr <- paste0("Calculation of \'", index.code,
                     "\' Climate Index (", ref$description, ")")
     nodename <- paste0("ClimateIndexCalculation.", randomName())
