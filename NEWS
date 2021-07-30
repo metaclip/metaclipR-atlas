@@ -60,5 +60,6 @@ metaclipcc changelog
 
 ## v1.0.2 (in devel)
  * Bug fix: 'prsn' was undefined in argument list in `metaclipcc.DatasetSubset`
+ * Include prsn_version field in dataset master table
 
 
