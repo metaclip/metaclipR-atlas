@@ -58,7 +58,7 @@ metaclipcc changelog
  * Bug fix: exact matching in grep pattern definition for climate indices
  * Bug fix: skip ensemble building for one-member maps (CMIP6 +4deg GWL in SSP245)
 
-## v1.0.2 (in devel)
+## v1.0.2 (30 Jul 2021)
  * Bug fix: 'prsn' was undefined in argument list in `metaclipcc.DatasetSubset`
  * Include prsn_version field in dataset master table
 
