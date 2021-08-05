@@ -131,7 +131,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     # Fixed parameters *******
     ref.period <- c(1980, 2005) # Used as training period for bias correction
-    time.res.orig <- "P1D"
+    # time.res.orig <- "P1D"
     # ***********************
 
     project <- match.arg(project, choices = c("CMIP5", "CMIP6",
@@ -331,12 +331,14 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     ## ECV filtering -----------------------------------------------------------
 
-    vars <- if (!is.null(climate.index)) {
+    if (!is.null(climate.index)) {
         ref.vars <- showIPCCvars(names.only = FALSE)[grep(paste0("^", climate.index, "$"), showIPCCvars()), ]
-        strsplit(ref.vars$inputECV, split = ",") %>% unlist()
+        time.res.orig <- ref.vars$time_step
+        vars <- strsplit(ref.vars$inputECV, split = ",") %>% unlist()
     } else {
         ref.vars <- showIPCCvars(names.only = FALSE)[grep(paste0("^", variable, "$"), showIPCCvars()), ]
-        variable
+        time.res.orig <- ref.vars$time_step
+        vars <- variable
     }
 
     ## Observational data ------------------------------------------------------
