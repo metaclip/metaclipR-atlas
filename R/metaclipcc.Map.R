@@ -835,7 +835,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         maplayer.nodename <- paste("mapLinesLayer", randomName(), sep = ".")
         descr <- "IPCC-AR6 Vector Layer Region Set"
-        refurl <- "https://doi.org/10.5281/zenodo.3691646"
+        refurl <- "https://doi.org/10.5281/zenodo.3691645"
         graph <- add_vertices(graph,
                               nv = 1,
                               name = maplayer.nodename,
