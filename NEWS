@@ -62,4 +62,9 @@ metaclipcc changelog
  * Bug fix: 'prsn' was undefined in argument list in `metaclipcc.DatasetSubset`
  * Include prsn_version field in dataset master table
 
+## v1.0.3 (05 Aug 2021)
+ * Update 'prsn' and 'wind' CMIP6 versions
+ * Double-escape '\' for proper IA json parseability
+ * Update references to all-versions Zenodo DOI
+ * Other minor changes
 
