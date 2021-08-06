@@ -29,4 +29,4 @@ tx40isimip,1,TX,ds:TX40,Bias-adjusted number of days with maximum temperature ab
 hdd,1,"tas,TN,TX",ds:HD,Heating Degree Days,,,,,P1D,,,sum,sum,absolute
 fd,1,TN,ds:FD,Frost days,,,,,P1D,,,sum,sum,absolute
 fdisimip,1,TN,ds:FD,Bias-adjusted Frost Days ,,,,,P1D,,,sum,sum,absolute
-cd,1,tas,ds:CD,Cooling Degree Days,,,,,P1D,,,sum,sum,absolute
+cd,1,"tas,TN,TX",ds:CD,Cooling Degree Days,,,,,P1D,,,sum,sum,absolute
