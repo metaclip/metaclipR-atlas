@@ -384,7 +384,7 @@ metaclipcc.Map <- function(project = "CMIP5",
         if (grepl("^CORDEX-", project)) {
             message("[", Sys.time(), "] Processing ", ref.model$GCM, "-", ref.model$RCM, " model data")
         } else {
-            message("[", Sys.time(), "] Processing ", model.name, " model data")
+            message("[", Sys.time(), "] Processing ", model.name, "_", ref.model$Run, " model data")
         }
 
         # Domains of 44 and 22 are mixed in the CORDEX ensemble maps
@@ -405,6 +405,7 @@ metaclipcc.Map <- function(project = "CMIP5",
             if (grepl("^CORDEX-", project)) pr <- "CMIP5"
             years <- metaclipcc.getFuturePeriod(project = pr,
                                                 model = ref.model$GCM,
+                                                run = ref.model$Run,
                                                 future.period = future.period,
                                                 rcp = experiment)
             if (anyNA(years)) next

@@ -57,7 +57,7 @@ showIPCCvars <- function(names.only = TRUE) {
 # future.period = "1.5"
 # rcp = experiment
 
-metaclipcc.getFuturePeriod <- function(project, model, future.period, rcp) {
+metaclipcc.getFuturePeriod <- function(project, model, run, future.period, rcp) {
     project <- match.arg(project, choices = c("CMIP5", "CMIP6"))
     if (future.period == "1.5" | future.period == "2" | future.period == "3" | future.period == "4") {
         filename <- switch(project,
@@ -65,7 +65,7 @@ metaclipcc.getFuturePeriod <- function(project, model, future.period, rcp) {
                            "CMIP6" = "gwl_CMIP6.csv")
         out <- read.csv(file.path(find.package("metaclipcc"), filename),
                         stringsAsFactors = FALSE, na.strings = "NA")
-        ind.row <- grep(paste0(model, "_"), out$GCM, ignore.case = TRUE)
+        ind.row <- grep(paste0(model, "_", run), out$GCM, ignore.case = TRUE)
         ind.col <- grep(paste0(future.period,"_", rcp), names(out), ignore.case = TRUE)
         yr <- out[ind.row, ind.col]
         if (length(yr) == 0) yr <- NA # No GWL data for that model
