@@ -241,7 +241,7 @@ metaclipcc.Map <- function(project = "CMIP5",
         resX <- resY <- 1
         descr <- paste("This is the reference grid used in all CMIP6 map products of",
                        resX, "x", resY, "degree resolution covering the whole globe")
-        gridfile.url <- "https://github.com/IPCC-WG1/Atlas/tree/master/reference-grids"
+        gridfile.url <- "https://doi.org/10.5281/zenodo.3691645"
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
                                                     xmin = -179.5,
