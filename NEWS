@@ -68,3 +68,9 @@ metaclipcc changelog
  * Update references to all-versions Zenodo DOI
  * Other minor changes
 
+## v1.0.4 (06 Aug 2021)
+ * Bug fix in cooling degree day input ECVs
+ * Final update of GWL tables
+ * Minor bug fix in dc:description for SPI
+ * Other minor internal changes
+

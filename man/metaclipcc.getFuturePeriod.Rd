@@ -4,18 +4,21 @@
 \alias{metaclipcc.getFuturePeriod}
 \title{Get future period}
 \usage{
-metaclipcc.getFuturePeriod(project, model, future.period, rcp)
+metaclipcc.getFuturePeriod(project, model, run, future.period, rcp)
 }
 \arguments{
 \item{project}{Either \code{"CMIP5"} or \code{"CMIP6"}}
 
 \item{model}{GCM name, as encoded in the reference lookup \code{dataset_table.csv}. Type  \code{unique(showIPCCdatasets(names.only = FALSE)$GCM)}}
 
+\item{run}{Model run, as extracted literally from reference tables \code{Run} field}
+
 \item{future.period}{Current options include the standard AR5 future time slices for near term, \code{"2021-2040"},
 medium term \code{"2041-2060"} and long term \code{"2081-2100"}, and the global warming levels
-of +1.5 degC \code{"1.5"}, +2 \code{"2"} and +3 \code{"3"}.}
+of +1.5 degC \code{"1.5"}, +2 \code{"2"}, +3 \code{"3"} and +4 \code{"4"}.}
 
-\item{rcp}{Experiment. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp60", "rcp85"}}
+\item{rcp}{Experiment. Accepted values are restricted to \code{"historical", "rcp26", "rcp45", "rcp60", "rcp85"}
+or corresponding ssps in case of CMIP6}
 }
 \value{
 An integer vector of length two, formed by start and end year of the future time slice
