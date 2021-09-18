@@ -2,12 +2,14 @@ variable,is_index,inputECV,vocabulary,description,scale,units,shortname,vertical
 tas,0,,,mean near-surface air temperature,,degC,tas,near-surface,P1D,mean,Atmos,mean,mean,absolute
 TX,0,,,maximum near-surface air temperature,,degC,tasmax,near-surface,P1D,max,Atmos,mean,mean,absolute
 TN,0,,,minimum near-surface air temperature,,degC,tasmin,near-surface,P1D,min,Atmos,mean,mean,absolute
-tos,0,,,sea-surface temperature,,degC,ssl,surface,P1M,mean,Omon,mean,mean,absolute
+tos,0,,ds:sst,sea-surface temperature,,degC,sst,surface,P1M,mean,Omon,mean,mean,absolute
 meanpr,0,,,total precipitation amount,,mm,tp,surface,P1D,sum,Atmos,sum,sum,relative
 prsn,0,,,total snow precipitation amount,,mm,tpsn,surface,P1M,sum,Amon,sum,sum,relative
 wind,0,,,near-surface surface wind speed,,m/s,wss,near-surface,P1M,mean,Amon,mean,mean,relative
 O2,0,,,dissolved oxygen in sea water,,mol/m3,,near-surface,P1M,mean,Omon,mean,mean,
-pH,0,,,pH,,,,near-surface,P1M,mean,Omon,mean,mean,absolute
+ph,0,,ds:pH,pH,,pH,pH,near-surface,P1M,mean,Omon,mean,mean,absolute
+siconc,0,,ds:siconc,sea ice concentration,,%,siconc,near-surface,P1M,mean,Omon,mean,mean,absolute
+SLR,0,,,sea level rise,,m,slr,surface,,mean,Omon,,,absolute
 TXx,1,TX,ds:TXx,Monthly maximum value of daily maximum temperature,,,,,P1M,,,none,mean,absolute
 TNn,1,TN,ds:TNn,Monthly minimum value of daily minimum temperature,,,,,P1M,,,none,mean,absolute
 Rx1day,1,meanpr,ds:Rx1day,Monthly maximum 1-day precipitation,,,,,P1M,,,none,mean,relative
