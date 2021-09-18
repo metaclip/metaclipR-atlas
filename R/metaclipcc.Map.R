@@ -19,7 +19,8 @@
 #' @description Build a directed metadata graph describing a Map product of the AR6 Interactive Atlas
 #' @param project Project. Unused so far. Default to \code{"CMIP5"}.
 #' @param variable Code of the input ECV (it can be omitted if \code{climate.index} is indicated).
-#'  Current accepted values are restricted to \code{"tas", "meanpr", "TX", "TN", "prsn", "wind"}.
+#'  Current accepted values are restricted to \code{"tas", "meanpr", "TX", "TN", "prsn", "wind"}
+#'  and \code{"siconc", "ph", "tos"} for oceanic variables (CMIP6 only).
 #' @param climate.index If the map is for a climate index, name of the index. Otherwise NULL (the default). Currently accepted values are restricted to
 #' the set of indices to be included in the Atlas, namely:
 #' \code{"TXx", "TNn", "Rx1day", "Rx5day", "spi6", "CDD", "tx35", "tx40", "cd", "hdd", "fd"}, as well as the
@@ -80,11 +81,11 @@
 
 
 # ## Test area
-# project = "CMIP5"
-# variable = "tas"
+# project = "CMIP6"
+# variable = "tos"
 # climate.index = NULL
-# delta = "absolute"
-# experiment = "rcp45" #"ssp126"
+# delta = TRUE
+# experiment = "ssp126" #"ssp126"
 # baseline = "1995-2014"
 # future.period = "1.5"
 # season = 1:12
@@ -93,6 +94,7 @@
 # proj = "Robin"
 # map.bbox = NULL
 # test.mode = TRUE
+# uncertainty = "simple"
 # #
 #
 # a <- metaclipcc.Map(project = project,
@@ -139,7 +141,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                                               "CORDEX-CAM", "CORDEX-EAS", "CORDEX-NAM",
                                               "CORDEX-SAM", "CORDEX-SEA", "CORDEX-WAS"))
     if (!is.null(variable)) {
-        variable <- match.arg(variable, choices = c("tas", "meanpr", "TX", "TN", "prsn", "wind"))
+        variable <- match.arg(variable, choices = c("tas", "meanpr", "TX", "TN", "prsn", "wind",
+                                                    "tos", "ph", "siconc"))
         if (!is.null(climate.index)) {
             climate.index <- NULL
             warning("Variable ", variable, " was first indicated. The \'climate.index\' argument was set to NULL")
@@ -413,17 +416,21 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         ### GCM grid -----------------------------------------------------------
 
-        descr <- paste("This is the native grid of", ref.model$resX.atmos,
-                       "x", ref.model$resY.atmos, "of the atmospheric variables in the",
-                       model.name, "simulations")
-
-        gcm.grid <- metaclipR.RectangularGrid(resX = ref.model$resX.atmos,
-                                              resY = ref.model$resY.atmos,
-                                              xmin = ref.model$xmin.atmos,
-                                              xmax = ref.model$xmax.atmos,
-                                              ymin = ref.model$ymin.atmos,
-                                              ymax = ref.model$ymax.atmos,
-                                              dc.description = descr)
+        if (variable %in% c("tos", "ph", "siconc")) {
+            descr <- paste("This is the native grid of the ocean model in the", model.name, "simulations")
+            gcm.grid <-metaclipcc.OceanGrid(dc.description = descr)
+        } else {
+            descr <- paste("This is the native grid of", ref.model$resX.atmos,
+                           "x", ref.model$resY.atmos, "of the atmospheric variables in the",
+                           model.name, "simulations")
+            gcm.grid <- metaclipR.RectangularGrid(resX = ref.model$resX.atmos,
+                                                  resY = ref.model$resY.atmos,
+                                                  xmin = ref.model$xmin.atmos,
+                                                  xmax = ref.model$xmax.atmos,
+                                                  ymin = ref.model$ymin.atmos,
+                                                  ymax = ref.model$ymax.atmos,
+                                                  dc.description = descr)
+        }
 
         ## EMPIEZA BUCLE EN VARIABLES ------------------------------------------
 
@@ -605,13 +612,19 @@ metaclipcc.Map <- function(project = "CMIP5",
         ## because it inherits the grid from the observations, that are previously interpolated
 
         if (is.null(bias.adj.method)) {
-            descr <- paste0("The historical ", ref.vars$variable," climatology of the ",
-                            model.name, " model (" ,
-                            ref.model$resX.atmos , " x ",
-                            ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
-                            project, " grid of ", resX, " x ", resY,
-                            " degrees using a conservative method")
-
+            if (variable %in% c("tos", "ph", "siconc")) {
+                descr <- paste0("The historical ", ref.vars$description, " climatology of the ",
+                                model.name, " model (in oceanic grid coordinates) is interpolated onto the reference ",
+                                project, " grid of ", resX, " x ", resY,
+                                " degrees using a conservative method")
+            } else {
+                descr <- paste0("The historical ", ref.vars$variable," climatology of the ",
+                                model.name, " model (" ,
+                                ref.model$resX.atmos , " x ",
+                                ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
+                                project, " grid of ", resX, " x ", resY,
+                                " degrees using a conservative method")
+            }
             ## A generic conservative remapping is used in CMIPx products (ds:ConservativeRemapping)
             ## In CORDEX, the EURO-CORDEX method is instantiated instead (ds:EUROCordexConservativeRemapping)
 
@@ -624,12 +637,19 @@ metaclipcc.Map <- function(project = "CMIP5",
                                              InterpolationMethod = interp.method,
                                              dc.description = descr)
             if (experiment != "historical") {
-                descr <- paste0("The ", experiment, " ", ref.vars$variable, " climatology of the ",
-                                model.name, " model (" ,
-                                ref.model$resX.atmos , " x ",
-                                ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
-                                project, " grid of ", resX, " x ", resY,
-                                " degrees using a conservative method")
+                if (variable %in% c("tos", "ph", "siconc")) {
+                    descr <- paste0("The ", experiment, " ", ref.vars$description, " climatology of the ",
+                                    model.name, " model (in oceanic grid coordinates) is interpolated onto the reference ",
+                                    project, " grid of ", resX, " x ", resY,
+                                    " degrees using a conservative method")
+                } else {
+                    descr <- paste0("The ", experiment, " ", ref.vars$variable, " climatology of the ",
+                                    model.name, " model (" ,
+                                    ref.model$resX.atmos , " x ",
+                                    ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
+                                    project, " grid of ", resX, " x ", resY,
+                                    " degrees using a conservative method")
+                }
                 graph.r <- metaclipcc.Regridding(graph = graph.r,
                                                  RefSpatialExtent = reference.extent,
                                                  RefRectangularGrid = reference.grid,
@@ -647,7 +667,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         arg.list <- list()
         arg.list$clim.fun$FUN <- "mean"
-        descr <- paste("The", ref.vars$variable,
+        descr <- paste("The", ref.vars$description,
                        "climatology is calculated for each grid cell, as the mean value for the whole historical period",
                        baseline)
         graph.h <- metaclipR.Climatology(graph = graph.h,
@@ -660,7 +680,7 @@ metaclipcc.Map <- function(project = "CMIP5",
             } else {
                 fp <- future.period
             }
-            descr <- paste0("The \'", ref.vars$variable,
+            descr <- paste0("The \'", ref.vars$description,
                            "\' climatology is calculated for each grid cell, as the mean value for the whole future period ",
                            fp)
             graph.r <- metaclipR.Climatology(graph = graph.r,
@@ -699,7 +719,7 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     if (length(graph.list) == 0) {
 
-        if ((ref.vars$variable == "prsn" | ref.vars$variable == "wind"| ref.vars$variable == "spi6") & (project == "CMIP5")) {
+        if ((ref.vars$variable == "prsn" | ref.vars$variable == "wind" | ref.vars$variable == "spi6" | ref.vars$variable == "siconc" | ref.vars$variable == "ph" | ref.vars$variable == "tos") & (project == "CMIP5")) {
             message("\'", ref.vars$variable, "\' not available for CMIP5: No provenance output was created.")
         } else {
             message("No model reached the +", future.period, " degC global warming level in ", experiment, ": No provenance output was created.")
@@ -726,7 +746,6 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         ## MAP PRODUCT DESCRIPTION -------------------------------------------------
         ## TODO:Colorbar bounds
-        ## IPCC regions layer TODO: update referenceURL ESSD
 
         ## Map ---------------------------------------------------------------------
         ### Includes links to a HorizontalExtent and a Projection
@@ -795,6 +814,26 @@ metaclipcc.Map <- function(project = "CMIP5",
                            c(getNodeIndexbyName(graph, map.nodename),
                              getNodeIndexbyName(graph, maplayer.nodename)),
                            label = "go:hasMapLayer")
+
+        ## Land mask (ocean vars only)
+
+        if (variable %in% c("tos", "ph", "siconc")) {
+            descr <- "All land areas are masked to display sea-only values"
+            refurl <- "https://doi.org/10.5281/zenodo.3691645"
+            mask.nodename <- paste("mapLandMask", randomName(), sep = ".")
+            graph <- add_vertices(graph,
+                                  nv = 1,
+                                  name = mask.nodename,
+                                  label = "Land Mask",
+                                  className = "go:Mask",
+                                  attr = list("dc:description" = descr,
+                                              "ds:referenceURL" = refurl))
+            graph <- add_edges(graph,
+                               c(getNodeIndexbyName(graph, maplayer.nodename),
+                                 getNodeIndexbyName(graph, mask.nodename)),
+                               label = "go:hasMask")
+
+        }
 
         ## Color palette -----------------------------------------------------------
 
