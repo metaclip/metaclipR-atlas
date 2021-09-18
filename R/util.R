@@ -35,10 +35,10 @@
 #' @keywords internal
 #' @author J. Bedia
 
-update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"),
+update_dataset_table <- function(projects =  c("CMIP5", "CMIP6", "CMIP6Omon"),
                                  out.file = "/tmp/dataset_table.csv") {
 
-    projects <- match.arg(projects, choices = c("CMIP5", "CMIP6"), several.ok = TRUE)
+    projects <- match.arg(projects, choices = c("CMIP5", "CMIP6", "CMIP6Omon"), several.ok = TRUE)
 
     # Import master lookup table
     master.table <- showIPCCdatasets(names.only = FALSE)
@@ -76,10 +76,14 @@ update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"),
 
             json.proj <- rep("CMIP5", length(vars))
 
+        } else if (project == "CMIP6Omon") {
+            vars <- c("siconc", "tos", "ph")
+            json.proj <- rep("CMIP6Omon", length(vars))
         }
 
         # Filter entries by project
-        ind <- which(master.table$Project == project)
+        proj <- ifelse (project == "CMIP6Omon", "CMIP6", project)
+        ind <- which(master.table$Project == proj)
         master.aux <- master.table[ind, ]
 
         # Loop over variables/scenarios
@@ -127,6 +131,6 @@ update_dataset_table <- function(projects =  c("CMIP5", "CMIP6"),
 }
 
 
-# update_dataset_table()
+# update_dataset_table(projects = c("CMIP5", "CMIP6", "CMIP6Omon"), out.file = "/tmp/vamoaveh.csv")
 # update_dataset_table(project = "CMIP6")
 
