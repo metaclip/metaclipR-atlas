@@ -78,6 +78,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                        label = paste0("ds:hadDatasetSubset"))
 
     # Variable  ---------------------
+    if (variable == "ph") variable <- "pH"
     var.nodename <- paste0("ds:", variable)
     attr.list <- list("ds:withUnits" = ref$units,
                       "ds:hasShortName" = ref$shortname,
