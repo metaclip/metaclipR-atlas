@@ -25,7 +25,8 @@ metaclipcc.Map(
 \item{project}{Project. Unused so far. Default to \code{"CMIP5"}.}
 
 \item{variable}{Code of the input ECV (it can be omitted if \code{climate.index} is indicated).
-Current accepted values are restricted to \code{"tas", "meanpr", "TX", "TN", "prsn", "wind"}.}
+Current accepted values are restricted to \code{"tas", "meanpr", "TX", "TN", "prsn", "wind"}
+and \code{"siconc", "ph", "tos"} for oceanic variables (CMIP6 only).}
 
 \item{climate.index}{If the map is for a climate index, name of the index. Otherwise NULL (the default). Currently accepted values are restricted to
 the set of indices to be included in the Atlas, namely:

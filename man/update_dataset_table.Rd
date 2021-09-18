@@ -5,7 +5,7 @@
 \title{Update reference dataset table}
 \usage{
 update_dataset_table(
-  projects = c("CMIP5", "CMIP6"),
+  projects = c("CMIP5", "CMIP6", "CMIP6Omon"),
   out.file = "/tmp/dataset_table.csv"
 )
 }
