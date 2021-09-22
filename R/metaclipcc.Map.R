@@ -607,18 +607,17 @@ metaclipcc.Map <- function(project = "CMIP5",
         }
 
         ## Interpolation to reference grid -------------------------------------
-
         ## The data is already in the reference grid if bias correction has taken place,
         ## because it inherits the grid from the observations, that are previously interpolated
 
         if (is.null(bias.adj.method)) {
             if (variable %in% c("tos", "ph", "siconc")) {
-                descr <- paste0("The historical ", ref.vars$description, " climatology of the ",
-                                model.name, " model (in oceanic grid coordinates) is interpolated onto the reference ",
+                descr <- paste0("The historical ", ref.vars$description," (", ref.vars$shortname,") climatology of the ",
+                                model.name, " model (in native grid coordinates) is interpolated onto the reference ",
                                 project, " grid of ", resX, " x ", resY,
-                                " degrees using a conservative method")
+                                " degrees using a first-order conservative method")
             } else {
-                descr <- paste0("The historical ", ref.vars$variable," climatology of the ",
+                descr <- paste0("The historical ", ref.vars$description," (", ref.vars$shortname,") climatology of the ",
                                 model.name, " model (" ,
                                 ref.model$resX.atmos , " x ",
                                 ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
@@ -638,12 +637,12 @@ metaclipcc.Map <- function(project = "CMIP5",
                                              dc.description = descr)
             if (experiment != "historical") {
                 if (variable %in% c("tos", "ph", "siconc")) {
-                    descr <- paste0("The ", experiment, " ", ref.vars$description, " climatology of the ",
+                    descr <- paste0("The ", experiment, " ",  ref.vars$description," (", ref.vars$shortname,") climatology of the ",
                                     model.name, " model (in oceanic grid coordinates) is interpolated onto the reference ",
                                     project, " grid of ", resX, " x ", resY,
                                     " degrees using a conservative method")
                 } else {
-                    descr <- paste0("The ", experiment, " ", ref.vars$variable, " climatology of the ",
+                    descr <- paste0("The ", experiment, " ", ref.vars$description," (", ref.vars$shortname,") climatology of the ",
                                     model.name, " model (" ,
                                     ref.model$resX.atmos , " x ",
                                     ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
@@ -695,10 +694,10 @@ metaclipcc.Map <- function(project = "CMIP5",
             delta.type <- ref.vars$delta_change
             descr <- if (delta.type == "absolute") {
                 paste0("The climate change signal is computed, for each grid cell, as the arithmetic difference between the \'",
-                      ref.vars$variable, "\' climatologies of the ", experiment, " and the historical scenarios")
+                       ref.vars$description, "\' (", ref.vars$shortname, ") climatologies of the ", experiment, " and the historical scenarios")
             } else {
                 paste0("The climate change signal is computed, for each grid cell, as the ratio (in %) between the \'",
-                      ref.vars$variable, "\' ensemble mean climatologies of the ", experiment, " and the historical scenarios")
+                       ref.vars$description,"\' (", ref.vars$shortname, ") ensemble mean climatologies of the ", experiment, " and the historical scenarios")
             }
             graph <- metaclipcc.Delta(graph = graph.r,
                                       referenceGraph = graph.h,

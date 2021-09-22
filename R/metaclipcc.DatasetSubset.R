@@ -65,7 +65,7 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
     var.version <- getVariableVersion(Dataset.name, variable)
     if (!is.na(var.version)) {
         attr.list[["ds:withVersionTag"]] <- var.version
-        attr.list[["rdfs:comment"]] <- paste0("The variable \'", variable, "\' version of this dataset is ", var.version)
+        attr.list[["rdfs:comment"]] <- paste0("The variable \'", ref$description, "\' (", ref$shortname, ")"," version of this dataset is ", var.version)
     }
     graph <- my_add_vertices(graph,
                              name = DatasetSubset.nodename,
@@ -78,8 +78,9 @@ metaclipcc.DatasetSubset <- function(metaclipcc.Dataset,
                        label = paste0("ds:hadDatasetSubset"))
 
     # Variable  ---------------------
-    if (variable == "ph") variable <- "pH"
-    var.nodename <- paste0("ds:", variable)
+    # if (variable == "ph") variable <- "pH"
+    # var.nodename <- paste0("ds:", variable)
+    var.nodename <- ref$vocabulary
     attr.list <- list("ds:withUnits" = ref$units,
                       "ds:hasShortName" = ref$shortname,
                       "ds:hasVerticalLevel" = ref$vertical)
