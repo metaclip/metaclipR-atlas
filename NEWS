@@ -80,4 +80,7 @@ metaclipcc changelog
  * New utilities for internal ocean var handling
  * Other minor changes (fix typos, improve description comments, harmonize variable naming...)
 
+## v1.1.1 (22 in devel)
+ * Add some missing sea-ice/ocean variable versions
+
 
