@@ -74,10 +74,10 @@ metaclipcc changelog
  * Minor bug fix in dc:description for SPI
  * Other minor internal changes
 
-## v1.1.0 (18 Sep 2021)
+## v1.1.0 (22 Sep 2021)
  * Include CMIP6 ocean variables: siconc, ph and tos
  * Define snowfall in ds vocabulary (ds v0.25)
  * New utilities for internal ocean var handling
- * Other minor changes (fix typos...)
+ * Other minor changes (fix typos, improve description comments, harmonize variable naming...)
 
 
