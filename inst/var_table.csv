@@ -1,21 +1,19 @@
 variable,is_index,inputECV,vocabulary,description,scale,units,shortname,vertical,time_step,cellfun,realm,aggr.m,aggr.y,delta_change
-tas,0,,ds:tas,mean near-surface air temperature,,degC,tas,near-surface,P1D,mean,Atmos,mean,mean,absolute
-TX,0,,ds:tasmax,maximum near-surface air temperature,,degC,tasmax,near-surface,P1D,max,Atmos,mean,mean,absolute
-TN,0,,ds:tasmin,minimum near-surface air temperature,,degC,tasmin,near-surface,P1D,min,Atmos,mean,mean,absolute
-tos,0,,ds:sst,sea-surface temperature,,degC,sst,surface,P1M,mean,Omon,mean,mean,absolute
-meanpr,0,,ds:pr,total precipitation amount,,mm,tp,surface,P1D,sum,Atmos,sum,sum,relative
-prsn,0,,ds:tpsn,Total precipitation in form of snow,,mm,tpsn,surface,P1M,sum,Amon,sum,sum,relative
-wind,0,,ds:wss,near-surface surface wind speed,,m/s,wss,near-surface,P1M,mean,Amon,mean,mean,relative
-O2,0,,,dissolved oxygen in sea water,,mol/m3,,near-surface,P1M,mean,Omon,mean,mean,
+tas,0,,ds:tas,mean near-surface air temperature,,degC,T,near-surface,P1D,mean,Atmos,mean,mean,absolute
+TX,0,,ds:tasmax,maximum near-surface air temperature,,degC,TX,near-surface,P1D,max,Atmos,mean,mean,absolute
+TN,0,,ds:tasmin,minimum near-surface air temperature,,degC,TN,near-surface,P1D,min,Atmos,mean,mean,absolute
+tos,0,,ds:sst,sea-surface temperature,,degC,SST,surface,P1M,mean,Omon,mean,mean,absolute
+meanpr,0,,ds:pr,total precipitation amount,,mm,PR,surface,P1D,sum,Atmos,sum,sum,relative
+prsn,0,,ds:tpsn,Total precipitation in form of snow,,mm,Snowfall,surface,P1M,sum,Amon,sum,sum,relative
+wind,0,,ds:wss,near-surface surface wind speed,,m/s,Surface wind,near-surface,P1M,mean,Amon,mean,mean,relative
 ph,0,,ds:pH,pH,,pH,pH,near-surface,P1M,mean,Omon,mean,mean,absolute
-siconc,0,,ds:siconc,sea ice concentration,,%,siconc,near-surface,P1M,mean,Omon,mean,mean,absolute
-SLR,0,,,sea level rise,,m,slr,surface,,mean,Omon,,,absolute
-TXx,1,TX,ds:TXx,Monthly maximum value of daily maximum temperature,,,,,P1M,,,none,mean,absolute
-TNn,1,TN,ds:TNn,Monthly minimum value of daily minimum temperature,,,,,P1M,,,none,mean,absolute
-Rx1day,1,meanpr,ds:Rx1day,Monthly maximum 1-day precipitation,,,,,P1M,,,none,mean,relative
-Rx5day,1,meanpr,ds:Rx5day,Monthly maximum 5-day precipitation,,,,,P1M,,,none,mean,relative
-CDD,1,meanpr,ipcc:DS,Dry spell (consecutive dry days),,,,,P1D,,,max,max,absolute
-spi6,1,meanpr,ds:SPI,Standardized precipitation index,6,,,,P1M,,,none,mean,absolute
+siconc,0,,ds:siconc,sea ice concentration,,%,Sea ice concentration,near-surface,P1M,mean,Omon,mean,mean,absolute
+TXx,1,TX,ds:TXx,Monthly maximum value of daily maximum temperature,,degC,TXx,,P1M,,,none,mean,absolute
+TNn,1,TN,ds:TNn,Monthly minimum value of daily minimum temperature,,degC,TNn,,P1M,,,none,mean,absolute
+Rx1day,1,meanpr,ds:Rx1day,Monthly maximum 1-day precipitation,,mm,Rx1day,,P1M,,,none,mean,relative
+Rx5day,1,meanpr,ds:Rx5day,Monthly maximum 5-day precipitation,,mm,Rx5day,,P1M,,,none,mean,relative
+CDD,1,meanpr,ipcc:DS,Dry spell (consecutive dry days),,days,CDD,,P1D,,,max,max,absolute
+spi6,1,meanpr,ds:SPI,Standardized precipitation index,6,%,SPI-6,,P1M,,,none,mean,absolute
 SPI12,1,meanpr,ds:SPI,Standardized precipitation index,12,,,,P1M,,,none,mean,absolute
 SPEI6,1,"meanpr,tas",ds:SPEI,Standardized precipitation-evapotranspiration index,6,,,,P1M,,,none,mean,absolute
 SPEI12,1,"meanpr,tas",ds:SPEI,Standardized precipitation-evapotranspiration index,12,,,,P1M,,,none,mean,absolute
@@ -24,11 +22,11 @@ DF12,1,meanpr,ds:DF,Drought Frequency,12,,,,P1M,,,none,sum,
 LFFP,1,TN,ds:LFFP,Length of the frost-free period,,,,,P1D,,,sum,sum,
 GDD,1,tas,ds:GD,Growing degree days,,,,,P1D,,,sum,sum,
 T21.5,1,tas,ds:T21.5,Number of days with mean temperature above 21.5 degC,,,,,P1D,,,sum,sum,absolute
-tx35,1,TX,ds:TX35,Number of days with maximum temperature above 35 degC,,,,,P1D,,,sum,sum,absolute
-tx35isimip,1,TX,ds:TX35,Bias-adjusted number of days with maximum temperature above 35 degC,,,,,P1D,,,sum,sum,absolute
-tx40,1,TX,ds:TX40,Number of days with maximum temperature above 40 degC,,,,,P1D,,,sum,sum,absolute
-tx40isimip,1,TX,ds:TX40,Bias-adjusted number of days with maximum temperature above 40 degC,,,,,P1D,,,sum,sum,absolute
-hdd,1,"tas,TN,TX",ds:HD,Heating Degree Days,,,,,P1D,,,sum,sum,absolute
-fd,1,TN,ds:FD,Frost days,,,,,P1D,,,sum,sum,absolute
-fdisimip,1,TN,ds:FD,Bias-adjusted Frost Days ,,,,,P1D,,,sum,sum,absolute
-cd,1,"tas,TN,TX",ds:CD,Cooling Degree Days,,,,,P1D,,,sum,sum,absolute
+tx35,1,TX,ds:TX35,Number of days with maximum temperature above 35 degC,,days,TX35,,P1D,,,sum,sum,absolute
+tx35isimip,1,TX,ds:TX35,Bias-adjusted number of days with maximum temperature above 35 degC,,days,TX35,,P1D,,,sum,sum,absolute
+tx40,1,TX,ds:TX40,Number of days with maximum temperature above 40 degC,,days,TX40,,P1D,,,sum,sum,absolute
+tx40isimip,1,TX,ds:TX40,Bias-adjusted number of days with maximum temperature above 40 degC,,days,TX40,,P1D,,,sum,sum,absolute
+hdd,1,"tas,TN,TX",ds:HD,Heating Degree Days,,deg_days,HD,,P1D,,,sum,sum,absolute
+fd,1,TN,ds:FD,Frost days,,days,FD,,P1D,,,sum,sum,absolute
+fdisimip,1,TN,ds:FD,Bias-adjusted Frost Days ,,days,FD,,P1D,,,sum,sum,absolute
+cd,1,"tas,TN,TX",ds:CD,Cooling Degree Days,,deg_days,CD,,P1D,,,sum,sum,absolute
