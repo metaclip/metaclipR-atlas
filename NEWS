@@ -83,4 +83,7 @@ metaclipcc changelog
 ## v1.1.1 (23 Sep 2021)
  * Add some missing sea-ice/ocean variable versions <https://github.com/IPCC-WG1/Atlas/issues/59>
 
+## v1.2.0 (in devel)
+ * New function metaclip.File for provenance of 'intermediate Atlas products'
+
 
