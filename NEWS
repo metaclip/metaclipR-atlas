@@ -85,5 +85,6 @@ metaclipcc changelog
 
 ## v1.2.0 (in devel)
  * New function metaclip.File for provenance of 'intermediate Atlas products'
+ * Adapt functions and internal database for the description of CORDEX products
 
 

@@ -8,9 +8,9 @@ Imports:
     jsonlite,
     magrittr,
     utils
-Title: METACLIP for the IPCC-AR6 Interactive Atlas
+Title: METACLIP for the IPCC-AR6 WG1 Interactive Atlas and associated products
 Version: 1.2.0
-Date: 2021-11-24
+Date: 2022-06-30
 Authors@R: c(
     person("Bedia", "Joaquín", email = "bediaj@unican.es", role = c("aut","cre"), comment = c(ORCID = "0000-0001-6219-4312")),
     person("Daniel", "San Martín", email = "daniel@predictia.es", role = "aut"),
