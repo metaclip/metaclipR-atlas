@@ -81,20 +81,20 @@
 
 
 # ## Test area
-# project = "CMIP6"
-# variable = "tos"
-# climate.index = NULL
-# delta = TRUE
-# experiment = "ssp126" #"ssp126"
-# baseline = "1995-2014"
-# future.period = "1.5"
-# season = 1:12
-# bias.adj.method = NULL #"ISIMIP3" # "EQM"
-# ref.obs.dataset = NULL #"W5E5" # "EWEMBI"
-# proj = "Robin"
-# map.bbox = NULL
-# test.mode = TRUE
-# uncertainty = "simple"
+project = "CORDEX-AFR"
+variable = "tas"
+climate.index = NULL
+delta = TRUE
+experiment = "rcp85" #"ssp126"
+baseline = "1995-2014"
+future.period = "1.5"
+season = 1:12
+bias.adj.method = NULL #"ISIMIP3" # "EQM"
+ref.obs.dataset = NULL #"W5E5" # "EWEMBI"
+proj = "Robin"
+map.bbox = NULL
+test.mode = TRUE
+uncertainty = "simple"
 # #
 #
 # a <- metaclipcc.Map(project = project,
@@ -137,25 +137,33 @@ metaclipcc.Map <- function(project = "CMIP5",
     # ***********************
 
     project <- match.arg(project, choices = c("CMIP5", "CMIP6",
-                                              "CORDEX-AFR", "CORDEX-ARC", "CORDEX-AUS",
-                                              "CORDEX-CAM", "CORDEX-EAS", "CORDEX-NAM",
-                                              "CORDEX-SAM", "CORDEX-SEA", "CORDEX-WAS"))
+                                              "CORDEX-AFR", "CORDEX-ARC",
+                                              "CORDEX-AUS", "CORDEX-CAM",
+                                              "CORDEX-EAS", "CORDEX-NAM",
+                                              "CORDEX-SAM", "CORDEX-SEA",
+                                              "CORDEX-WAS"))
     if (!is.null(variable)) {
-        variable <- match.arg(variable, choices = c("tas", "meanpr", "TX", "TN", "prsn", "wind",
+        variable <- match.arg(variable, choices = c("tas", "meanpr",
+                                                    "TX", "TN",
+                                                    "prsn", "wind",
                                                     "tos", "ph", "siconc"))
         if (!is.null(climate.index)) {
             climate.index <- NULL
-            warning("Variable ", variable, " was first indicated. The \'climate.index\' argument was set to NULL")
+            warning("Variable ", variable,
+                    " was first indicated. The \'climate.index\' argument was set to NULL")
         }
     } else {
-        if (is.null(climate.index)) stop("Either a variable or a climate index must be supplied")
+        if (is.null(climate.index)) {
+            stop("Either a variable or a climate index must be supplied")
+        }
     }
     if (!is.null(climate.index)) {
         climate.index <- match.arg(climate.index, choices = c("TXx", "TNn",
                                                               "Rx1day", "Rx5day",
                                                               "spi6", "CDD",
                                                               "tx35", "tx40",
-                                                              "tx35isimip", "tx40isimip",
+                                                              "tx35isimip",
+                                                              "tx40isimip",
                                                               "cd", "hdd",
                                                               "fd", "fdisimip"))
         if (grepl("isimip$", climate.index)) {
@@ -167,9 +175,11 @@ metaclipcc.Map <- function(project = "CMIP5",
     stopifnot(is.logical(delta))
 
     experiment <- if (project == "CMIP6") {
-        match.arg(experiment, choices = c("historical", "ssp126", "ssp245", "ssp370", "ssp460", "ssp585"))
+        match.arg(experiment, choices = c("historical", "ssp126", "ssp245",
+                                          "ssp370", "ssp460", "ssp585"))
     } else {
-        match.arg(experiment, choices = c("historical", "rcp26", "rcp45", "rcp85"))
+        match.arg(experiment, choices = c("historical",
+                                          "rcp26", "rcp45", "rcp85"))
     }
 
     if (experiment == "historical") {
@@ -207,13 +217,20 @@ metaclipcc.Map <- function(project = "CMIP5",
                               "1850-1900" = NULL)
     }
 
-    if (experiment != "historical" & is.null(future.period)) stop("future.period argument is missing, with no default for ", experiment, " experiment")
+    if (experiment != "historical" & is.null(future.period)) {
+        stop("future.period argument is missing, with no default for ",
+             experiment, " experiment")
+    }
     if (!is.null(future.period)) {
-        future.period <- match.arg(future.period, choices = c("2021-2040", "2041-2060", "2081-2100",
-                                                              "1.5", "2", "3", "4"))
+        future.period <- match.arg(future.period,
+                                   choices = c("2021-2040",
+                                               "2041-2060",
+                                               "2081-2100",
+                                               "1.5", "2", "3", "4"))
     }
 
-    proj <- match.arg(proj, choices = c("Robin", "Arctic", "Antarctic", "Pacific"))
+    proj <- match.arg(proj,
+                      choices = c("Robin", "Arctic", "Antarctic", "Pacific"))
 
     if (!is.null(map.bbox)) stopifnot(length(map.bbox) == 4L)
 
@@ -221,8 +238,8 @@ metaclipcc.Map <- function(project = "CMIP5",
     if (!is.null(uncertainty)) {
         uncertainty <- match.arg(uncertainty, choices = c("simple", "advanced"))
     }
-
-    ref.project <- showIPCCdatasets(names.only = FALSE)[showIPCCdatasets(names.only = FALSE) %>% extract2("Project") %>% grep(pattern = project), ]
+    row.ind <- showIPCCdatasets(FALSE) %>% extract2("Project") %>% grep(pattern = project)
+    ref.project <- showIPCCdatasets(names.only = FALSE)[row.ind, ]
     ipcc.region <- ref.project$SimulationDomain %>% unique() ## overwrite later if CORDEX
     # cordex.region <- ref.project$region_name %>% unique()
 
@@ -230,7 +247,8 @@ metaclipcc.Map <- function(project = "CMIP5",
     if (project == "CMIP5") {
         resX <- resY <- 2
         descr <- paste("This is the reference grid used in all CMIP5 map products of",
-                       resX, "x", resY, "degree resolution covering the whole globe")
+                       resX, "x", resY,
+                       "degree resolution covering the whole globe")
         gridfile.url <- "https://doi.org/10.5281/zenodo.3691645"
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
@@ -243,7 +261,8 @@ metaclipcc.Map <- function(project = "CMIP5",
     } else if (project == "CMIP6") {
         resX <- resY <- 1
         descr <- paste("This is the reference grid used in all CMIP6 map products of",
-                       resX, "x", resY, "degree resolution covering the whole globe")
+                       resX, "x", resY,
+                       "degree resolution covering the whole globe")
         gridfile.url <- "https://doi.org/10.5281/zenodo.3691645"
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
@@ -271,10 +290,10 @@ metaclipcc.Map <- function(project = "CMIP5",
 
     reference.extent <- if (grepl("^CORDEX-", project)) {
         metaclipcc.HorizontalExtent(region = NULL,
-                                    xmin = ref.project$xmin.atmos,
-                                    xmax = ref.project$xmax.atmos,
-                                    ymin = ref.project$ymin.atmos,
-                                    ymax = ref.project$ymax.atmos,
+                                    xmin = ref.project$xmin.atmos %>% unique(),
+                                    xmax = ref.project$xmax.atmos %>% unique(),
+                                    ymin = ref.project$ymin.atmos %>% unique(),
+                                    ymax = ref.project$ymax.atmos %>% unique(),
                                     dc.description = paste("Spatial Extent of the",
                                                            project,
                                                            "simulation domain"))
@@ -293,7 +312,8 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         obs.spextent <- metaclipcc.HorizontalExtent(region = obs.meta$SimulationDomain)
 
-        descr <- paste("This is the original native grid of", obs.meta$resX.atmos, "x" ,
+        descr <- paste("This is the original native grid of",
+                       obs.meta$resX.atmos, "x" ,
                        obs.meta$resX.atmos, "of the",
                        ref.obs.dataset, "observational gridded dataset")
 
@@ -305,7 +325,9 @@ metaclipcc.Map <- function(project = "CMIP5",
                                               ymax = obs.meta$ymax.atmos,
                                               dc.description = descr)
 
-        graph.o <- metaclipcc.Dataset(ref.obs.dataset, RectangularGrid = obs.grid, DataProvider = "CDS")
+        graph.o <- metaclipcc.Dataset(ref.obs.dataset,
+                                      RectangularGrid = obs.grid,
+                                      DataProvider = "CDS")
     }
 
     ## Historical scenarios ----------------------------------------------------
@@ -335,11 +357,17 @@ metaclipcc.Map <- function(project = "CMIP5",
     ## ECV filtering -----------------------------------------------------------
 
     if (!is.null(climate.index)) {
-        ref.vars <- showIPCCvars(names.only = FALSE)[grep(paste0("^", climate.index, "$"), showIPCCvars()), ]
+        ref.vars <- showIPCCvars(names.only = FALSE)[grep(paste0("^",
+                                                                 climate.index,
+                                                                 "$"),
+                                                          showIPCCvars()), ]
         time.res.orig <- ref.vars$time_step
         vars <- strsplit(ref.vars$inputECV, split = ",") %>% unlist()
     } else {
-        ref.vars <- showIPCCvars(names.only = FALSE)[grep(paste0("^", variable, "$"), showIPCCvars()), ]
+        ref.vars <- showIPCCvars(names.only = FALSE)[grep(paste0("^",
+                                                                 variable,
+                                                                 "$"),
+                                                          showIPCCvars()), ]
         time.res.orig <- ref.vars$time_step
         vars <- variable
     }
@@ -354,7 +382,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                                                 variable = vars[i],
                                                 season = season,
                                                 years = ref.period)
-            descr <- paste0("The " , ref.obs.dataset, " gridded observations data (",
+            descr <- paste0("The " , ref.obs.dataset,
+                            " gridded observations data (",
                             obs.meta$resX.atmos, "x", obs.meta$resY.atmos,
                             " degree resolution) are re-gridded onto the ",
                             resX, "x", resY  ," regular grid of ", project)
@@ -382,8 +411,9 @@ metaclipcc.Map <- function(project = "CMIP5",
     }
     graph.list <- list()
     for (x in iter) {
-        ref.model <- aux[grep(hist.list[x], aux$name, ignore.case = TRUE),]
-        model.name <- ifelse(grepl("CORDEX-", project), ref.model$RCM, ref.model$GCM)
+        ref.model <- aux[grep(hist.list[x], aux$name, ignore.case = TRUE), ]
+        model.name <- ifelse(grepl("CORDEX-", project),
+                             ref.model$RCM, ref.model$GCM)
         if (grepl("^CORDEX-", project)) {
             message("[", Sys.time(), "] Processing ", ref.model$GCM, "-", ref.model$RCM, " model data")
         } else {
@@ -417,11 +447,13 @@ metaclipcc.Map <- function(project = "CMIP5",
         ### GCM grid -----------------------------------------------------------
 
         if (variable %in% c("tos", "ph", "siconc")) {
-            descr <- paste("This is the native grid of the ocean model in the", model.name, "simulations")
+            descr <- paste("Native grid of the ocean model in the",
+                           model.name, "simulations")
             gcm.grid <-metaclipcc.OceanGrid(dc.description = descr)
         } else {
-            descr <- paste("This is the native grid of", ref.model$resX.atmos,
-                           "x", ref.model$resY.atmos, "of the atmospheric variables in the",
+            descr <- paste("Native grid of", ref.model$resX.atmos,
+                           "x", ref.model$resY.atmos,
+                           "of the atmospheric variables in the",
                            model.name, "simulations")
             gcm.grid <- metaclipR.RectangularGrid(resX = ref.model$resX.atmos,
                                                   resY = ref.model$resY.atmos,
@@ -438,7 +470,8 @@ metaclipcc.Map <- function(project = "CMIP5",
 
             ## Historical simulation data --------------------------------------
 
-            graph.hist <- metaclipcc.Dataset(hist.list[x], RectangularGrid = gcm.grid)
+            graph.hist <- metaclipcc.Dataset(hist.list[x],
+                                             RectangularGrid = gcm.grid)
 
             graph.h <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.hist,
                                                 Dataset.name = hist.list[x],
@@ -456,7 +489,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                 } else {
                     aux[grep(rcp.list[x], aux$name),]
                 }
-                graph.rcp <- metaclipcc.Dataset(ref.dataset$name, RectangularGrid = gcm.grid)
+                graph.rcp <- metaclipcc.Dataset(ref.dataset$name,
+                                                RectangularGrid = gcm.grid)
                 graph2 <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.rcp,
                                                    Dataset.name = ref.dataset$name,
                                                    variable = vars[i],
@@ -467,7 +501,9 @@ metaclipcc.Map <- function(project = "CMIP5",
                 descr <- paste0("The subperiod ",
                                 paste(fill.period[1], fill.period[2], sep = "-"),
                                 ", missing from the Historical experiment (1850-2005), is filled with the data from the ",
-                                ref.dataset$Experiment, " simulation of the model to complete the baseline period requested (", baseline, ")")
+                                ref.dataset$Experiment,
+                                " experiment of the model to complete the baseline period requested (",
+                                baseline, ")")
                 graph.h <- metaclipR.Binding(graph.list = list(graph.h, graph2),
                                              dim.along = "time",
                                              dc.description = descr)
@@ -510,8 +546,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                 rcp.nodename <- paste("ipcc", rcp.list[x], sep = ":")
                 is.rcp.already.used <- any(igraph::V(graph.h$graph)$name == rcp.nodename)
                 if (!is.rcp.already.used) {
-                    graph.rcp <- metaclipcc.Dataset(rcp.list[x], RectangularGrid = gcm.grid)
-
+                    graph.rcp <- metaclipcc.Dataset(rcp.list[x],
+                                                    RectangularGrid = gcm.grid)
                 }
                 graph.r <- metaclipcc.DatasetSubset(metaclipcc.Dataset = graph.rcp,
                                                     Dataset.name = rcp.list[x],
@@ -597,7 +633,8 @@ metaclipcc.Map <- function(project = "CMIP5",
                                              arg.list = arg.list,
                                              dc.description = descr)
             if (experiment != "historical") {
-                descr <- paste("The", experiment , "data is annually aggregated using the",
+                descr <- paste("The", experiment ,
+                               "data is annually aggregated using the",
                                ref.vars$aggr.y, "cell function")
                 graph.r <- metaclipR.Aggregation(graph = graph.r,
                                                  disable.command = TRUE,
@@ -612,15 +649,19 @@ metaclipcc.Map <- function(project = "CMIP5",
 
         if (is.null(bias.adj.method)) {
             if (variable %in% c("tos", "ph", "siconc")) {
-                descr <- paste0("The historical ", ref.vars$description," (", ref.vars$shortname,") climatology of the ",
-                                model.name, " model (in native grid coordinates) is interpolated onto the reference ",
+                descr <- paste0("The historical ", ref.vars$description,
+                                " (", ref.vars$shortname,") climatology of the ",
+                                model.name,
+                                " model (in native grid coordinates) is interpolated onto the reference ",
                                 project, " grid of ", resX, " x ", resY,
                                 " degrees using a first-order conservative method")
             } else {
-                descr <- paste0("The historical ", ref.vars$description," (", ref.vars$shortname,") climatology of the ",
+                descr <- paste0("The historical ", ref.vars$description,
+                                " (", ref.vars$shortname,") climatology of the ",
                                 model.name, " model (" ,
                                 ref.model$resX.atmos , " x ",
-                                ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
+                                ref.model$resY.atmos,
+                                " degrees resolution) is interpolated onto the reference ",
                                 project, " grid of ", resX, " x ", resY,
                                 " degrees using a conservative method")
             }
@@ -637,12 +678,17 @@ metaclipcc.Map <- function(project = "CMIP5",
                                              dc.description = descr)
             if (experiment != "historical") {
                 if (variable %in% c("tos", "ph", "siconc")) {
-                    descr <- paste0("The ", experiment, " ",  ref.vars$description," (", ref.vars$shortname,") climatology of the ",
-                                    model.name, " model (in oceanic grid coordinates) is interpolated onto the reference ",
+                    descr <- paste0("The ", experiment, " ",
+                                    ref.vars$description," (",
+                                    ref.vars$shortname,") climatology of the ",
+                                    model.name,
+                                    " model (in oceanic grid coordinates) is interpolated onto the reference ",
                                     project, " grid of ", resX, " x ", resY,
                                     " degrees using a conservative method")
                 } else {
-                    descr <- paste0("The ", experiment, " ", ref.vars$description," (", ref.vars$shortname,") climatology of the ",
+                    descr <- paste0("The ", experiment, " ",
+                                    ref.vars$description," (",
+                                    ref.vars$shortname,") climatology of the ",
                                     model.name, " model (" ,
                                     ref.model$resX.atmos , " x ",
                                     ref.model$resY.atmos, " degrees resolution) is interpolated onto the reference ",
@@ -717,11 +763,14 @@ metaclipcc.Map <- function(project = "CMIP5",
     ## Filter missing models ---------------------------------------------------
 
     if (length(graph.list) == 0) {
-
-        if ((ref.vars$variable == "prsn" | ref.vars$variable == "wind" | ref.vars$variable == "spi6" | ref.vars$variable == "siconc" | ref.vars$variable == "ph" | ref.vars$variable == "tos") & (project == "CMIP5")) {
-            message("\'", ref.vars$variable, "\' not available for CMIP5: No provenance output was created.")
+        rv <- ref.vars$variable
+        if ((rv == "prsn" | rv == "wind" | rv == "spi6" | rv == "siconc" | rv == "ph" | rv == "tos") & (project == "CMIP5")) {
+            message("\'", rv,
+                    "\' not available for CMIP5: No provenance output was created.")
         } else {
-            message("No model reached the +", future.period, " degC global warming level in ", experiment, ": No provenance output was created.")
+            message("No model reached the +", future.period,
+                    " degC global warming level in ", experiment,
+                    ": No provenance output was created.")
         }
         graph <- NULL
         map.nodename <- NULL
