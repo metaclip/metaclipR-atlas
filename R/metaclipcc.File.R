@@ -46,11 +46,11 @@
 #' @export
 
 # ## Test area
-# project = "CMIP6"
-# variable = "tos"
-# climate.index = NULL
-# experiment = "ssp126"
-# test.mode = TRUE
+ # project = "CORDEX-SAM"
+ # variable = "tas"
+ # climate.index = NULL
+ # experiment = "rcp85"
+ # test.mode = FALSE
 #
 # a <- metaclipcc.File(project = project,
 #                     variable = variable,
@@ -217,10 +217,10 @@ metaclipcc.File <- function(project = "CMIP5",
                         " degree resolution used in all Atlas CORDEX products")
         reference.grid <- metaclipR.RectangularGrid(resX = resX,
                                                     resY = resY,
-                                                    xmin = -179.75,
-                                                    xmax = 179.75,
-                                                    ymin = -89.75,
-                                                    ymax = -89.75,
+                                                    xmin = ref.project[1,]$xmin.atmos,
+                                                    xmax = ref.project[1,]$xmax.atmos,
+                                                    ymin = ref.project[1,]$ymin.atmos,
+                                                    ymax = ref.project[1,]$ymax.atmos,
                                                     dc.description = descr)
     }
 
@@ -548,24 +548,24 @@ metaclipcc.File <- function(project = "CMIP5",
 
         ## Annual Aggregation --------------------------------------------------
 
-        if (ref.vars$aggr.y != "mean") {
-            arg.list <- list()
-            arg.list$aggr.y$FUN <- ref.vars$aggr.y
-            descr <- paste("The historical data is annually aggregated using the",
-                           ref.vars$aggr.y, "cell function")
-            graph.h <- metaclipR.Aggregation(graph = graph.h,
-                                             disable.command = TRUE,
-                                             arg.list = arg.list,
-                                             dc.description = descr)
-            if (experiment != "historical") {
-                descr <- paste("The", experiment , "data is annually aggregated using the",
-                               ref.vars$aggr.y, "cell function")
-                graph.r <- metaclipR.Aggregation(graph = graph.r,
-                                                 disable.command = TRUE,
-                                                 arg.list = arg.list,
-                                                 dc.description = descr)
-            }
-        }
+        # if (ref.vars$aggr.y != "mean") {
+        #     arg.list <- list()
+        #     arg.list$aggr.y$FUN <- ref.vars$aggr.y
+        #     descr <- paste("The historical data is annually aggregated using the",
+        #                    ref.vars$aggr.y, "cell function")
+        #     graph.h <- metaclipR.Aggregation(graph = graph.h,
+        #                                      disable.command = TRUE,
+        #                                      arg.list = arg.list,
+        #                                      dc.description = descr)
+        #     if (experiment != "historical") {
+        #         descr <- paste("The", experiment , "data is annually aggregated using the",
+        #                        ref.vars$aggr.y, "cell function")
+        #         graph.r <- metaclipR.Aggregation(graph = graph.r,
+        #                                          disable.command = TRUE,
+        #                                          arg.list = arg.list,
+        #                                          dc.description = descr)
+        #     }
+        # }
 
         ## Interpolation to reference grid -------------------------------------
         ## The data is already in the reference grid if bias correction has taken place,
@@ -590,6 +590,8 @@ metaclipcc.File <- function(project = "CMIP5",
 
             interp.method <- ifelse(grepl("^CORDEX-", project),
                                     "conservative_CORDEX", "conservative")
+
+            # browser()
 
             graph.h <- metaclipcc.Regridding(graph = graph.h,
                                              RefSpatialExtent = reference.extent,
@@ -907,9 +909,6 @@ metaclipcc.File <- function(project = "CMIP5",
         graph <- graph.list[[1]]
         message("One single model. No multi-member ensemble was built")
     }
-
-
-
     return(list("graph" = graph$graph, "parentnodename" =  graph$parentnodename))
 }
 
