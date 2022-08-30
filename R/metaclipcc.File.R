@@ -228,10 +228,10 @@ metaclipcc.File <- function(project = "CMIP5",
 
     reference.extent <- if (grepl("^CORDEX-", project)) {
         metaclipcc.HorizontalExtent(region = NULL,
-                                    xmin = ref.project$xmin.atmos,
-                                    xmax = ref.project$xmax.atmos,
-                                    ymin = ref.project$ymin.atmos,
-                                    ymax = ref.project$ymax.atmos,
+                                    xmin = ref.project[1,]$xmin.atmos,
+                                    xmax = ref.project[1,]$xmax.atmos,
+                                    ymin = ref.project[1,]$ymin.atmos,
+                                    ymax = ref.project[1,]$ymax.atmos,
                                     dc.description = paste("Spatial Extent of the",
                                                            project,
                                                            "simulation domain"))
