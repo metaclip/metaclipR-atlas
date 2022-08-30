@@ -81,20 +81,20 @@
 
 
 # ## Test area
-project = "CORDEX-AFR"
-variable = "tas"
-climate.index = NULL
-delta = TRUE
-experiment = "rcp85" #"ssp126"
-baseline = "1995-2014"
-future.period = "1.5"
-season = 1:12
-bias.adj.method = NULL #"ISIMIP3" # "EQM"
-ref.obs.dataset = NULL #"W5E5" # "EWEMBI"
-proj = "Robin"
-map.bbox = NULL
-test.mode = TRUE
-uncertainty = "simple"
+# project = "CORDEX-AFR"
+# variable = "tas"
+# climate.index = NULL
+# delta = TRUE
+# experiment = "rcp85" #"ssp126"
+# baseline = "1995-2014"
+# future.period = "1.5"
+# season = 1:12
+# bias.adj.method = NULL #"ISIMIP3" # "EQM"
+# ref.obs.dataset = NULL #"W5E5" # "EWEMBI"
+# proj = "Robin"
+# map.bbox = NULL
+# test.mode = TRUE
+# uncertainty = "simple"
 # #
 #
 # a <- metaclipcc.Map(project = project,
