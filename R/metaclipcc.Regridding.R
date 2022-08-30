@@ -45,10 +45,14 @@ metaclipcc.Regridding <- function(graph,
                                   "bicubic" = "ds:BicubicInterpolation",
                                   "IDW" = "ds:InverseDistanceWeighting",
                                   "spline" = "ds:Splines",
-                                  "conservative" = "ds:ConservativeRemapping")
+                                  "conservative" = "ds:ConservativeRemapping",
+                                  "conservative_CORDEX" = "ds:ConservativeRemapping")
     orig.node <- graph$parentnodename
     graph <- graph$graph
     regnodename <- paste("Interpolation", randomName(), sep = ".")
+
+    # browser()
+
     if (is.null(dc.description)) {
         graph <- add_vertices(graph,
                               nv = 1,
@@ -67,11 +71,9 @@ metaclipcc.Regridding <- function(graph,
                        c(getNodeIndexbyName(graph, orig.node),
                          getNodeIndexbyName(graph, regnodename)),
                        label = "ds:hadInterpolation")
-    regmethod.nodename <- if (interp.method == "conservative_CORDEX") {
-        "ds:EUROCordexConservativeRemapping"
-    } else {
-        paste("InterpolationMethod", randomName(), sep = ".")
-    }
+    regmethod.nodename <- ifelse(interp.method == "conservative_CORDEX",
+                                 "ds:EUROCordexConservativeRemapping",
+                                 paste("InterpolationMethod", randomName(), sep = "."))
     graph <- add_vertices(graph,
                           nv = 1,
                           name = regmethod.nodename,
